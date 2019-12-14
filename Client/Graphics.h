@@ -10,7 +10,7 @@ class Graphics {
 
 private:
 	Graphics() = default;
-	Graphics( HWND hWnd, int width, int height );
+	Graphics( HWND hWnd, int width, int height, bool isWindowed );
 
 
 

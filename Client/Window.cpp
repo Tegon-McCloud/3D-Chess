@@ -60,7 +60,7 @@ Window::Window() {
 
 	ShowWindow( hWnd, SW_SHOW );
 
-	gfx = Graphics( hWnd, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top );
+	gfx = Graphics( hWnd, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, true );
 
 }
 
