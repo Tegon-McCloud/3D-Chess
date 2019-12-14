@@ -1,7 +1,6 @@
 
-#include "Windows_strict.h"
 #include "Window.h"
-#include <iostream>;
+#include <iostream>
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -11,14 +10,17 @@ int WINAPI WinMain(
 ) {
 
 	std::optional<int> rv;
+	try {
+		while ( true ) {
 
-	while ( true ) {
+			rv = Window::Get().ProcessMessages();
+			if ( rv ) {
+				return rv.value();
+			}
 
-		rv = Window::Get().ProcessMessages();
-		if ( rv ) {
-			return rv.value();
 		}
-
+	} catch ( std::runtime_error e ) {
+		std::cout << "Application exiting do to exception:\n" << e.what() << "\n";
 	}
 
 	return 0;

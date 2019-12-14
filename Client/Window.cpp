@@ -1,6 +1,6 @@
 #include "Window.h"
 
-#include <iostream>;
+#include <iostream>
 
 // WindowsClass
 WindowClass WindowClass::inst = WindowClass();
@@ -59,10 +59,17 @@ Window::Window() {
 	}
 
 	ShowWindow( hWnd, SW_SHOW );
+
+	gfx = Graphics( hWnd );
+
 }
 
 HWND Window::GetHandle() const {
 	return hWnd;
+}
+
+Graphics& Window::GetGraphics() {
+	return gfx;
 }
 
 std::optional<int> Window::ProcessMessages() const {
@@ -82,6 +89,10 @@ std::optional<int> Window::ProcessMessages() const {
 
 	return std::optional<int>();
 
+}
+
+Window::operator HWND() const {
+	return hWnd;
 }
 
 LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) {

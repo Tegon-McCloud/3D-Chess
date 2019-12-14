@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Windows_strict.h"
+#include "WindowsStrict.h"
+#include "Graphics.h"
 #include <optional>
 
 class Window {
@@ -13,12 +14,16 @@ private:
 public:
 
 	HWND GetHandle() const;
+	Graphics& GetGraphics();
+
 	std::optional<int> ProcessMessages() const;
 
-	static const Window& Get() { // Singleton getter
+	static Window& Get() { // Singleton getter
 		static Window inst;
 		return inst;
 	}
+
+	operator HWND() const;
 
 private:
 	
@@ -33,7 +38,7 @@ public:
 
 private:
 	HWND hWnd;
-
+	Graphics gfx;
 
 };
 

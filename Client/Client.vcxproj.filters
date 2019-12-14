@@ -21,13 +21,48 @@
     <ClCompile Include="Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="windows_strict.h">
+    <ClInclude Include="Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WindowsStrict.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Bishop.obj">
+      <Filter>Resource Files</Filter>
+    </Resource>
+    <Resource Include="Resources\King.obj">
+      <Filter>Resource Files</Filter>
+    </Resource>
+    <Resource Include="Resources\Knight.obj">
+      <Filter>Resource Files</Filter>
+    </Resource>
+    <Resource Include="Resources\Pawn.obj">
+      <Filter>Resource Files</Filter>
+    </Resource>
+    <Resource Include="Resources\Queen.obj">
+      <Filter>Resource Files</Filter>
+    </Resource>
+    <Resource Include="Resources\Rook.obj">
+      <Filter>Resource Files</Filter>
+    </Resource>
+    <Resource Include="Resources\Unicorn.obj">
+      <Filter>Resource Files</Filter>
+    </Resource>
   </ItemGroup>
 </Project>
