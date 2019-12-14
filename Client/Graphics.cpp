@@ -1,8 +1,23 @@
 #include "Graphics.h"
 #include "Util.h"
+#include "Window.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
+
+void Graphics::Clear( float r, float g, float b ) const {
+	
+	const float rgba[4] = {
+		r, g, b, 1.0f
+	};
+
+	pContext->ClearRenderTargetView(pRTV.Get(), rgba);
+	pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 0.0f, 0u);
+}
+
+void Graphics::Present() const {
+	ThrowIfFailed( pSwap->Present( 1u, 0u ) );
+}
 
 Graphics::Graphics(HWND hWnd, int width, int height, bool isWindowed) {
 	
@@ -18,13 +33,13 @@ Graphics::Graphics(HWND hWnd, int width, int height, bool isWindowed) {
 	sd.BufferDesc.Width = width;											//
 	sd.BufferDesc.Height = height;											// 
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;						// output as 32-bit BGRA non-normalized format
-	sd.BufferDesc.RefreshRate.Numerator = 60;								// 60 frames
-	sd.BufferDesc.RefreshRate.Denominator = 1;								// per 1 second
+	sd.BufferDesc.RefreshRate.Numerator = 60u;								// 60 frames
+	sd.BufferDesc.RefreshRate.Denominator = 1u;								// per 1 second
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;	// don't care about scanline ordering
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;					// don't care about scaling mode
 
-	sd.SampleDesc.Count = 1;												// no anti aliasing
-	sd.SampleDesc.Quality = 0;												//
+	sd.SampleDesc.Count = 1u;												// no anti aliasing
+	sd.SampleDesc.Quality = 0u;												//
 
 	UINT deviceFlags = 0u;
 

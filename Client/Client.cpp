@@ -9,7 +9,7 @@ int WINAPI WinMain(
 	int       nShowCmd
 ) {
 
-	std::optional<int> rv;
+	std::optional<int> rv;	// return value
 	try {
 		while ( true ) {
 
@@ -17,6 +17,9 @@ int WINAPI WinMain(
 			if ( rv ) {
 				return rv.value();
 			}
+
+			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
+			Window::Get().GetGraphics().Present();
 
 		}
 	} catch ( std::runtime_error e ) {

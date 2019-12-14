@@ -7,11 +7,15 @@
 class Graphics {
 
 	friend class Window;
+	
+public:
+	void Clear( float r, float g, float b ) const;
+	void Present() const;
+
 
 private:
 	Graphics() = default;
 	Graphics( HWND hWnd, int width, int height, bool isWindowed );
-
 
 
 private:
