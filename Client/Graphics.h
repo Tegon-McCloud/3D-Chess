@@ -10,7 +10,7 @@ class Graphics {
 
 private:
 	Graphics() = default;
-	Graphics(HWND hWnd);
+	Graphics( HWND hWnd, int width, int height );
 
 
 
@@ -19,6 +19,6 @@ private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRTV;
-
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
 };
 
