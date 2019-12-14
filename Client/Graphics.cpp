@@ -5,6 +5,12 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
+#ifdef _DEBUG
+constexpr const UINT deviceFlags = D3D11_CREATE_DEVICE_DEBUG;
+#else
+constexpr const UINT deviceFlags = 0u;
+#endif // _DEBUG
+
 constexpr const DXGI_SWAP_CHAIN_DESC defaultSwapChainDesc = {
 	{										// BufferDesc:
 		0u,										// Width
@@ -75,43 +81,29 @@ constexpr const D3D11_DEPTH_STENCIL_VIEW_DESC defaultDepthStencilViewDesc = {
 	0u								// Texture2D.MipSlice
 };
 
-Graphics::Graphics(HWND hWnd, int width, int height, bool isWindowed) {
+// Graphics
+Graphics::Graphics(HWND hWnd ) {
 	
 	DXGI_SWAP_CHAIN_DESC sd = defaultSwapChainDesc;
 	sd.OutputWindow = hWnd;
-	sd.Windowed = isWindowed;
-	sd.BufferDesc.Width = width;
-	sd.BufferDesc.Height = height;
 
-	UINT deviceFlags = 0u;
+	ThrowIfFailed( D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, deviceFlags, NULL, 0, D3D11_SDK_VERSION, &sd, 
+												  &pSwap, &pDevice, NULL, &pContext) );
+}
 
-#ifdef _DEBUG
-	deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif // !_DEBUG
+void Graphics::SizeChanged() {
 
-	ThrowIfFailed( D3D11CreateDeviceAndSwapChain(
-		NULL,						// no adapter
-		D3D_DRIVER_TYPE_HARDWARE,	// running on hardware
-		NULL,						// no handle to software driver, as we are running on hardware
-		deviceFlags,
-		NULL,						// use default feature level
-		0,							// feature level array length is 0, as we are using default
-		D3D11_SDK_VERSION,			// use the SDK version we are developing in right now
-		&sd,
-		&pSwap,
-		&pDevice,
-		NULL,						// dont care about what featurelevel d3d11 ended up using
-									// on modern hardware we can assume at least D3D_FEATURE_LEVEL_11_0.
-		&pContext
-	) );
-	
-	// create view of render target
+	// drop render target view
+	pRTV.Reset();
+	pContext->OMSetRenderTargets(0, NULL, NULL);
+
+	// resize buffers
+	ThrowIfFailed(pSwap->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0));
+
 	Microsoft::WRL::ComPtr<ID3D11Resource> pBB;
 	ThrowIfFailed( pSwap->GetBuffer( 0u, __uuidof(ID3D11Resource), &pBB ) ); // get the swapchains first backbuffer
 	ThrowIfFailed( pDevice->CreateRenderTargetView( pBB.Get(), nullptr, &pRTV ) ); // create rtv of it and store the interface in pRTV
-
-	// create Z-Buffer
-
+	
 	// create and bind depth stencil state to output merger
 	D3D11_DEPTH_STENCIL_DESC dsd = defaultDepthStencilDesc;
 
@@ -121,26 +113,33 @@ Graphics::Graphics(HWND hWnd, int width, int height, bool isWindowed) {
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pDS; // pointer to texture holding depth and stencil info
 
+	DXGI_SWAP_CHAIN_DESC sd;
+	pSwap->GetDesc( &sd );
 	D3D11_TEXTURE2D_DESC dsbd = defaultDepthStencilBufferDesc;
-	dsbd.Width = width;
-	dsbd.Height = height;
+	dsbd.Width = sd.BufferDesc.Width;
+	dsbd.Height = sd.BufferDesc.Height;
 
 	pDevice->CreateTexture2D( &dsbd, nullptr, &pDS ); // create depth stencil buffer
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd = defaultDepthStencilViewDesc;
 
 	pDevice->CreateDepthStencilView( pDS.Get(), &dsvd, &pDSV ); // create view of depth stencil buffer
-
-	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), pDSV.Get() ); // bind render target and depth stencil buffers to output merger
 	
+	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), pDSV.Get() ); // bind render target and depth stencil buffers to output merger
+
 }
 
-void Graphics::Clear( float r, float g, float b ) const {
+void Graphics::Clear( const float& r, const float& g, const float& b ) const {
 
 	const float rgba[4] = {
 		r, g, b, 1.0f
 	};
 
+	pContext->ClearRenderTargetView( pRTV.Get(), rgba );
+	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 0.0f, 0u );
+}
+
+void Graphics::Clear( const float* rgba ) const {
 	pContext->ClearRenderTargetView( pRTV.Get(), rgba );
 	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 0.0f, 0u );
 }

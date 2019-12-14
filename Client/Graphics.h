@@ -10,10 +10,13 @@ class Graphics {
 
 private:
 	Graphics() = default;
-	Graphics( HWND hWnd, int width, int height, bool isWindowed );
+	Graphics( HWND hWnd );
 
 public:
-	void Clear( float r, float g, float b ) const;
+
+	void SizeChanged();
+	void Clear( const float& r, const float& g, const float& b ) const;
+	void Clear( const float* rgba ) const;
 	void Present() const;
 
 private:

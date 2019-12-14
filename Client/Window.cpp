@@ -31,14 +31,14 @@ WindowClass::~WindowClass() {
 }
 
 // Window
-Window::Window() {
+Window::Window() : isWindowed(true), width(1080), height(720) {
 
 	RECT wndRect = {};
 
 	wndRect.left = 100;
-	wndRect.right = wndRect.left + 1080;
+	wndRect.right = wndRect.left + width;
 	wndRect.top = 100;
-	wndRect.bottom = wndRect.top + 720;
+	wndRect.bottom = wndRect.top + height;
 
 	AdjustWindowRect( &wndRect, WS_OVERLAPPEDWINDOW, FALSE );
 
@@ -58,10 +58,11 @@ Window::Window() {
 		throw std::runtime_error("Failed to create window");
 	}
 
-	ShowWindow( hWnd, SW_SHOW );
+	//ShowWindow( hWnd, SW_SHOW );
 
-	gfx = Graphics( hWnd, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, true );
+	gfx = Graphics( hWnd );
 
+	//SizeChanged( width, height );
 }
 
 HWND Window::GetHandle() const {
@@ -70,6 +71,23 @@ HWND Window::GetHandle() const {
 
 Graphics& Window::GetGraphics() {
 	return gfx;
+}
+
+void Window::SetFullscreen( bool fullscreen ) {
+
+
+	if ( fullscreen && isWindowed ) {
+		
+	}
+
+	if ( !fullscreen && !isWindowed ) {
+		
+	}
+
+}
+
+void Window::SetVisible( bool visible ) {
+	ShowWindow( hWnd, visible ? SW_SHOW : SW_HIDE );
 }
 
 std::optional<int> Window::ProcessMessages() const {
@@ -95,12 +113,29 @@ Window::operator HWND() const {
 	return hWnd;
 }
 
+void Window::SizeChanged( int width, int height ) {
+	this->width = width;
+	this->height = height;
+	gfx.SizeChanged();
+}
+
 LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) {
 
 	switch ( message ) {
 	case WM_DESTROY:
 		PostQuitMessage( 0 );
 		break;
+
+	case WM_SIZE:
+		switch ( wParam ) {
+		case SIZE_RESTORED:
+		case SIZE_MAXIMIZED:
+			Window::Get().SizeChanged(LOWORD(lParam), HIWORD(lParam));
+			break;
+		}
+		break;
+
+
 	default:
 		return DefWindowProcW( hWnd, message, wParam, lParam );
 	}

@@ -10,6 +10,9 @@ int WINAPI WinMain(
 ) {
 
 	std::optional<int> rv;	// return value
+
+	Window::Get().SetVisible( true );
+
 	try {
 		while ( true ) {
 
