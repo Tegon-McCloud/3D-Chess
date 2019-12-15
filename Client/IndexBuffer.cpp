@@ -16,14 +16,15 @@ IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size, std::strin
 	if ( !tag.empty() ) {
 		auto it = GetLib().find( tag );
 
-		printf( "yay\n" );
-
+		
 		if ( it != GetLib().end() ) {
 			pBuffer = it->second;
 
 			D3D11_BUFFER_DESC bd;
+			
 			pBuffer->GetDesc( &bd );
-			printf( "copied a index buffer\n" );
+
+			this->size = bd.ByteWidth / sizeof( unsigned short );
 
 			return;
 		}
@@ -39,6 +40,8 @@ IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size, std::strin
 
 	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreateBuffer( &bd, &sd, &pBuffer ) );
 
+	this->size = size;
+
 	if ( !tag.empty() ) {
 		GetLib()[tag] = pBuffer;
 	}
@@ -49,4 +52,8 @@ void IndexBuffer::Bind() {
 
 	Window::Get().GetGraphics().GetContext()->IASetIndexBuffer( pBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u );
 
+}
+
+size_t IndexBuffer::GetSize() {
+	return size;
 }
