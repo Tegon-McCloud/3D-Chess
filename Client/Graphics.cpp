@@ -2,6 +2,7 @@
 #include "Util.h"
 #include "Window.h"
 #include "d3dcompiler.h"
+#include "IndexBuffer.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -39,7 +40,7 @@ constexpr const DXGI_SWAP_CHAIN_DESC defaultSwapChainDesc = {
 constexpr const D3D11_DEPTH_STENCIL_DESC defaultDepthStencilDesc = {
 	TRUE,								// DepthEnabled
 	D3D11_DEPTH_WRITE_MASK_ALL,			// DepthWriteMask
-	D3D11_COMPARISON_LESS,				// DepthFunc
+	D3D11_COMPARISON_LESS_EQUAL,		// DepthFunc
 	FALSE,								// StencilEnable
 	D3D11_DEFAULT_STENCIL_READ_MASK,	// StencilReadMask
 	D3D11_DEFAULT_STENCIL_WRITE_MASK,	// StencilWriteMask
@@ -157,7 +158,7 @@ void Graphics::Clear( const float* rgba ) const {
 	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 0.0f, 0u );
 }
 
-void Graphics::DrawTest() {
+void Graphics::DrawTest() const {
 
 	// =============== BUFFERS ===============
 
@@ -167,10 +168,10 @@ void Graphics::DrawTest() {
 		unsigned char r, g, b, a;
 	};
 
-	const Vertex vertices[3] = {
-		{ 0.0f, 0.0f,	255, 0, 0, 255 },
-		{ 0.0f, 1.0f,	0, 255, 0, 255 },
-		{ 1.0f, 0.0f,	0, 0, 255, 255 }
+	const Vertex vertices[] = {
+		{ 0.0f, 0.0f,	255, 0, 0, 100 },
+		{ 0.0f, 1.0f,	0, 255, 0, 100 },
+		{ 1.0f, 0.0f,	0, 0, 255, 100 }
 	};
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pVB;
@@ -192,28 +193,14 @@ void Graphics::DrawTest() {
 	const UINT offset = 0u;
 	pContext->IASetVertexBuffers( 0u, 1u, pVB.GetAddressOf(), &stride, &offset );
 
+
 	// create index buffer
-	const unsigned short indices[3]{
+	const unsigned short indices[]{
 		0u, 1u, 2u
 	};
-
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pIB;
-
-	D3D11_BUFFER_DESC ibd = { };
-	ibd.ByteWidth = sizeof( indices );
-	ibd.Usage = D3D11_USAGE_DEFAULT;
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibd.CPUAccessFlags = 0u;
-	ibd.MiscFlags = 0u;
-	ibd.StructureByteStride = sizeof( unsigned short );
-
-	D3D11_SUBRESOURCE_DATA isd = { };
-	isd.pSysMem = indices;
-	ThrowIfFailed( pDevice->CreateBuffer( &ibd, &isd, &pIB ) );
-
-	// bind index buffer
-	pContext->IASetIndexBuffer(pIB.Get(), DXGI_FORMAT_R16_UINT, 0u);
-
+	
+	IndexBuffer ib( indices, std::size( indices ) );
+	ib.Bind();
 
 	// =============== SHADERS ===============
 	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
@@ -229,8 +216,7 @@ void Graphics::DrawTest() {
 
 	// vertex layout
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> pIL;
-	const D3D11_INPUT_ELEMENT_DESC ied[] =
-	{
+	const D3D11_INPUT_ELEMENT_DESC ied[] = {
 		{ "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 8u, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
@@ -238,7 +224,6 @@ void Graphics::DrawTest() {
 	ThrowIfFailed( pDevice->CreateInputLayout( ied, 2u, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &pIL ) );
 
 	pContext->IASetInputLayout( pIL.Get() );
-
 
 
 	// load pixel shader
@@ -253,9 +238,6 @@ void Graphics::DrawTest() {
 	// set primitive topology
 	pContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
-
-	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), NULL );
-
 	// draw
 	pContext->DrawIndexed( 3u, 0u, 0u );
 
@@ -264,4 +246,12 @@ void Graphics::DrawTest() {
 void Graphics::Present() const {
 
 	ThrowIfFailed( pSwap->Present( 1u, 0u ) );
+}
+
+ID3D11Device* Graphics::GetDevice() const {
+	return pDevice.Get();
+}
+
+ID3D11DeviceContext* Graphics::GetContext() const {
+	return pContext.Get();
 }

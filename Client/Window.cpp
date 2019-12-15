@@ -40,7 +40,7 @@ HWND Window::GetHandle() const {
 	return hWnd;
 }
 
-Graphics& Window::GetGraphics() {
+const Graphics& Window::GetGraphics() {
 	return gfx;
 }
 

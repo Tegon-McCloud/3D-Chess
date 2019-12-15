@@ -2,6 +2,8 @@
 #include "Window.h"
 #include <iostream>
 
+#include "IndexBuffer.h"
+
 int WINAPI WinMain(
 	HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -33,5 +35,5 @@ int WINAPI WinMain(
 }
 
 int main() {
-	WinMain( NULL, NULL, NULL, 0 );
+	return WinMain( NULL, NULL, NULL, 0 );
 }

@@ -14,7 +14,7 @@ private:
 public:
 
 	HWND GetHandle() const;
-	Graphics& GetGraphics();
+	const Graphics& GetGraphics();
 
 	void SetVisible( bool visible );
 
