@@ -348,3 +348,15 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Obj exceptions for model files
+!Pawn.obj
+!Rook.obj
+!Knight.obj
+!Unicorn.obj
+!Bishop.obj
+!Queen.obj
+!King.obj
+
+# Compiled shaders
+*.cso

@@ -1,0 +1,154 @@
+#include "Graphics.h"
+#include "Util.h"
+#include "Window.h"
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "D3DCompiler.lib")
+
+#ifdef _DEBUG
+constexpr const UINT deviceFlags = D3D11_CREATE_DEVICE_DEBUG;
+#else
+constexpr const UINT deviceFlags = 0u;
+#endif // _DEBUG
+
+constexpr const DXGI_SWAP_CHAIN_DESC defaultSwapChainDesc = {
+	{										// BufferDesc:
+		0u,										// Width
+		0u,										// Height
+		{										// RefreshRate:
+			60u,									// Numerator
+			1u										// Denominator
+		},
+		DXGI_FORMAT_B8G8R8A8_UNORM,				// Format
+		DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED,	// ScanlineOrdering
+		DXGI_MODE_SCALING_UNSPECIFIED			// Scaling
+	},
+	{										// SampleDesc:
+		1u,										// Count
+		0u										// Quality
+	},
+	DXGI_USAGE_RENDER_TARGET_OUTPUT,		// BufferUsage
+	2u,										// BufferCount
+	NULL,									// OutputWindow
+	TRUE,									// Windowed
+	DXGI_SWAP_EFFECT_DISCARD,				// SwapEffect
+	DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH	// Flags
+};
+
+constexpr const D3D11_DEPTH_STENCIL_DESC defaultDepthStencilDesc = {
+	TRUE,								// DepthEnabled
+	D3D11_DEPTH_WRITE_MASK_ALL,			// DepthWriteMask
+	D3D11_COMPARISON_LESS,				// DepthFunc
+	FALSE,								// StencilEnable
+	D3D11_DEFAULT_STENCIL_READ_MASK,	// StencilReadMask
+	D3D11_DEFAULT_STENCIL_WRITE_MASK,	// StencilWriteMask
+	{									// FrontFace:
+
+		D3D11_STENCIL_OP_KEEP,				// StencilFailOp
+		D3D11_STENCIL_OP_KEEP,				// StencilDepthFailOp
+		D3D11_STENCIL_OP_KEEP,				// StencilPassOp
+		D3D11_COMPARISON_ALWAYS				// StencilFunc
+	},
+	{									// BackFace:
+
+		D3D11_STENCIL_OP_KEEP,				// StencilFailOp
+		D3D11_STENCIL_OP_KEEP,				// StencilDepthFailOp
+		D3D11_STENCIL_OP_KEEP,				// StencilPassOp
+		D3D11_COMPARISON_ALWAYS				// StencilFunc
+	}
+};
+
+constexpr const D3D11_TEXTURE2D_DESC defaultDepthStencilBufferDesc = {
+	0u,							// Width
+	0u,							// Height
+	1u,							// MipLevels
+	1u,							// ArraySize
+	DXGI_FORMAT_D32_FLOAT,		// Format
+	{							// SampleDesc:
+		1u,							// Count
+		0u							// Quality
+	},
+	D3D11_USAGE_DEFAULT,		// Usage
+	D3D11_BIND_DEPTH_STENCIL,	// BindFlags
+	0u,							// CPUAccessFlags
+	0u							// MiscFlags
+};
+
+constexpr const D3D11_DEPTH_STENCIL_VIEW_DESC defaultDepthStencilViewDesc = {
+	DXGI_FORMAT_D32_FLOAT,			// Format
+	D3D11_DSV_DIMENSION_TEXTURE2D,	// ViewDimension
+	0u,								// Flags
+	0u								// Texture2D.MipSlice
+};
+
+// Graphics
+Graphics::Graphics(HWND hWnd ) {
+	
+	DXGI_SWAP_CHAIN_DESC sd = defaultSwapChainDesc;
+	sd.OutputWindow = hWnd;
+
+	ThrowIfFailed( D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, deviceFlags, NULL, 0, D3D11_SDK_VERSION, &sd, 
+												  &pSwap, &pDevice, NULL, &pContext) );
+}
+
+void Graphics::SizeChanged() {
+
+	// drop render target view
+	pRTV.Reset();
+	pContext->OMSetRenderTargets(0, NULL, NULL);
+
+	// resize buffers
+	ThrowIfFailed(pSwap->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0));
+
+	Microsoft::WRL::ComPtr<ID3D11Resource> pBB;
+	ThrowIfFailed( pSwap->GetBuffer( 0u, __uuidof(ID3D11Resource), &pBB ) ); // get the swapchains first backbuffer
+	ThrowIfFailed( pDevice->CreateRenderTargetView( pBB.Get(), nullptr, &pRTV ) ); // create rtv of it and store the interface in pRTV
+	
+	// create and bind depth stencil state to output merger
+	D3D11_DEPTH_STENCIL_DESC dsd = defaultDepthStencilDesc;
+
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDSS;
+	pDevice->CreateDepthStencilState( &dsd, &pDSS );
+	pContext->OMSetDepthStencilState( pDSS.Get(), 1u );
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> pDS; // pointer to texture holding depth and stencil info
+
+	DXGI_SWAP_CHAIN_DESC sd;
+	pSwap->GetDesc( &sd );
+	D3D11_TEXTURE2D_DESC dsbd = defaultDepthStencilBufferDesc;
+	dsbd.Width = sd.BufferDesc.Width;
+	dsbd.Height = sd.BufferDesc.Height;
+
+	pDevice->CreateTexture2D( &dsbd, nullptr, &pDS ); // create depth stencil buffer
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd = defaultDepthStencilViewDesc;
+
+	pDevice->CreateDepthStencilView( pDS.Get(), &dsvd, &pDSV ); // create view of depth stencil buffer
+	
+	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), pDSV.Get() ); // bind render target and depth stencil buffers to output merger
+
+}
+
+void Graphics::Clear( const float& r, const float& g, const float& b ) const {
+
+	const float rgba[4] = {
+		r, g, b, 1.0f
+	};
+
+	pContext->ClearRenderTargetView( pRTV.Get(), rgba );
+	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 0.0f, 0u );
+}
+
+void Graphics::Clear( const float* rgba ) const {
+	pContext->ClearRenderTargetView( pRTV.Get(), rgba );
+	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 0.0f, 0u );
+}
+
+void Graphics::DrawTest() {
+
+}
+
+void Graphics::Present() const {
+
+	ThrowIfFailed( pSwap->Present( 1u, 0u ) );
+}
