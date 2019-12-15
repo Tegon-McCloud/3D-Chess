@@ -15,14 +15,12 @@ public:
 
 	HWND GetHandle() const;
 	Graphics& GetGraphics();
-	void SetFullscreen(bool fullscreen);
+
 	void SetVisible( bool visible );
 
 	std::optional<int> ProcessMessages() const;
 
 	operator HWND() const;
-
-
 
 	static Window& Get() { // Singleton getter
 		static Window inst;
@@ -36,6 +34,7 @@ private:
 	Window& operator=( const Window& ) = delete;
 
 	void SizeChanged( int width, int height );
+	HWND Create();
 
 	static LRESULT CALLBACK Procedure( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 	
@@ -43,7 +42,6 @@ public:
 	static constexpr const wchar_t title[] = L"3D-Chess";
 
 private:
-	bool isWindowed;
 	int x, y, width, height;
 	HWND hWnd;
 	Graphics gfx;

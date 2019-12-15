@@ -10,7 +10,6 @@ int WINAPI WinMain(
 ) {
 
 	std::optional<int> rv;	// return value
-
 	Window::Get().SetVisible( true );
 
 	try {
@@ -26,7 +25,7 @@ int WINAPI WinMain(
 
 		}
 	} catch ( std::runtime_error e ) {
-		std::cout << "Application exiting do to exception:\n" << e.what() << "\n";
+		std::cout << "Application exited do to exception:\n" << e.what() << "\n";
 	}
 
 	return 0;

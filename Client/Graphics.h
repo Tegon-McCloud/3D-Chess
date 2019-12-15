@@ -12,11 +12,15 @@ private:
 	Graphics() = default;
 	Graphics( HWND hWnd );
 
-public:
+	Graphics( const Graphics& ) = delete;
+	Graphics& operator=( const Graphics& ) = delete;
 
 	void SizeChanged();
+
+public:
 	void Clear( const float& r, const float& g, const float& b ) const;
 	void Clear( const float* rgba ) const;
+	void DrawTest();
 	void Present() const;
 
 private:

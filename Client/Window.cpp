@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+#include <dxgi.h>
+#include "Util.h"
+
 // WindowsClass
 WindowClass WindowClass::inst = WindowClass();
 
@@ -31,39 +34,7 @@ WindowClass::~WindowClass() {
 }
 
 // Window
-Window::Window() : isWindowed(true), width(1080), height(720) {
-
-	RECT wndRect = {};
-
-	wndRect.left = 100;
-	wndRect.right = wndRect.left + width;
-	wndRect.top = 100;
-	wndRect.bottom = wndRect.top + height;
-
-	AdjustWindowRect( &wndRect, WS_OVERLAPPEDWINDOW, FALSE );
-
-	hWnd = CreateWindowExW(
-		0,
-		WindowClass::wndClsName,
-		title,
-		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top,
-		NULL,
-		NULL,
-		GetModuleHandle( NULL ),
-		NULL
-	);
-
-	if ( hWnd == NULL ) {
-		throw std::runtime_error("Failed to create window");
-	}
-
-	//ShowWindow( hWnd, SW_SHOW );
-
-	gfx = Graphics( hWnd );
-
-	//SizeChanged( width, height );
-}
+Window::Window() : width(1080), height(720), gfx(Create()) {}
 
 HWND Window::GetHandle() const {
 	return hWnd;
@@ -71,19 +42,6 @@ HWND Window::GetHandle() const {
 
 Graphics& Window::GetGraphics() {
 	return gfx;
-}
-
-void Window::SetFullscreen( bool fullscreen ) {
-
-
-	if ( fullscreen && isWindowed ) {
-		
-	}
-
-	if ( !fullscreen && !isWindowed ) {
-		
-	}
-
 }
 
 void Window::SetVisible( bool visible ) {
@@ -116,7 +74,38 @@ Window::operator HWND() const {
 void Window::SizeChanged( int width, int height ) {
 	this->width = width;
 	this->height = height;
+
 	gfx.SizeChanged();
+}
+
+HWND Window::Create() {
+
+	RECT wndRect = {};
+
+	wndRect.left = 100;
+	wndRect.right = wndRect.left + width;
+	wndRect.top = 100;
+	wndRect.bottom = wndRect.top + height;
+
+	AdjustWindowRect( &wndRect, WS_OVERLAPPEDWINDOW, FALSE );
+
+	hWnd = CreateWindowExW(
+		0,
+		WindowClass::wndClsName,
+		title,
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top,
+		NULL,
+		NULL,
+		GetModuleHandle( NULL ),
+		NULL
+	);
+
+	if ( hWnd == NULL ) {
+		throw std::runtime_error( "Failed to create window" );
+	}
+
+	return hWnd;
 }
 
 LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) {
@@ -130,7 +119,8 @@ LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPAR
 		switch ( wParam ) {
 		case SIZE_RESTORED:
 		case SIZE_MAXIMIZED:
-			Window::Get().SizeChanged(LOWORD(lParam), HIWORD(lParam));
+			Get().SizeChanged( LOWORD( lParam ), HIWORD( lParam ) );
+
 			break;
 		}
 		break;

@@ -32,7 +32,7 @@ constexpr const DXGI_SWAP_CHAIN_DESC defaultSwapChainDesc = {
 	NULL,									// OutputWindow
 	TRUE,									// Windowed
 	DXGI_SWAP_EFFECT_DISCARD,				// SwapEffect
-	0u										// Flags
+	DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH	// Flags
 };
 
 constexpr const D3D11_DEPTH_STENCIL_DESC defaultDepthStencilDesc = {
@@ -144,6 +144,11 @@ void Graphics::Clear( const float* rgba ) const {
 	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 0.0f, 0u );
 }
 
+void Graphics::DrawTest() {
+
+}
+
 void Graphics::Present() const {
+
 	ThrowIfFailed( pSwap->Present( 1u, 0u ) );
 }
