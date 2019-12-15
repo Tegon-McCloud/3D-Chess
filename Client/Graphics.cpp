@@ -1,6 +1,7 @@
 #include "Graphics.h"
 #include "Util.h"
 #include "Window.h"
+#include "d3dcompiler.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -127,6 +128,18 @@ void Graphics::SizeChanged() {
 	
 	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), pDSV.Get() ); // bind render target and depth stencil buffers to output merger
 
+		// create and set viewport
+	D3D11_VIEWPORT vp;
+	vp.Width = static_cast<float>(sd.BufferDesc.Width);
+	vp.Height = static_cast<float>(sd.BufferDesc.Height);
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
+	
+	pContext->RSSetViewports( 1u, &vp );
+
+
 }
 
 void Graphics::Clear( const float& r, const float& g, const float& b ) const {
@@ -145,6 +158,106 @@ void Graphics::Clear( const float* rgba ) const {
 }
 
 void Graphics::DrawTest() {
+
+	// =============== BUFFERS ===============
+
+	// create vertex buffer
+	struct Vertex {
+		float x, y;
+		unsigned char r, g, b, a;
+	};
+
+	const Vertex vertices[3] = {
+		{ 0.0f, 0.0f,	255, 0, 0, 255 },
+		{ 0.0f, 1.0f,	0, 255, 0, 255 },
+		{ 1.0f, 0.0f,	0, 0, 255, 255 }
+	};
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pVB;
+
+	D3D11_BUFFER_DESC vbd = { };
+	vbd.ByteWidth = sizeof( vertices );
+	vbd.Usage = D3D11_USAGE_DEFAULT;
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = 0u;
+	vbd.MiscFlags = 0u;
+	vbd.StructureByteStride = sizeof( Vertex );
+
+	D3D11_SUBRESOURCE_DATA vsd = { };
+	vsd.pSysMem = vertices;
+	ThrowIfFailed( pDevice->CreateBuffer( &vbd, &vsd, &pVB ) );
+
+	// bind vertex buffer
+	const UINT stride = sizeof( Vertex );
+	const UINT offset = 0u;
+	pContext->IASetVertexBuffers( 0u, 1u, pVB.GetAddressOf(), &stride, &offset );
+
+	// create index buffer
+	const unsigned short indices[3]{
+		0u, 1u, 2u
+	};
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pIB;
+
+	D3D11_BUFFER_DESC ibd = { };
+	ibd.ByteWidth = sizeof( indices );
+	ibd.Usage = D3D11_USAGE_DEFAULT;
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0u;
+	ibd.MiscFlags = 0u;
+	ibd.StructureByteStride = sizeof( unsigned short );
+
+	D3D11_SUBRESOURCE_DATA isd = { };
+	isd.pSysMem = indices;
+	ThrowIfFailed( pDevice->CreateBuffer( &ibd, &isd, &pIB ) );
+
+	// bind index buffer
+	pContext->IASetIndexBuffer(pIB.Get(), DXGI_FORMAT_R16_UINT, 0u);
+
+
+	// =============== SHADERS ===============
+	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
+
+	// load vertex shader
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVS;
+
+	ThrowIfFailed( D3DReadFileToBlob( L"VertexShader.cso", &pBlob ) );
+	ThrowIfFailed( pDevice->CreateVertexShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pVS ) );
+
+	// bind vertex shader
+	pContext->VSSetShader( pVS.Get(), NULL, 0u );
+
+	// vertex layout
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> pIL;
+	const D3D11_INPUT_ELEMENT_DESC ied[] =
+	{
+		{ "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 8u, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+	
+	ThrowIfFailed( pDevice->CreateInputLayout( ied, 2u, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &pIL ) );
+
+	pContext->IASetInputLayout( pIL.Get() );
+
+
+
+	// load pixel shader
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPS;
+
+	ThrowIfFailed( D3DReadFileToBlob( L"PixelShader.cso", &pBlob ) );
+	ThrowIfFailed( pDevice->CreatePixelShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pPS ) );
+
+	// bind pixel shader
+	pContext->PSSetShader( pPS.Get(), NULL, 0u );
+
+	// set primitive topology
+	pContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+
+
+	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), NULL );
+
+	// draw
+	pContext->DrawIndexed( 3u, 0u, 0u );
 
 }
 

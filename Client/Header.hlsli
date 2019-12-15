@@ -2,6 +2,6 @@
 
 typedef struct {
 	float4 pos : SV_Position;
-	float3 col : Color;
+	float4 col : Color;
 
 } VSOut, PSIn;

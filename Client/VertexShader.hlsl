@@ -2,7 +2,7 @@
 
 struct Vertex {
 	float2 pos : Position;
-	float3 col : Color;
+	float4 col : Color;
 };
 
 VSOut main( Vertex v ) {

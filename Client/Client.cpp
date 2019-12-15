@@ -21,6 +21,7 @@ int WINAPI WinMain(
 			}
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
+			Window::Get().GetGraphics().DrawTest();
 			Window::Get().GetGraphics().Present();
 
 		}
