@@ -2,7 +2,11 @@
 #include "Util.h"
 #include "Window.h"
 #include "d3dcompiler.h"
+#include "DirectXMath.h"
+
 #include "IndexBuffer.h"
+#include "VertexBuffer.h"
+#include "ConstantBuffer.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -127,7 +131,7 @@ void Graphics::SizeChanged() {
 
 	pDevice->CreateDepthStencilView( pDS.Get(), &dsvd, &pDSV ); // create view of depth stencil buffer
 	
-	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), pDSV.Get() ); // bind render target and depth stencil buffers to output merger
+	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), NULL ); // bind render target and depth stencil buffers to output merger
 
 		// create and set viewport
 	D3D11_VIEWPORT vp;
@@ -163,44 +167,46 @@ void Graphics::DrawTest() const {
 	// =============== BUFFERS ===============
 
 	// create vertex buffer
-	struct Vertex {
-		float x, y;
-		unsigned char r, g, b, a;
-	};
 
 	const Vertex vertices[] = {
-		{ 0.0f, 0.0f,	255, 0, 0, 100 },
-		{ 0.0f, 1.0f,	0, 255, 0, 100 },
-		{ 1.0f, 0.0f,	0, 0, 255, 100 }
+		{ -1.0f, -1.0f, -1.0f },
+		{ +1.0f, -1.0f, -1.0f },
+		{ +1.0f, +1.0f, -1.0f },
+		{ -1.0f, +1.0f, -1.0f },
+		{ -1.0f, -1.0f, +1.0f },
+		{ +1.0f, -1.0f, +1.0f },
+		{ +1.0f, +1.0f, +1.0f },
+		{ -1.0f, +1.0f, +1.0f },
 	};
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pVB;
-
-	D3D11_BUFFER_DESC vbd = { };
-	vbd.ByteWidth = sizeof( vertices );
-	vbd.Usage = D3D11_USAGE_DEFAULT;
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0u;
-	vbd.MiscFlags = 0u;
-	vbd.StructureByteStride = sizeof( Vertex );
-
-	D3D11_SUBRESOURCE_DATA vsd = { };
-	vsd.pSysMem = vertices;
-	ThrowIfFailed( pDevice->CreateBuffer( &vbd, &vsd, &pVB ) );
-
-	// bind vertex buffer
-	const UINT stride = sizeof( Vertex );
-	const UINT offset = 0u;
-	pContext->IASetVertexBuffers( 0u, 1u, pVB.GetAddressOf(), &stride, &offset );
-
+	
+	VertexBuffer vb( vertices, std::size( vertices ) );
+	vb.Bind();
 
 	// create index buffer
 	const unsigned short indices[]{
-		0u, 1u, 2u
+		0, 1, 3, 3, 1, 2,
+		1, 5, 2, 2, 5, 6,
+		5, 4, 6, 6, 4, 7,
+		4, 0, 7, 7, 0, 3,
+		3, 2, 7, 7, 2, 6,
+		4, 5, 0, 0, 5, 1
 	};
 	
 	IndexBuffer ib( indices, std::size( indices ) );
 	ib.Bind();
+
+
+	//create constant buffer
+	const DirectX::XMMATRIX transform =
+		DirectX::XMMatrixTranspose(
+
+			DirectX::XMMatrixTranslation( 0.0f, 0.0f, 8.0f ) *
+			DirectX::XMMatrixPerspectiveLH( 1.0f, 720.0f/1080.0f, 0.5f, 10.0f )
+			);
+
+	ConstantBuffer<DirectX::XMMATRIX, VS, 0> cb( &transform );
+	cb.Bind();
 
 	// =============== SHADERS ===============
 	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
@@ -217,11 +223,10 @@ void Graphics::DrawTest() const {
 	// vertex layout
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> pIL;
 	const D3D11_INPUT_ELEMENT_DESC ied[] = {
-		{ "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 8u, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	
-	ThrowIfFailed( pDevice->CreateInputLayout( ied, 2u, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &pIL ) );
+	ThrowIfFailed( pDevice->CreateInputLayout( ied, 1u, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &pIL ) );
 
 	pContext->IASetInputLayout( pIL.Get() );
 
@@ -239,7 +244,7 @@ void Graphics::DrawTest() const {
 	pContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
 	// draw
-	pContext->DrawIndexed( 3u, 0u, 0u );
+	pContext->DrawIndexed( ib.GetSize(), 0u, 0u );
 
 }
 

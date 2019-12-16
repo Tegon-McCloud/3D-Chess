@@ -14,10 +14,9 @@ constexpr const D3D11_BUFFER_DESC defaultIndexBufferDesc = {
 IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size, std::string tag ) {
 
 	if ( !tag.empty() ) {
-		auto it = GetLib().find( tag );
-
+		auto it = GetCodex().find( tag );
 		
-		if ( it != GetLib().end() ) {
+		if ( it != GetCodex().end() ) {
 			pBuffer = it->second;
 
 			D3D11_BUFFER_DESC bd;
@@ -43,15 +42,13 @@ IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size, std::strin
 	this->size = size;
 
 	if ( !tag.empty() ) {
-		GetLib()[tag] = pBuffer;
+		GetCodex()[tag] = pBuffer;
 	}
 
 }
 
 void IndexBuffer::Bind() {
-
 	Window::Get().GetGraphics().GetContext()->IASetIndexBuffer( pBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u );
-
 }
 
 size_t IndexBuffer::GetSize() {

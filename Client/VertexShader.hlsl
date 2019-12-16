@@ -1,15 +1,17 @@
 #include "Header.hlsli"
 
 struct Vertex {
-	float2 pos : Position;
-	float4 col : Color;
+	float3 pos : Position;
+};
+
+cbuffer Projection : register(b0) {
+	matrix projection;
 };
 
 VSOut main( Vertex v ) {
 
 	VSOut output;
-	output.pos = float4(v.pos, 0.0f, 1.0f);
-	output.col = v.col;
+	output.pos = mul( float4(v.pos, 1.0f), projection );
 
 	return output;
 }

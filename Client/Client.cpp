@@ -2,8 +2,6 @@
 #include "Window.h"
 #include <iostream>
 
-#include "IndexBuffer.h"
-
 int WINAPI WinMain(
 	HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -13,7 +11,7 @@ int WINAPI WinMain(
 
 	std::optional<int> rv;	// return value
 	Window::Get().SetVisible( true );
-
+	
 	try {
 		while ( true ) {
 
