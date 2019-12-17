@@ -1,7 +1,11 @@
 
 
 typedef struct {
-	float4 pos : SV_Position;
-	float3 col : Color;
+	float4 pos : SV_POSITION;
+	float4 viewPos : VIEW_POSITION;
+} VSOut, GSIn;
 
-} VSOut, PSIn;
+typedef struct {
+	float4 pos : SV_POSITION;
+	nointerpolation float3 normal : NORMAL;
+} GSOut, PSIn ;

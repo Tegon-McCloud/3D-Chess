@@ -38,3 +38,17 @@ void ThrowIfFailed( hr ) {}
 
 // BadHResultError
 BadHResultError::BadHResultError( HRESULT hr ) : std::runtime_error(GetLastErrorString(hr)) {}
+
+
+
+Timer::Timer() {
+	lastReset = std::chrono::steady_clock::now();
+}
+
+float Timer::Time() {
+	return std::chrono::duration<float>( std::chrono::steady_clock::now() - lastReset ).count();
+}
+
+void Timer::Reset() {
+	lastReset = std::chrono::steady_clock::now();
+}

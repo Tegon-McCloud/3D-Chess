@@ -40,7 +40,7 @@ HWND Window::GetHandle() const {
 	return hWnd;
 }
 
-Graphics& Window::GetGraphics() {
+const Graphics& Window::GetGraphics() {
 	return gfx;
 }
 
@@ -65,6 +65,14 @@ std::optional<int> Window::ProcessMessages() const {
 
 	return std::optional<int>();
 
+}
+
+int Window::GetWidth() const {
+	return width;
+}
+
+int Window::GetHeight() const {
+	return height;
 }
 
 Window::operator HWND() const {

@@ -14,11 +14,14 @@ private:
 public:
 
 	HWND GetHandle() const;
-	Graphics& GetGraphics();
+	const Graphics& GetGraphics();
 
 	void SetVisible( bool visible );
 
 	std::optional<int> ProcessMessages() const;
+
+	int GetWidth() const;
+	int GetHeight() const;
 
 	operator HWND() const;
 

@@ -1,15 +1,26 @@
 #include "Header.hlsli"
 
 struct Vertex {
-	float2 pos : Position;
-	float3 col : Color;
+	float3 pos : Position;
 };
+
+cbuffer Model : register(b0) {
+	matrix modelToWorld;
+};
+
+cbuffer Camera : register(b1) {
+	matrix worldToCam;
+	matrix proj;
+}
 
 VSOut main( Vertex v ) {
 
 	VSOut output;
-	output.pos = float4(v.pos, 0.0f, 1.0f);
-	output.col = v.col;
+
+	output.viewPos = mul( mul( float4(v.pos, 1.0f), modelToWorld ), worldToCam );
+	output.pos = mul( output.viewPos, proj );
+
+
 
 	return output;
 }

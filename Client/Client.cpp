@@ -2,6 +2,8 @@
 #include "Window.h"
 #include <iostream>
 
+#include "Util.h"
+
 int WINAPI WinMain(
 	HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -11,6 +13,8 @@ int WINAPI WinMain(
 
 	std::optional<int> rv;	// return value
 	Window::Get().SetVisible( true );
+	
+	Timer timer;
 
 	try {
 		while ( true ) {
@@ -21,6 +25,7 @@ int WINAPI WinMain(
 			}
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
+			Window::Get().GetGraphics().DrawTest( timer.Time() );
 			Window::Get().GetGraphics().Present();
 
 		}
@@ -32,5 +37,5 @@ int WINAPI WinMain(
 }
 
 int main() {
-	WinMain( NULL, NULL, NULL, 0 );
+	return WinMain( NULL, NULL, NULL, 0 );
 }

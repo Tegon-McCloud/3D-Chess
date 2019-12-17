@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <chrono>
 
 class BadHResultError : public std::runtime_error {
 
@@ -15,3 +16,13 @@ public:
 
 std::string GetLastErrorString(HRESULT hr);
 void ThrowIfFailed(HRESULT hr);
+
+class Timer {
+
+public:
+	Timer();
+	float Time();
+	void Reset();
+private:
+	std::chrono::steady_clock::time_point lastReset;
+};
