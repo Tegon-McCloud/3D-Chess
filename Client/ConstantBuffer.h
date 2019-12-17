@@ -17,7 +17,7 @@ constexpr const D3D11_BUFFER_DESC defaultConstantBufferDesc = {
 };
 
 enum Stage {
-	VS, PS
+	VS, GS, PS
 };
 
 template<typename T, Stage S, unsigned char slot>

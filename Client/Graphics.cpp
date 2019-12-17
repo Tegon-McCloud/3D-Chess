@@ -8,6 +8,7 @@
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
 #include "Camera.h"
+#include "Shader.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -225,6 +226,7 @@ void Graphics::DrawTest( float time ) const
 	ThrowIfFailed( D3DReadFileToBlob( L"VertexShader.cso", &pBlob ) );
 	ThrowIfFailed( pDevice->CreateVertexShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pVS ) );
 
+	
 	// bind vertex shader
 	pContext->VSSetShader( pVS.Get(), NULL, 0u );
 
@@ -260,7 +262,7 @@ void Graphics::DrawTest( float time ) const
 	pContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
 	// draw
-	pContext->DrawIndexed( ib.GetSize(), 0u, 0u );
+	pContext->DrawIndexed( (UINT) ib.GetSize(), 0u, 0u );
 
 }
 

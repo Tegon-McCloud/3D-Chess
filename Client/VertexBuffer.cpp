@@ -24,7 +24,7 @@ VertexBuffer::VertexBuffer( const Vertex* vertices, size_t size, std::string tag
 	}
 
 	D3D11_BUFFER_DESC bd = defaultVertexBufferDesc;
-	bd.ByteWidth = sizeof( Vertex ) * size;
+	bd.ByteWidth = (UINT) (sizeof( Vertex ) * size);
 
 	D3D11_SUBRESOURCE_DATA sd = { };
 	sd.pSysMem = vertices;

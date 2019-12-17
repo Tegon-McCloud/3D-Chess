@@ -8,7 +8,7 @@ void Drawable::Draw() {
 		b->Bind();
 	}
 
-	Window::Get().GetGraphics().GetContext()->DrawIndexed( indexCount, 0, 0 );
+	Window::Get().GetGraphics().GetContext()->DrawIndexed( (UINT) indexCount, 0, 0 );
 }
 
 void Drawable::AddBindable( std::unique_ptr<Bindable> b ) {

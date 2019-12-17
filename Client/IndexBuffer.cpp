@@ -25,7 +25,7 @@ IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size, std::strin
 	} 
 
 	D3D11_BUFFER_DESC bd = defaultIndexBufferDesc;
-	bd.ByteWidth = sizeof( unsigned short ) * size;
+	bd.ByteWidth = (UINT) (sizeof( unsigned short ) * size);
 
 	D3D11_SUBRESOURCE_DATA sd = { };
 	sd.pSysMem = indices;
