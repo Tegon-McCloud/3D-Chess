@@ -4,7 +4,8 @@
 #include "Model.h"
 #include "Util.h"
 
-#include "IndexBuffer.h"
+#include "Camera.h"
+#include "Shaders.h"
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -18,12 +19,20 @@ int WINAPI WinMain(
 	
 	Timer timer;
 
-	Model m( "Unicorn" );
+	Model m( "Bishop" );
 	
-	const unsigned short i[]{
-		1, 2, 3
-	};
-	IndexBuffer ib( i, 3, "yay" );
+	Camera c( 0.0f, 2.0f, -4.0f, 0.1f, 0.0f, 0.0f );
+	c.UpdateBuffer();
+	c.Bind();
+
+	VertexShader vs( "VertexShader" );
+	vs.Bind();
+
+	PixelShader ps( "PixelShader" );
+	ps.Bind();
+
+	GeometryShader gs( "GeometryShader" );
+	gs.Bind();
 
 	try {
 		while ( true ) {
@@ -34,7 +43,7 @@ int WINAPI WinMain(
 			}
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
-			Window::Get().GetGraphics().DrawTest( timer.Time() );
+			c.UpdateBuffer();
 			m.SetTransform( DirectX::XMMatrixRotationY( timer.Time() * 0.5f ) );
 			m.Draw();
 			Window::Get().GetGraphics().Present();

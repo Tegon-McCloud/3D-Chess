@@ -1,18 +1,5 @@
 #include "Shaders.h"
 
-#define DEFAULT_SHADER_IMPL( Type, Char ) Type##Shader::##Type##Shader( std::string name ) {\
-	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;\
-	std::wstring path = std::wstring{ name.begin(), name.end() } +L".cso";\
-	ThrowIfFailed( D3DReadFileToBlob( path.c_str(), &pBlob ) );\
-	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->Create##Type##Shader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &p##Type##Shader ) );\
-}\
-void Type##Shader::Bind() {\
-	Window::Get().GetGraphics().GetContext()->##Char##SSetShader( p##Type##Shader.Get(), NULL, 0u );\
-}\
-
-DEFAULT_SHADER_IMPL( Pixel, P );
-DEFAULT_SHADER_IMPL( Geometry, G );
-
 VertexShader::VertexShader( std::string name ) {
 	
 	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
@@ -27,4 +14,29 @@ VertexShader::VertexShader( std::string name ) {
 void VertexShader::Bind() {
 	Window::Get().GetGraphics().GetContext()->VSSetShader( pVertexShader.Get(), NULL, 0u );
 	Window::Get().GetGraphics().GetContext()->IASetInputLayout( pInputLayout.Get() );
+}
+
+GeometryShader::GeometryShader( std::string name ) {
+	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
+	std::wstring path = std::wstring{ name.begin(), name.end() } +L".cso";
+	ThrowIfFailed( D3DReadFileToBlob( path.c_str(), &pBlob ) );
+	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreateGeometryShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pGeometryShader ) );
+
+	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+}
+
+void GeometryShader::Bind() {
+	Window::Get().GetGraphics().GetContext()->GSSetShader( pGeometryShader.Get(), NULL, 0u );
+	Window::Get().GetGraphics().GetContext()->IASetPrimitiveTopology( topology );
+}
+
+PixelShader::PixelShader( std::string name ) {
+	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
+	std::wstring path = std::wstring{ name.begin(), name.end() } +L".cso";
+	ThrowIfFailed( D3DReadFileToBlob( path.c_str(), &pBlob ) );
+	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreatePixelShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pPixelShader ) );
+}
+
+void PixelShader::Bind() {
+	Window::Get().GetGraphics().GetContext()->PSSetShader( pPixelShader.Get(), NULL, 0u );
 }

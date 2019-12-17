@@ -48,6 +48,12 @@ inline ConstantBuffer<T, S, slot>::ConstantBuffer() {
 
 	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreateBuffer( &bd, &sd, &pBuffer ) );
 	free( mem );
+
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11DeviceChild> pChild;
+	pBuffer->QueryInterface( IID_PPV_ARGS( &pChild ) );
+	pChild->SetPrivateData( WKPDID_D3DDebugObjectName, 14, "ConstantBuffer" );
+#endif // !_DEBUG
 }
 
 template<typename T, Stage S, unsigned char slot>
@@ -60,6 +66,12 @@ inline ConstantBuffer<T, S, slot>::ConstantBuffer( const T* init ) {
 	sd.pSysMem = init;
 
 	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreateBuffer( &bd, &sd, &pBuffer ) );
+
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11DeviceChild> pChild;
+	pBuffer->QueryInterface( IID_PPV_ARGS( &pChild ) );
+	pChild->SetPrivateData( WKPDID_D3DDebugObjectName, 14, "ConstantBuffer" );
+#endif // !_DEBUG
 }
 
 template<typename T, Stage S, unsigned char slot>

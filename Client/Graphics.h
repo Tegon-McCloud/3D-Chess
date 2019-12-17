@@ -11,11 +11,14 @@ class Graphics {
 private:
 	Graphics() = default;
 	Graphics( HWND hWnd );
+	~Graphics();
 
 	Graphics( const Graphics& ) = delete;
 	Graphics& operator=( const Graphics& ) = delete;
 
 	void SizeChanged();
+
+
 
 public:
 	void Clear( const float& r, const float& g, const float& b ) const;

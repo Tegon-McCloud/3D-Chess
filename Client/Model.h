@@ -1,7 +1,6 @@
 #pragma once
 #include "Drawable.h"
 #include <string>
-#include <functional>
 #include "ConstantBuffer.h"
 #include "DirectXMath.h"
 
@@ -16,7 +15,8 @@ public:
 private:
 
 	DirectX::XMFLOAT4X4 transform;
-	ConstantBuffer< DirectX::XMMATRIX, VS, 0u >* pTransformBuffer;
+
+	std::shared_ptr<ConstantBuffer< DirectX::XMMATRIX, VS, 0u >> pTransformBuffer;
 
 };
 

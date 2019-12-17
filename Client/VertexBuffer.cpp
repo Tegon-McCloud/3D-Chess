@@ -11,17 +11,7 @@ constexpr const D3D11_BUFFER_DESC defaultVertexBufferDesc = {
 	sizeof( Vertex )			// StructureByteStride
 };
 
-VertexBuffer::VertexBuffer( const Vertex* vertices, size_t size, std::string tag ) {
-	
-	if ( !tag.empty() ) {
-		auto it = GetCodex().find( tag );
-
-		if ( it != GetCodex().end() ) {
-			pBuffer = it->second;
-
-			return;
-		}
-	}
+VertexBuffer::VertexBuffer( const Vertex* vertices, size_t size ) {
 
 	D3D11_BUFFER_DESC bd = defaultVertexBufferDesc;
 	bd.ByteWidth = (UINT) (sizeof( Vertex ) * size);
@@ -31,10 +21,11 @@ VertexBuffer::VertexBuffer( const Vertex* vertices, size_t size, std::string tag
 
 	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreateBuffer( &bd, &sd, &pBuffer ) );
 
-	if ( !tag.empty() ) {
-		GetCodex()[tag] = pBuffer;
-	}
-	
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11DeviceChild> pChild;
+	pBuffer->QueryInterface( IID_PPV_ARGS( &pChild ) );
+	pChild->SetPrivateData( WKPDID_D3DDebugObjectName, 12, "VertexBuffer" );
+#endif // !_DEBUG
 }
 
 void VertexBuffer::Bind() {
@@ -43,12 +34,3 @@ void VertexBuffer::Bind() {
 	Window::Get().GetGraphics().GetContext()->IASetVertexBuffers( 0u, 1u, pBuffer.GetAddressOf(), &stride, &offset );
 }
 
-
-void VertexBuffer::CleanCodex() {
-	for ( auto it = GetCodex().begin(); it != GetCodex().end(); it++ ) {
-		it->second->AddRef();
-		if ( it->second->Release() == 1 ) {
-			GetCodex().erase( it->first );
-		}
-	}
-}

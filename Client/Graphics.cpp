@@ -12,6 +12,7 @@
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
+#pragma comment(lib, "dxguid.lib")
 
 #ifdef _DEBUG
 constexpr const UINT deviceFlags = D3D11_CREATE_DEVICE_DEBUG;
@@ -99,6 +100,25 @@ Graphics::Graphics(HWND hWnd ) {
 												  &pSwap, &pDevice, NULL, &pContext) );
 }
 
+Graphics::~Graphics() {
+
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11Debug> pDebug;
+	Window::Get().GetGraphics().GetDevice()->QueryInterface( IID_PPV_ARGS( &pDebug ) );
+#endif // !_DEBUG
+
+	pDevice.Reset();
+	pSwap.Reset();
+	pContext.Reset();
+	pRTV.Reset();
+	pDSV.Reset();
+
+#ifdef _DEBUG
+	pDebug->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
+#endif // !_DEBUG
+
+}
+
 void Graphics::SizeChanged() {
 
 	// drop render target view
@@ -168,7 +188,7 @@ void Graphics::DrawTest( float time ) const
 
 	using namespace DirectX;
 
-	Camera c(0.0f, 2.0f, -4.0f, 0.3f, 0.0f, 0.0f);
+	Camera c(0.0f, 2.0f, -4.0f, 0.1f, 0.0f, 0.0f);
 	c.UpdateBuffer();
 	c.Bind();
 

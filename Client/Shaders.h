@@ -3,20 +3,6 @@
 #include "ConstantBuffer.h"
 #include "D3DCompiler.h"
 
-#define DEFAULT_SHADER_DECL( Type, Char ) class Type##Shader : public Bindable {\
-public:\
-	Type##Shader( std::string name );\
-	void Bind() override;\
-private:\
-	Microsoft::WRL::ComPtr<ID3D11##Type##Shader> p##Type##Shader; \
-};\
-
-DEFAULT_SHADER_DECL(Pixel, P)
-DEFAULT_SHADER_DECL(Geometry, G)
-
-#undef DEFAULT_SHADER_DECL
-
-
 class VertexShader : public Bindable {
 
 public:
@@ -27,3 +13,22 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout;
 };
 
+class GeometryShader : public Bindable {
+
+public:
+	GeometryShader( std::string name );
+	void Bind() override;
+private:
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> pGeometryShader;
+	D3D11_PRIMITIVE_TOPOLOGY topology;
+};
+
+class PixelShader : public Bindable {
+
+public:
+	PixelShader( std::string name );
+	void Bind() override;
+private:
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
+
+};

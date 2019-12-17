@@ -11,17 +11,7 @@ constexpr const D3D11_BUFFER_DESC defaultIndexBufferDesc = {
 	sizeof( unsigned short )	// StructureByteStride
 };
 
-IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size, std::string tag ) : size(size) {
-
-	if ( !tag.empty() ) {
-		auto it = GetCodex().find( tag );
-		
-		if ( it != GetCodex().end() ) {
-			pBuffer = it->second;
-
-			return;
-		}
-	} 
+IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size ) : size(size) {
 
 	D3D11_BUFFER_DESC bd = defaultIndexBufferDesc;
 	bd.ByteWidth = (UINT) (sizeof( unsigned short ) * size);
@@ -31,10 +21,11 @@ IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size, std::strin
 
 	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreateBuffer( &bd, &sd, &pBuffer ) );
 
-	if ( !tag.empty() ) {
-		GetCodex()[tag] = pBuffer;
-	}
-
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11DeviceChild> pChild;
+	pBuffer->QueryInterface( IID_PPV_ARGS( &pChild ) );
+	pChild->SetPrivateData( WKPDID_D3DDebugObjectName, 11, "IndexBuffer" );
+#endif // _DEBUG
 }
 
 void IndexBuffer::Bind() {
@@ -45,12 +36,4 @@ size_t IndexBuffer::GetSize() const {
 	return size;
 }
 
-void IndexBuffer::CleanCodex() {
-	for ( auto it = GetCodex().begin(); it != GetCodex().end(); it++ ) {
-		it->second->AddRef();
-		if ( it->second->Release() == 1 ) {
-			GetCodex().erase( it->first );
-		}
-	}
-}
 

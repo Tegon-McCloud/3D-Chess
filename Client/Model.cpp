@@ -51,13 +51,13 @@ Model::Model( std::string name, bool flipWinding ) {
 
 	}
 
-	AddBindable( std::make_unique<VertexBuffer>( &vertices[0], vertices.size(), name ) );
+	AddBindable( std::make_shared<VertexBuffer>( &vertices[0], vertices.size() ) );
 
-	AddBindable( std::make_unique<IndexBuffer>( &indices[0], indices.size(), name ) );
+	AddBindable( std::make_shared<IndexBuffer>( &indices[0], indices.size() ) );
 
 	using namespace DirectX;
-	auto cb = std::make_unique< ConstantBuffer < XMMATRIX, VS, 0u > >( &XMMatrixIdentity() );
-	pTransformBuffer = cb.get(); // this is ok because pTransformBuffer and the vector with bindables will be destroyed at the same time no matter what
+	auto cb = std::make_shared< ConstantBuffer < XMMATRIX, VS, 0u > >( &XMMatrixIdentity() );
+	pTransformBuffer = cb;
 	AddBindable( std::move( cb ) );
 
 }
