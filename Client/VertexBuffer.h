@@ -25,6 +25,8 @@ private:
 		return codex;
 	}
 
+	static void CleanCodex();
+
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pBuffer;
 };
 

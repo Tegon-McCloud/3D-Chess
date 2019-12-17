@@ -23,7 +23,10 @@ private:
 		return codex;
 	}
 	
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pBuffer;
+	static void CleanCodex();
 
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pBuffer;
+	size_t size;
 };
 

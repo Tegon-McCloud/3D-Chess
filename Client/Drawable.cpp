@@ -13,10 +13,9 @@ void Drawable::Draw() {
 
 void Drawable::AddBindable( std::unique_ptr<Bindable> b ) {
 
-	bindables.push_back( std::move( b ) );
-
-	if ( const IndexBuffer* ib = dynamic_cast<const IndexBuffer*>(b.get()) ) {
+	if ( IndexBuffer* ib = dynamic_cast<IndexBuffer*>(b.get()) ) {
 		indexCount = ib->GetSize();
 	}
 
+	bindables.push_back( std::move( b ) );
 }

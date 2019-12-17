@@ -34,7 +34,6 @@ VertexBuffer::VertexBuffer( const Vertex* vertices, size_t size, std::string tag
 	if ( !tag.empty() ) {
 		GetCodex()[tag] = pBuffer;
 	}
-
 	
 }
 
@@ -42,4 +41,14 @@ void VertexBuffer::Bind() {
 	const UINT stride = sizeof( Vertex );
 	const UINT offset = 0u;
 	Window::Get().GetGraphics().GetContext()->IASetVertexBuffers( 0u, 1u, pBuffer.GetAddressOf(), &stride, &offset );
+}
+
+
+void VertexBuffer::CleanCodex() {
+	for ( auto it = GetCodex().begin(); it != GetCodex().end(); it++ ) {
+		it->second->AddRef();
+		if ( it->second->Release() == 1 ) {
+			GetCodex().erase( it->first );
+		}
+	}
 }

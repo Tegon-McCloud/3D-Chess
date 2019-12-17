@@ -11,7 +11,7 @@ constexpr const D3D11_BUFFER_DESC defaultIndexBufferDesc = {
 	sizeof( unsigned short )	// StructureByteStride
 };
 
-IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size, std::string tag ) {
+IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size, std::string tag ) : size(size) {
 
 	if ( !tag.empty() ) {
 		auto it = GetCodex().find( tag );
@@ -21,7 +21,6 @@ IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size, std::strin
 
 			return;
 		}
-
 	} 
 
 	D3D11_BUFFER_DESC bd = defaultIndexBufferDesc;
@@ -43,8 +42,15 @@ void IndexBuffer::Bind() {
 }
 
 size_t IndexBuffer::GetSize() const {
-	D3D11_BUFFER_DESC bd;
-	pBuffer->GetDesc( &bd );
-	return bd.ByteWidth / sizeof( unsigned short );
+	return size;
+}
+
+void IndexBuffer::CleanCodex() {
+	for ( auto it = GetCodex().begin(); it != GetCodex().end(); it++ ) {
+		it->second->AddRef();
+		if ( it->second->Release() == 1 ) {
+			GetCodex().erase( it->first );
+		}
+	}
 }
 

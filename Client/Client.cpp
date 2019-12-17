@@ -1,8 +1,10 @@
-
 #include "Window.h"
 #include <iostream>
 
+#include "Model.h"
 #include "Util.h"
+
+#include "IndexBuffer.h"
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -16,6 +18,13 @@ int WINAPI WinMain(
 	
 	Timer timer;
 
+	Model m( "Unicorn" );
+	
+	const unsigned short i[]{
+		1, 2, 3
+	};
+	IndexBuffer ib( i, 3, "yay" );
+
 	try {
 		while ( true ) {
 
@@ -26,6 +35,8 @@ int WINAPI WinMain(
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
 			Window::Get().GetGraphics().DrawTest( timer.Time() );
+			m.SetTransform( DirectX::XMMatrixRotationY( timer.Time() * 0.5f ) );
+			m.Draw();
 			Window::Get().GetGraphics().Present();
 		}
 	} catch ( std::runtime_error e ) {
@@ -36,5 +47,6 @@ int WINAPI WinMain(
 }
 
 int main() {
+
 	return WinMain( NULL, NULL, NULL, 0 );
 }

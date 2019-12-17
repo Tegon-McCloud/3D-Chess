@@ -20,7 +20,5 @@ VSOut main( Vertex v ) {
 	output.viewPos = mul( mul( float4(v.pos, 1.0f), modelToWorld ), worldToCam );
 	output.pos = mul( output.viewPos, proj );
 
-
-
 	return output;
 }
