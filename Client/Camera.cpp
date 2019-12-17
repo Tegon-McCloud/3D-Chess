@@ -11,7 +11,7 @@ void Camera::UpdateBuffer() {
 	XMVECTOR pos = XMVectorSet( x, y, z, 1.0f );
 	XMVECTOR forward = XMVector3Transform( XMVectorSet( 0.0f, 0.0f, 1.0f, 0.0f ), XMMatrixRotationRollPitchYaw( pitch, yaw, roll ) );
 	transforms.worldToCam = XMMatrixTranspose( XMMatrixLookAtLH( pos, pos + forward, XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f ) ) );
-	transforms.proj = XMMatrixTranspose( XMMatrixPerspectiveLH( 1.0f, (float)Window::Get().GetHeight() / (float)Window::Get().GetWidth(), 0.5f, 100.0f ) );
+	transforms.proj = XMMatrixTranspose( XMMatrixPerspectiveFovLH( 1.507f, (float)Window::Get().GetWidth() / (float)Window::Get().GetHeight(), 0.5f, 100.0f ) );
 
 	buffer.Set( &transforms );
 }

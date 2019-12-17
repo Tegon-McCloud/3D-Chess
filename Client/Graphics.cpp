@@ -192,12 +192,12 @@ void Graphics::DrawTest() const {
 
 	// create index buffer
 	const unsigned short indices[]{
-		0, 1, 3, 3, 1, 2,
-		1, 5, 2, 2, 5, 6,
-		5, 4, 6, 6, 4, 7,
-		4, 0, 7, 7, 0, 3,
-		3, 2, 7, 7, 2, 6,
-		4, 5, 0, 0, 5, 1
+		0, 3, 1,	3, 2, 1,
+		1, 2, 5,	2, 6, 5,
+		5, 6, 4,	6, 7, 4,
+		4, 7, 0,	7, 3, 0,
+		3, 7, 2,	7, 6, 2,
+		4, 0, 5,	0, 1, 5
 	};
 	
 	IndexBuffer ib( indices, std::size( indices ) );
@@ -207,7 +207,8 @@ void Graphics::DrawTest() const {
 	const XMMATRIX transform =
 		XMMatrixTranspose(
 			DirectX::XMMatrixRotationZ( 1.0f )
-			);
+			//XMMatrixIdentity()
+		);
 
 	ConstantBuffer<XMMATRIX, VS, 0> cb;
 	cb.Set( &transform );
@@ -244,6 +245,15 @@ void Graphics::DrawTest() const {
 
 	// bind pixel shader
 	pContext->PSSetShader( pPS.Get(), NULL, 0u );
+
+	// load geometry shader
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> pGS;
+	ThrowIfFailed( D3DReadFileToBlob( L"GeometryShader.cso", &pBlob ) );
+	ThrowIfFailed( pDevice->CreateGeometryShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pGS ) );
+
+	// bind geometry shader
+	pContext->GSSetShader( pGS.Get(), NULL, 0u );
+
 
 	// set primitive topology
 	pContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
