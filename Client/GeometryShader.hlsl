@@ -1,20 +1,21 @@
 #include "Header.hlsli"
 
 [maxvertexcount(3)]
-void main( triangle float4 input[3] : SV_POSITION, inout TriangleStream< GSOut > output ) {
+void main( triangle GSIn input[3] : SV_POSITION, inout TriangleStream< GSOut > output ) {
 
 	GSOut element;
 
-	element.pos = input[0];
-	element.col = float3( 1.0f, 0.0f, 0.0f );
+	// find normal by crossing 3D components of two edges.
+	float3 normal = cross( input[1].viewPos - input[0].viewPos, input[2].viewPos - input[0].viewPos );
+
+	element.pos = input[0].pos;
+	element.normal = normal;
 	output.Append( element );
 
-	element.pos = input[1];
-	element.col = float3(0.0f, 1.0f, 0.0f);
+	element.pos = input[1].pos;
 	output.Append( element );
 
-	element.pos = input[2];
-	element.col = float3(0.0f, 0.0f, 1.0f);
+	element.pos = input[2].pos;
 	output.Append( element );
 
 }

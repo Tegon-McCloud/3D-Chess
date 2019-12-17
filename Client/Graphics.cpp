@@ -206,7 +206,7 @@ void Graphics::DrawTest() const {
 	//create constant buffer
 	const XMMATRIX transform =
 		XMMatrixTranspose(
-			DirectX::XMMatrixRotationZ( 1.0f )
+			DirectX::XMMatrixRotationZ( 2.0f )
 			//XMMatrixIdentity()
 		);
 
@@ -253,7 +253,6 @@ void Graphics::DrawTest() const {
 
 	// bind geometry shader
 	pContext->GSSetShader( pGS.Get(), NULL, 0u );
-
 
 	// set primitive topology
 	pContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
