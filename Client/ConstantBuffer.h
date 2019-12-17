@@ -51,7 +51,7 @@ inline ConstantBuffer<T, S, slot>::ConstantBuffer() {
 
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D11DeviceChild> pChild;
-	pBuffer->QueryInterface( IID_PPV_ARGS( &pChild ) );
+	pBuffer.As( &pChild );
 	pChild->SetPrivateData( WKPDID_D3DDebugObjectName, 14, "ConstantBuffer" );
 #endif // !_DEBUG
 }
@@ -69,7 +69,7 @@ inline ConstantBuffer<T, S, slot>::ConstantBuffer( const T* init ) {
 
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D11DeviceChild> pChild;
-	pBuffer->QueryInterface( IID_PPV_ARGS( &pChild ) );
+	pBuffer.As( &pChild );
 	pChild->SetPrivateData( WKPDID_D3DDebugObjectName, 14, "ConstantBuffer" );
 #endif // !_DEBUG
 }

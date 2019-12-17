@@ -23,7 +23,7 @@ IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size ) : size(si
 
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D11DeviceChild> pChild;
-	pBuffer->QueryInterface( IID_PPV_ARGS( &pChild ) );
+	pBuffer.As( &pChild );
 	pChild->SetPrivateData( WKPDID_D3DDebugObjectName, 11, "IndexBuffer" );
 #endif // _DEBUG
 }

@@ -104,7 +104,7 @@ Graphics::~Graphics() {
 
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D11Debug> pDebug;
-	Window::Get().GetGraphics().GetDevice()->QueryInterface( IID_PPV_ARGS( &pDebug ) );
+	pDevice.As( &pDebug );
 #endif // !_DEBUG
 
 	pDevice.Reset();

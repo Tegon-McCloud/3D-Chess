@@ -23,7 +23,7 @@ VertexBuffer::VertexBuffer( const Vertex* vertices, size_t size ) {
 
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D11DeviceChild> pChild;
-	pBuffer->QueryInterface( IID_PPV_ARGS( &pChild ) );
+	pBuffer.As( &pChild );
 	pChild->SetPrivateData( WKPDID_D3DDebugObjectName, 12, "VertexBuffer" );
 #endif // !_DEBUG
 }
