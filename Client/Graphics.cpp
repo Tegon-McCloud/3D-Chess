@@ -7,6 +7,7 @@
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
+#include "Camera.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -164,6 +165,12 @@ void Graphics::Clear( const float* rgba ) const {
 
 void Graphics::DrawTest() const {
 
+	using namespace DirectX;
+
+	Camera c(0.0f, 2.0f, -4.0f, 0.5f, 0.0f, 0.0f);
+	c.UpdateBuffer();
+	c.Bind();
+
 	// =============== BUFFERS ===============
 
 	// create vertex buffer
@@ -196,16 +203,14 @@ void Graphics::DrawTest() const {
 	IndexBuffer ib( indices, std::size( indices ) );
 	ib.Bind();
 
-
 	//create constant buffer
-	const DirectX::XMMATRIX transform =
-		DirectX::XMMatrixTranspose(
-
-			DirectX::XMMatrixTranslation( 0.0f, 0.0f, 8.0f ) *
-			DirectX::XMMatrixPerspectiveLH( 1.0f, 720.0f/1080.0f, 0.5f, 10.0f )
+	const XMMATRIX transform =
+		XMMatrixTranspose(
+			DirectX::XMMatrixRotationZ( 1.0f )
 			);
 
-	ConstantBuffer<DirectX::XMMATRIX, VS, 0> cb( &transform );
+	ConstantBuffer<XMMATRIX, VS, 0> cb;
+	cb.Set( &transform );
 	cb.Bind();
 
 	// =============== SHADERS ===============

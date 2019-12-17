@@ -20,6 +20,9 @@ public:
 
 	std::optional<int> ProcessMessages() const;
 
+	int GetWidth() const;
+	int GetHeight() const;
+
 	operator HWND() const;
 
 	static Window& Get() { // Singleton getter

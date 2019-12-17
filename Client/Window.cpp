@@ -67,6 +67,14 @@ std::optional<int> Window::ProcessMessages() const {
 
 }
 
+int Window::GetWidth() const {
+	return width;
+}
+
+int Window::GetHeight() const {
+	return height;
+}
+
 Window::operator HWND() const {
 	return hWnd;
 }

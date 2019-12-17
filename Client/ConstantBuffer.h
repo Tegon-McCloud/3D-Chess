@@ -24,6 +24,7 @@ template<typename T, Stage S, unsigned char slot>
 class ConstantBuffer : public Bindable { 
 	
 public:
+	ConstantBuffer();
 	ConstantBuffer( const T* init );
 
 	void Set( const T* to );
@@ -36,7 +37,21 @@ private:
 
 
 template<typename T, Stage S, unsigned char slot>
-ConstantBuffer<T, S, slot>::ConstantBuffer( const T* init ) {
+inline ConstantBuffer<T, S, slot>::ConstantBuffer() {
+	
+	D3D11_BUFFER_DESC bd = defaultConstantBufferDesc;
+	bd.ByteWidth = sizeof( T );
+
+	D3D11_SUBRESOURCE_DATA sd = {};
+	void  *mem = calloc( 1, sizeof( T ) ); // don't question
+	sd.pSysMem = mem;
+
+	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreateBuffer( &bd, &sd, &pBuffer ) );
+	free( mem );
+}
+
+template<typename T, Stage S, unsigned char slot>
+inline ConstantBuffer<T, S, slot>::ConstantBuffer( const T* init ) {
 
 	D3D11_BUFFER_DESC bd = defaultConstantBufferDesc;
 	bd.ByteWidth = sizeof( T );
@@ -45,11 +60,10 @@ ConstantBuffer<T, S, slot>::ConstantBuffer( const T* init ) {
 	sd.pSysMem = init;
 
 	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreateBuffer( &bd, &sd, &pBuffer ) );
-
 }
 
 template<typename T, Stage S, unsigned char slot>
-void ConstantBuffer<T, S, slot>::Set( const T* from ) {
+inline void ConstantBuffer<T, S, slot>::Set( const T* from ) {
 	
 	D3D11_MAPPED_SUBRESOURCE msr = { 0 };
 	Window::Get().GetGraphics().GetContext()->Map( pBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr );
@@ -60,7 +74,7 @@ void ConstantBuffer<T, S, slot>::Set( const T* from ) {
 }
 
 template<typename T, Stage S, unsigned char slot>
-void ConstantBuffer<T, S, slot>::Bind() {
+inline void ConstantBuffer<T, S, slot>::Bind() { // TODO template specialization
 	
 	switch ( S ) {
 	case VS:

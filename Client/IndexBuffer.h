@@ -14,7 +14,7 @@ public:
 	IndexBuffer() = delete;
 
 	void Bind() override;
-	size_t GetSize();
+	size_t GetSize() const;
 
 private:
 	
@@ -24,7 +24,6 @@ private:
 	}
 	
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pBuffer;
-	size_t size;
 
 };
 
