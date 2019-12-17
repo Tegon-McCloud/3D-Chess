@@ -163,7 +163,8 @@ void Graphics::Clear( const float* rgba ) const {
 	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 0.0f, 0u );
 }
 
-void Graphics::DrawTest() const {
+void Graphics::DrawTest( float time ) const
+{
 
 	using namespace DirectX;
 
@@ -206,7 +207,8 @@ void Graphics::DrawTest() const {
 	//create constant buffer
 	const XMMATRIX transform =
 		XMMatrixTranspose(
-			DirectX::XMMatrixRotationZ( 2.0f )
+			DirectX::XMMatrixRotationZ( time * 0.5f ) *
+			DirectX::XMMatrixRotationX( time * 0.5f )
 			//XMMatrixIdentity()
 		);
 

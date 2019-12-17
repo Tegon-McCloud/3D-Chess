@@ -20,7 +20,7 @@ private:
 public:
 	void Clear( const float& r, const float& g, const float& b ) const;
 	void Clear( const float* rgba ) const;
-	void DrawTest() const;
+	void DrawTest( float time ) const;
 	void Present() const;
 
 	ID3D11Device* GetDevice() const;
