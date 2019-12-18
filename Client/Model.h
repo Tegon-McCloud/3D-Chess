@@ -4,8 +4,8 @@
 #include "ConstantBuffer.h"
 #include "DirectXMath.h"
 
-typedef struct {
-	struct {
+typedef struct alignas(16) {
+	 struct {
 		float intensity;
 	} ambient;
 

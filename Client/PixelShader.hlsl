@@ -3,33 +3,26 @@
 static const float3 lightDir = normalize(float3( 1.0f, -1.0f, 1.0f ));
 
 cbuffer Material : register(b0) {
-	struct {
-		float intensity;
-	} ambient;
+	float ambient_intensity;
 
-	struct {
-		float3 rgb;
-	} diffuse;
+	float3 diffuse_rgb;
 
-	struct {
-		float intensity, shininess;
-	} specular;
-
-	float padding[2];
+	float specular_intensity;
+	float specular_shininess;
 }
 
 
 float3 colAmbient() {
-	return ambient.intensity * diffuse.rgb;
+	return ambient_intensity * diffuse_rgb;
 }
 
 float3 colDiffuse( float3 normal ) {
-	return diffuse.rgb * max(dot( -lightDir, normal ), 0.0f);
+	return diffuse_rgb * max(dot( -lightDir, normal ), 0.0f);
 }
 
 float4 main( PSIn input ) : SV_TARGET{
 
 	input.normal = normalize( input.normal );
 
-	return float4(ambient.intensity * diffuse.rgb + diffuse.rgb * max( dot( -lightDir, input.normal ), 0.0f ), 1.0f);
+	return float4(colAmbient() + colDiffuse( input.normal ), 1.0f);
 }

@@ -31,10 +31,9 @@ constexpr const Material mtlBlack = {
 };
 
 
-
-
 Piece::Piece( std::string piece, Side s ) : Model( piece ){
 	AddBindable( std::make_shared < ConstantBuffer < Material, PS, 0u > >( s == WHITE ? &mtlWhite : &mtlBlack ) );
+	sizeof( Material );
 }
 
 Pawn::Pawn( Side s ) : Piece( "Pawn", s ) {}

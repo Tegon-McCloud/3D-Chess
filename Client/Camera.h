@@ -2,7 +2,7 @@
 #include "ConstantBuffer.h"
 #include "DirectXMath.h"
 
-typedef struct {
+typedef struct alignas(16) {
 	DirectX::XMMATRIX worldToCam;
 	DirectX::XMMATRIX proj;
 } CameraTransforms;
