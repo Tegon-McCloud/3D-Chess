@@ -60,6 +60,8 @@ Model::Model( std::string name, bool flipWinding ) {
 	pTransformBuffer = cb;
 	AddBindable( std::move( cb ) );
 
+	XMStoreFloat4x4( &transform, XMMatrixIdentity() );
+
 }
 
 void Model::ApplyTransform( DirectX::XMMATRIX transform ) {

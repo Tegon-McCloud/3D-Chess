@@ -7,19 +7,14 @@
 #include "Camera.h"
 #include "Shaders.h"
 
-int WINAPI WinMain(
-	HINSTANCE hInstance,
-	HINSTANCE hPrevInstance,
-	LPSTR     lpCmdLine,
-	int       nShowCmd
-) {
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
 
 	std::optional<int> rv;	// return value
 	Window::Get().SetVisible( true );
 	
 	Timer timer;
 
-	Model m( "Bishop" );
+	Model m( "Unicorn" );
 	
 	Camera c( 0.0f, 2.0f, -4.0f, 0.1f, 0.0f, 0.0f );
 	c.UpdateBuffer();
@@ -30,13 +25,16 @@ int WINAPI WinMain(
 
 	PixelShader ps( "PixelShader" );
 	ps.Bind();
-
+	
 	GeometryShader gs( "GeometryShader" );
 	gs.Bind();
 
+	
 	try {
 		while ( true ) {
-
+			float dt = timer.Time();
+			timer.Reset();
+			
 			rv = Window::Get().ProcessMessages();
 			if ( rv ) {
 				return rv.value();
@@ -44,9 +42,10 @@ int WINAPI WinMain(
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
 			c.UpdateBuffer();
-			m.SetTransform( DirectX::XMMatrixRotationY( timer.Time() * 0.5f ) );
+			m.ApplyTransform( DirectX::XMMatrixRotationY( dt ) );
 			m.Draw();
 			Window::Get().GetGraphics().Present();
+
 		}
 	} catch ( std::runtime_error e ) {
 		std::cout << "Application exited do to exception:\n" << e.what() << "\n";
@@ -56,6 +55,5 @@ int WINAPI WinMain(
 }
 
 int main() {
-
 	return WinMain( NULL, NULL, NULL, 0 );
 }
