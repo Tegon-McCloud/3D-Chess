@@ -10,8 +10,8 @@ constexpr const Material mtlWhite = {
 		1.0f				// b
 	},
 	{					// specular:
-		0.2,				// intensity
-		96.0f				// shininess
+		0.1,				// intensity
+		24.0f				// shininess
 	}
 };
 
@@ -25,8 +25,8 @@ constexpr const Material mtlBlack = {
 		0.1f				// b
 	},
 	{					// specular:
-		0.2,				// intensity
-		96.0f				// shininess
+		0.1,				// intensity
+		24.0f				// shininess
 	}
 };
 

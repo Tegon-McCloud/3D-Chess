@@ -17,14 +17,24 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	
 	Timer timer;
 
-	Unicorn q1( WHITE );
-	Unicorn q2( BLACK );
+	Pawn p[] = {
+		Pawn( WHITE ),
+		Pawn( BLACK ),
+		Pawn( WHITE ),
+		Pawn( BLACK ),
+		Pawn( WHITE ),
+		Pawn( BLACK ),
+		Pawn( WHITE ),
+		Pawn( BLACK ),
+		Pawn( WHITE ),
+		Pawn( BLACK )
+	};
 
-	q1.ApplyTransform( XMMatrixTranslation( -2.0f, 0.0f, 0.0f ) );
-	q2.ApplyTransform( XMMatrixTranslation( 2.0f, 0.0f, 0.0f ) );
+	for ( int i = 0; i < 10; i++ ) {
+		p[i].ApplyTransform( XMMatrixTranslation( i - 4.5f, 0.0f, 0.0f ) );
+	}
 
-
-	Camera c( 0.0f, 2.0f, -4.0f, 0.1f, 0.0f, 0.0f );
+	Camera c( 0.0f, 3.0f, -6.0f, 0.5f, 0.0f, 0.0f );
 	c.UpdateBuffer();
 	c.Bind();
 
@@ -50,11 +60,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
 			c.UpdateBuffer();
-			q1.ApplyTransform( XMMatrixRotationY( dt ) );
-			q2.ApplyTransform( XMMatrixRotationY( dt ) );
 
-			q1.Draw();
-			q2.Draw();
+			for ( int i = 0; i < 10; i++ ) {
+				p[i].ApplyTransform( XMMatrixRotationY( dt ) );
+				p[i].Draw();
+			}
+
 			Window::Get().GetGraphics().Present();
 
 		}

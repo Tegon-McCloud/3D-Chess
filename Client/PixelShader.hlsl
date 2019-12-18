@@ -12,17 +12,26 @@ cbuffer Material : register(b0) {
 }
 
 
-float3 colAmbient() {
+inline float3 colAmbient() {
 	return ambient_intensity * diffuse_rgb;
 }
 
-float3 colDiffuse( float3 normal ) {
-	return diffuse_rgb * max(dot( -lightDir, normal ), 0.0f);
+inline float3 colDiffuse( float3 normal ) {
+	return diffuse_rgb * max( 0.0f, dot( -lightDir, normal ));
+}
+
+inline float3 reflect( float3 normal ) {
+	return lightDir - 2.0f * normal * dot( lightDir, normal );
+
+}
+
+inline float3 colSpecular( float3 normal, float3 fragPos ) {
+	return specular_intensity * pow( max( 0.0f, dot( reflect( normal ), normal ) ), specular_shininess );
 }
 
 float4 main( PSIn input ) : SV_TARGET{
 
 	input.normal = normalize( input.normal );
 
-	return float4(colAmbient() + colDiffuse( input.normal ), 1.0f);
+	return float4( saturate( colAmbient() + colDiffuse( input.normal ) + colSpecular( input.normal, input.viewPos ) ), 1.0f);
 }
