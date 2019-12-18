@@ -169,7 +169,7 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Piece.cpp" />
+    <ClCompile Include="Pieces.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
@@ -183,7 +183,7 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="Piece.h" />
+    <ClInclude Include="Pieces.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="VertexBuffer.h" />

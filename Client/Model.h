@@ -4,6 +4,22 @@
 #include "ConstantBuffer.h"
 #include "DirectXMath.h"
 
+typedef struct {
+	struct {
+		float intensity;
+	} ambient;
+
+	struct {
+		float r, g, b;
+	} diffuse;
+	
+	struct {
+		float intensity, shininess;
+	} specular;
+
+} Material;
+
+
 class Model : public Drawable {
 
 public:
@@ -16,7 +32,7 @@ private:
 
 	DirectX::XMFLOAT4X4 transform;
 
-	std::shared_ptr<ConstantBuffer< DirectX::XMMATRIX, VS, 0u >> pTransformBuffer;
-
+	std::shared_ptr< ConstantBuffer< DirectX::XMMATRIX, VS, 0u > > pTransformBuffer;
+	
 };
 

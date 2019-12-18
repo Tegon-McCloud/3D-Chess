@@ -40,7 +40,11 @@ template<typename T, Stage S, unsigned char slot>
 inline ConstantBuffer<T, S, slot>::ConstantBuffer() {
 	
 	D3D11_BUFFER_DESC bd = defaultConstantBufferDesc;
-	bd.ByteWidth = sizeof( T );
+	if ( sizeof( T ) % 16 == 0 ) {
+		bd.ByteWidth = sizeof( T );
+	} else {
+		bd.ByteWidth = sizeof( T ) + 16 - (sizeof( T ) % 16);
+	}
 
 	D3D11_SUBRESOURCE_DATA sd = {};
 	void  *mem = calloc( 1, sizeof( T ) ); // don't question
@@ -60,7 +64,11 @@ template<typename T, Stage S, unsigned char slot>
 inline ConstantBuffer<T, S, slot>::ConstantBuffer( const T* init ) {
 
 	D3D11_BUFFER_DESC bd = defaultConstantBufferDesc;
-	bd.ByteWidth = sizeof( T );
+	if ( sizeof( T ) % 16 == 0 ) {
+		bd.ByteWidth = sizeof( T );
+	} else {
+		bd.ByteWidth = sizeof( T ) + 16 - (sizeof( T ) % 16);
+	}
 
 	D3D11_SUBRESOURCE_DATA sd = { };
 	sd.pSysMem = init;

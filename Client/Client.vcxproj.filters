@@ -45,10 +45,10 @@
     <ClCompile Include="Shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Piece.cpp">
+    <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
+    <ClCompile Include="Pieces.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,10 +86,10 @@
     <ClInclude Include="Shaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Piece.h">
+    <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
+    <ClInclude Include="Pieces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

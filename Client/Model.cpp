@@ -9,6 +9,7 @@
 #include "ConstantBuffer.h"
 #include "DirectXMath.h"
 
+
 Model::Model( std::string name, bool flipWinding ) {
 	std::ifstream ifs( "Resources\\" + name + ".obj");
 	std::vector<Vertex> vertices;

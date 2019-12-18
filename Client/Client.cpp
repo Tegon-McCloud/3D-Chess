@@ -6,6 +6,7 @@
 
 #include "Camera.h"
 #include "Shaders.h"
+#include "Pieces.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
 
@@ -14,7 +15,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	
 	Timer timer;
 
-	Model m( "Unicorn" );
+	Pawn p( WHITE ); 
 	
 	Camera c( 0.0f, 2.0f, -4.0f, 0.1f, 0.0f, 0.0f );
 	c.UpdateBuffer();
@@ -42,8 +43,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
 			c.UpdateBuffer();
-			m.ApplyTransform( DirectX::XMMatrixRotationY( dt ) );
-			m.Draw();
+			p.ApplyTransform( DirectX::XMMatrixRotationY( dt ) );
+			p.Draw();
 			Window::Get().GetGraphics().Present();
 
 		}
