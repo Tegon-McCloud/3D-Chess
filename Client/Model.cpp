@@ -57,7 +57,7 @@ Model::Model( std::string name, DirectX::XMMATRIX baseTransform, bool flipWindin
 	AddBindable( std::make_shared<IndexBuffer>( &indices[0], indices.size() ) );
 
 	using namespace DirectX;
-	auto cb = std::make_shared< ConstantBuffer < XMMATRIX, VS, 0u > >( &baseTransform );
+	auto cb = std::make_shared< ConstantBuffer < XMMATRIX, VS, 0u > >( &XMMatrixTranspose( baseTransform ) );
 	pTransformBuffer = cb;
 	AddBindable( std::move( cb ) );
 
@@ -71,11 +71,12 @@ void Model::ApplyTransform( DirectX::XMMATRIX transform ) {
 	transform = XMLoadFloat4x4( &this->transform ) * transform;
 	XMStoreFloat4x4( &this->transform, transform );
 
-	pTransformBuffer->Set( &(XMLoadFloat4x4( &baseTransform ) * transform) );
+	pTransformBuffer->Set( &XMMatrixTranspose( (XMLoadFloat4x4( &baseTransform ) * transform) ) );
 }
 
 void Model::SetTransform( DirectX::XMMATRIX transform ) {
 	using namespace DirectX;
 	XMStoreFloat4x4( &this->transform, transform );
-	pTransformBuffer->Set( &(XMLoadFloat4x4( &baseTransform ) * transform) );
+
+	pTransformBuffer->Set( &XMMatrixTranspose( (XMLoadFloat4x4( &baseTransform ) * transform) ) );
 }

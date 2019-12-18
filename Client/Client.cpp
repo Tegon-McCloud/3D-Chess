@@ -10,13 +10,20 @@
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
 
+	using namespace DirectX;
+
 	std::optional<int> rv;	// return value
 	Window::Get().SetVisible( true );
 	
 	Timer timer;
 
-	Bishop p( BLACK );
-	
+	Unicorn q1( WHITE );
+	Unicorn q2( BLACK );
+
+	q1.ApplyTransform( XMMatrixTranslation( -2.0f, 0.0f, 0.0f ) );
+	q2.ApplyTransform( XMMatrixTranslation( 2.0f, 0.0f, 0.0f ) );
+
+
 	Camera c( 0.0f, 2.0f, -4.0f, 0.1f, 0.0f, 0.0f );
 	c.UpdateBuffer();
 	c.Bind();
@@ -43,8 +50,11 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
 			c.UpdateBuffer();
-			p.ApplyTransform( DirectX::XMMatrixRotationY( dt ) );
-			p.Draw();
+			q1.ApplyTransform( XMMatrixRotationY( dt ) );
+			q2.ApplyTransform( XMMatrixRotationY( dt ) );
+
+			q1.Draw();
+			q2.Draw();
 			Window::Get().GetGraphics().Present();
 
 		}
