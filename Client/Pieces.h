@@ -13,11 +13,19 @@ public:
 	virtual char GetSymbol() = 0;
 };
 
-class Pawn : public Piece {
-
-public:
-	Pawn( Side s );
-	char GetSymbol() override;
-	
+#define PIECE_DECL( Name, Symbol ) \
+class Name : public Piece {\
+public:\
+	Name##( Side s );\
+	char GetSymbol() override;\
 };
 
+PIECE_DECL( Pawn, P );
+PIECE_DECL( Rook, R );
+PIECE_DECL( Knight, N );
+PIECE_DECL( Unicorn, U );
+PIECE_DECL( Bishop, B );
+PIECE_DECL( Queen, Q );
+PIECE_DECL( King, K );
+
+#undef PIECE_DECL

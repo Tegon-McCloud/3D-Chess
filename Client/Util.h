@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <chrono>
 
+constexpr const float pi = 3.14159265359f;
+
 class BadHResultError : public std::runtime_error {
 
 public:

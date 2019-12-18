@@ -10,7 +10,7 @@
 #include "DirectXMath.h"
 
 
-Model::Model( std::string name, bool flipWinding ) {
+Model::Model( std::string name, DirectX::XMMATRIX baseTransform, bool flipWinding ) {
 	std::ifstream ifs( "Resources\\" + name + ".obj");
 	std::vector<Vertex> vertices;
 	std::vector<unsigned short> indices;
@@ -57,12 +57,12 @@ Model::Model( std::string name, bool flipWinding ) {
 	AddBindable( std::make_shared<IndexBuffer>( &indices[0], indices.size() ) );
 
 	using namespace DirectX;
-	auto cb = std::make_shared< ConstantBuffer < XMMATRIX, VS, 0u > >( &XMMatrixIdentity() );
+	auto cb = std::make_shared< ConstantBuffer < XMMATRIX, VS, 0u > >( &baseTransform );
 	pTransformBuffer = cb;
 	AddBindable( std::move( cb ) );
 
 	XMStoreFloat4x4( &transform, XMMatrixIdentity() );
-
+	XMStoreFloat4x4( &this->baseTransform, baseTransform );
 }
 
 void Model::ApplyTransform( DirectX::XMMATRIX transform ) {
@@ -71,11 +71,11 @@ void Model::ApplyTransform( DirectX::XMMATRIX transform ) {
 	transform = XMLoadFloat4x4( &this->transform ) * transform;
 	XMStoreFloat4x4( &this->transform, transform );
 
-	pTransformBuffer->Set( &transform );
+	pTransformBuffer->Set( &(XMLoadFloat4x4( &baseTransform ) * transform) );
 }
 
 void Model::SetTransform( DirectX::XMMATRIX transform ) {
 	using namespace DirectX;
 	XMStoreFloat4x4( &this->transform, transform );
-	pTransformBuffer->Set( &transform );
+	pTransformBuffer->Set( &(XMLoadFloat4x4( &baseTransform ) * transform) );
 }

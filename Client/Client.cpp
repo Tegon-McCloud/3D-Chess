@@ -15,7 +15,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	
 	Timer timer;
 
-	Pawn p( WHITE ); 
+	Bishop p( BLACK );
 	
 	Camera c( 0.0f, 2.0f, -4.0f, 0.1f, 0.0f, 0.0f );
 	c.UpdateBuffer();

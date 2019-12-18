@@ -30,14 +30,21 @@ constexpr const Material mtlBlack = {
 	}
 };
 
-
-Piece::Piece( std::string piece, Side s ) : Model( piece ){
+// if piece is black, flip over through x and invert polygon winding bcs we are in negative space after
+Piece::Piece( std::string piece, Side s ) : Model( piece, s == WHITE ? DirectX::XMMatrixIdentity() : DirectX::XMMatrixScaling( -1.0f, 1.0f, 1.0f), s == BLACK ){
 	AddBindable( std::make_shared < ConstantBuffer < Material, PS, 0u > >( s == WHITE ? &mtlWhite : &mtlBlack ) );
-	sizeof( Material );
 }
 
-Pawn::Pawn( Side s ) : Piece( "Pawn", s ) {}
+#define PIECE_IMPL( Name, Symbol ) \
+Name##::##Name##( Side s ) : Piece( #Name, s ) {}\
+char Name##::GetSymbol() {\
+	return #@Symbol;\
+}\
 
-char Pawn::GetSymbol() {
-	return 'P';
-}
+PIECE_IMPL( Pawn, P )
+PIECE_IMPL( Rook, R );
+PIECE_IMPL( Knight, N );
+PIECE_IMPL( Unicorn, U );
+PIECE_IMPL( Bishop, B );
+PIECE_IMPL( Queen, Q );
+PIECE_IMPL( King, K );
