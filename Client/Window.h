@@ -2,6 +2,8 @@
 
 #include "WindowsStrict.h"
 #include "Graphics.h"
+#include "Input.h"
+
 #include <optional>
 
 class Window {
@@ -16,18 +18,35 @@ public:
 	HWND GetHandle() const;
 	const Graphics& GetGraphics();
 
-	void SetVisible( bool visible );
+	Input& GetInput();
+
+	void SetVisible( bool visible, bool maximized = false );
 
 	std::optional<int> ProcessMessages() const;
 
 	int GetWidth() const;
 	int GetHeight() const;
+	float GetAspect() const;
+	bool IsInFocus() const;
 
 	operator HWND() const;
 
 	static Window& Get() { // Singleton getter
 		static Window inst;
 		return inst;
+	}
+
+	// quick accessors
+	inline static const Graphics& GFX() {
+		return Get().gfx;
+	}
+
+	inline static const ID3D11Device* GFXDevice() { 
+		return Get().gfx.pDevice.Get();
+	}
+
+	inline static const ID3D11DeviceContext* GFXContext() {
+		return Get().gfx.pContext.Get();
 	}
 
 private:
@@ -39,6 +58,7 @@ private:
 	void SizeChanged( int width, int height );
 	HWND Create();
 
+	// the win32 window procedure
 	static LRESULT CALLBACK Procedure( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 	
 public:
@@ -46,8 +66,11 @@ public:
 
 private:
 	int x, y, width, height;
+	float aspectRatio;
 	HWND hWnd;
 	Graphics gfx;
+	Input input;
+	bool focus;
 
 };
 

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Bindable.h"
-#include "WRL.h"
-#include "d3d11.h"
-
 #include "Window.h"
 #include "Util.h"
+
+#include "WRL.h"
+#include "d3d11.h"
 
 constexpr const D3D11_BUFFER_DESC defaultConstantBufferDesc = {
 	0u,							// ByteWidth
@@ -17,7 +17,7 @@ constexpr const D3D11_BUFFER_DESC defaultConstantBufferDesc = {
 };
 
 enum Stage {
-	VS, PS
+	VS, GS, PS
 };
 
 template<typename T, Stage S, unsigned char slot>
@@ -48,6 +48,12 @@ inline ConstantBuffer<T, S, slot>::ConstantBuffer() {
 
 	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreateBuffer( &bd, &sd, &pBuffer ) );
 	free( mem );
+
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11DeviceChild> pChild;
+	pBuffer.As( &pChild );
+	pChild->SetPrivateData( WKPDID_D3DDebugObjectName, 14, "ConstantBuffer" );
+#endif // !_DEBUG
 }
 
 template<typename T, Stage S, unsigned char slot>
@@ -60,6 +66,12 @@ inline ConstantBuffer<T, S, slot>::ConstantBuffer( const T* init ) {
 	sd.pSysMem = init;
 
 	ThrowIfFailed( Window::Get().GetGraphics().GetDevice()->CreateBuffer( &bd, &sd, &pBuffer ) );
+
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11DeviceChild> pChild;
+	pBuffer.As( &pChild );
+	pChild->SetPrivateData( WKPDID_D3DDebugObjectName, 14, "ConstantBuffer" );
+#endif // !_DEBUG
 }
 
 template<typename T, Stage S, unsigned char slot>

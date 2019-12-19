@@ -1,5 +1,7 @@
 #pragma once
-#include "Bindable.h"
+
+class Bindable;
+
 #include <vector>
 #include <memory>
 
@@ -7,10 +9,10 @@ class Drawable {
 
 public:
 	void Draw();
-	void AddBindable( std::unique_ptr<Bindable> b );
+	void AddBindable( std::shared_ptr<Bindable> b );
 
 private:
-	std::vector<std::unique_ptr<Bindable>> bindables;
+	std::vector<std::shared_ptr<Bindable>> bindables;
 	size_t indexCount;
 
 };

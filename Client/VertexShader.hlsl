@@ -9,7 +9,7 @@ cbuffer Model : register(b0) {
 };
 
 cbuffer Camera : register(b1) {
-	matrix worldToCam;
+	matrix worldToView;
 	matrix proj;
 }
 
@@ -17,10 +17,8 @@ VSOut main( Vertex v ) {
 
 	VSOut output;
 
-	output.viewPos = mul( mul( float4(v.pos, 1.0f), modelToWorld ), worldToCam );
+	output.viewPos = mul( mul( float4(v.pos, 1.0f), modelToWorld ), worldToView );
 	output.pos = mul( output.viewPos, proj );
-
-
 
 	return output;
 }

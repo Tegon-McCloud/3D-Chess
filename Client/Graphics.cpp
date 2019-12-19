@@ -8,9 +8,11 @@
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
 #include "Camera.h"
+#include "Shaders.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
+#pragma comment(lib, "dxguid.lib")
 
 #ifdef _DEBUG
 constexpr const UINT deviceFlags = D3D11_CREATE_DEVICE_DEBUG;
@@ -45,7 +47,7 @@ constexpr const DXGI_SWAP_CHAIN_DESC defaultSwapChainDesc = {
 constexpr const D3D11_DEPTH_STENCIL_DESC defaultDepthStencilDesc = {
 	TRUE,								// DepthEnabled
 	D3D11_DEPTH_WRITE_MASK_ALL,			// DepthWriteMask
-	D3D11_COMPARISON_LESS_EQUAL,		// DepthFunc
+	D3D11_COMPARISON_LESS,				// DepthFunc
 	FALSE,								// StencilEnable
 	D3D11_DEFAULT_STENCIL_READ_MASK,	// StencilReadMask
 	D3D11_DEFAULT_STENCIL_WRITE_MASK,	// StencilWriteMask
@@ -98,6 +100,25 @@ Graphics::Graphics(HWND hWnd ) {
 												  &pSwap, &pDevice, NULL, &pContext) );
 }
 
+Graphics::~Graphics() {
+
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11Debug> pDebug;
+	pDevice.As( &pDebug );
+#endif // !_DEBUG
+
+	pDevice.Reset();
+	pSwap.Reset();
+	pContext.Reset();
+	pRTV.Reset();
+	pDSV.Reset();
+
+#ifdef _DEBUG
+	pDebug->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
+#endif // !_DEBUG
+
+}
+
 void Graphics::SizeChanged() {
 
 	// drop render target view
@@ -132,7 +153,7 @@ void Graphics::SizeChanged() {
 
 	pDevice->CreateDepthStencilView( pDS.Get(), &dsvd, &pDSV ); // create view of depth stencil buffer
 	
-	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), NULL ); // bind render target and depth stencil buffers to output merger
+	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), pDSV.Get() ); // bind render target and depth stencil buffers to output merger
 
 		// create and set viewport
 	D3D11_VIEWPORT vp;
@@ -145,7 +166,6 @@ void Graphics::SizeChanged() {
 	
 	pContext->RSSetViewports( 1u, &vp );
 
-
 }
 
 void Graphics::Clear( const float& r, const float& g, const float& b ) const {
@@ -155,12 +175,12 @@ void Graphics::Clear( const float& r, const float& g, const float& b ) const {
 	};
 
 	pContext->ClearRenderTargetView( pRTV.Get(), rgba );
-	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 0.0f, 0u );
+	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u );
 }
 
 void Graphics::Clear( const float* rgba ) const {
 	pContext->ClearRenderTargetView( pRTV.Get(), rgba );
-	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 0.0f, 0u );
+	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u );
 }
 
 void Graphics::DrawTest( float time ) const
@@ -168,7 +188,7 @@ void Graphics::DrawTest( float time ) const
 
 	using namespace DirectX;
 
-	Camera c(0.0f, 2.0f, -4.0f, 0.5f, 0.0f, 0.0f);
+	Camera c(0.0f, 2.0f, -4.0f, 0.1f, 0.0f, 0.0f);
 	c.UpdateBuffer();
 	c.Bind();
 
@@ -220,47 +240,21 @@ void Graphics::DrawTest( float time ) const
 	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
 
 	// load vertex shader
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVS;
+	VertexShader vs( "VertexShader" );
+	vs.Bind();
 
-	ThrowIfFailed( D3DReadFileToBlob( L"VertexShader.cso", &pBlob ) );
-	ThrowIfFailed( pDevice->CreateVertexShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pVS ) );
+	// pixel shader
+	PixelShader ps( "PixelShader" );
+	ps.Bind();
 
-	// bind vertex shader
-	pContext->VSSetShader( pVS.Get(), NULL, 0u );
-
-	// vertex layout
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> pIL;
-	const D3D11_INPUT_ELEMENT_DESC ied[] = {
-		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	
-	ThrowIfFailed( pDevice->CreateInputLayout( ied, 1u, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &pIL ) );
-
-	pContext->IASetInputLayout( pIL.Get() );
-
-
-	// load pixel shader
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPS;
-
-	ThrowIfFailed( D3DReadFileToBlob( L"PixelShader.cso", &pBlob ) );
-	ThrowIfFailed( pDevice->CreatePixelShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pPS ) );
-
-	// bind pixel shader
-	pContext->PSSetShader( pPS.Get(), NULL, 0u );
-
-	// load geometry shader
-	Microsoft::WRL::ComPtr<ID3D11GeometryShader> pGS;
-	ThrowIfFailed( D3DReadFileToBlob( L"GeometryShader.cso", &pBlob ) );
-	ThrowIfFailed( pDevice->CreateGeometryShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pGS ) );
-
-	// bind geometry shader
-	pContext->GSSetShader( pGS.Get(), NULL, 0u );
+	GeometryShader gs( "GeometryShader" );
+	gs.Bind();
 
 	// set primitive topology
 	pContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
 	// draw
-	pContext->DrawIndexed( ib.GetSize(), 0u, 0u );
+	//pContext->DrawIndexed( (UINT) ib.GetSize(), 0u, 0u );
 
 }
 

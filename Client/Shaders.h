@@ -1,0 +1,34 @@
+#pragma once
+
+#include "ConstantBuffer.h"
+#include "D3DCompiler.h"
+
+class VertexShader : public Bindable {
+
+public:
+	VertexShader( std::string name );
+	void Bind() override;
+private:
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout;
+};
+
+class GeometryShader : public Bindable {
+
+public:
+	GeometryShader( std::string name );
+	void Bind() override;
+private:
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> pGeometryShader;
+	D3D11_PRIMITIVE_TOPOLOGY topology;
+};
+
+class PixelShader : public Bindable {
+
+public:
+	PixelShader( std::string name );
+	void Bind() override;
+private:
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
+
+};
