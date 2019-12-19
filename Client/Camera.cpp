@@ -8,15 +8,19 @@ void Camera::UpdateBuffer() {
 	
 	using namespace DirectX;
 
-	CameraTransforms transforms;
 	XMVECTOR pos = XMVectorSet( x, y, z, 1.0f );
 	XMVECTOR forward = XMVector3Transform( XMVectorSet( 0.0f, 0.0f, 1.0f, 0.0f ), XMMatrixRotationRollPitchYaw( pitch, yaw, roll ) );
-	transforms.worldToCam = XMMatrixTranspose( XMMatrixLookAtRH( pos, pos + forward, XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f ) ) );
-	transforms.proj = XMMatrixTranspose( XMMatrixPerspectiveFovRH( pi/2.0f, (float)Window::Get().GetWidth() / (float)Window::Get().GetHeight(), 0.5f, 100.0f ) );
+	cameraTransforms.worldToCam = XMMatrixTranspose( XMMatrixLookAtRH( pos, pos + forward, XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f ) ) );
+	cameraTransforms.proj = XMMatrixTranspose( XMMatrixPerspectiveFovRH( 1.5f, Window::Get().GetAspect(), 0.5f, 100.0f ) );
 
-	buffer.Set( &transforms );
+	buffer.Set( &cameraTransforms );
 }
 
 void Camera::Bind() {
 	buffer.Bind();
+}
+
+void Camera::ToViewSpace( DirectX::XMVECTOR& v ) {
+	using namespace DirectX;
+
 }

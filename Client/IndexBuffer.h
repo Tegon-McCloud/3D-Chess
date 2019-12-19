@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Bindable.h"
+
 #include "WRL.h"
 #include "d3d11.h"
 #include <unordered_map>

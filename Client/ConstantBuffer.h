@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Bindable.h"
-#include "WRL.h"
-#include "d3d11.h"
-
 #include "Window.h"
 #include "Util.h"
+
+#include "WRL.h"
+#include "d3d11.h"
 
 constexpr const D3D11_BUFFER_DESC defaultConstantBufferDesc = {
 	0u,							// ByteWidth

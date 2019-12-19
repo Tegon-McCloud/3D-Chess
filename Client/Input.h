@@ -1,8 +1,10 @@
 #pragma once
+
+#include "WindowsStrict.h"
+
 #include <bitset>
 #include <functional>
 #include <vector>
-#include "WindowsStrict.h"
 
 class Input {
 

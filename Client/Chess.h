@@ -1,6 +1,7 @@
 #pragma once
-#include "Model.h"
+
 #include "Pieces.h"
+
 #include <array>
 #include <memory>
 

@@ -26,7 +26,7 @@ inline float3 reflect( float3 normal ) {
 }
 
 inline float3 colSpecular( float3 normal, float3 fragPos ) {
-	return specular_intensity * pow( max( 0.0f, dot( reflect( normal ), normal ) ), specular_shininess );
+	return specular_intensity * pow( max( 0.0f, dot( reflect( normal ), normalize( -fragPos ) ) ), specular_shininess );
 }
 
 float4 main( PSIn input ) : SV_TARGET{

@@ -56,7 +56,3 @@ void Player::Update( float dt ) {
 
 	UpdateBuffer();
 }
-
-void Player::Bind() {
-	Camera::Bind();
-}

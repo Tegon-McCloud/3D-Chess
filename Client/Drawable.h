@@ -1,5 +1,7 @@
 #pragma once
-#include "Bindable.h"
+
+class Bindable;
+
 #include <vector>
 #include <memory>
 
