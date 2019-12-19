@@ -8,8 +8,6 @@ Player::Player() : Camera( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f ) {
 		printf( "yoyoyo\n" );
 	} );
 
-	Window::Get().GetInput().SetCursorVisible( false );
-
 }
 
 void Player::Update( float dt ) {

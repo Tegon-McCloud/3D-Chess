@@ -80,7 +80,7 @@ int Window::GetHeight() const {
 }
 
 bool Window::IsInFocus() const {
-	return GetFocus() == hWnd;
+	return focus;
 }
 
 Window::operator HWND() const {
@@ -157,6 +157,15 @@ LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPAR
 	case WM_SYSKEYUP:
 		Get().input.KeyReleased( wParam );
 		break;
+	case WM_SETFOCUS:
+		Get().input.WindowFocused();
+		Get().focus = true;
+		break;
+	case WM_KILLFOCUS:
+		Get().input.WindowUnfocused();
+		Get().focus = false;
+		break;
+
 	default:
 		return DefWindowProcW( hWnd, message, wParam, lParam );
 	}

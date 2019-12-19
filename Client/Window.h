@@ -53,6 +53,7 @@ private:
 	HWND hWnd;
 	Graphics gfx;
 	Input input;
+	bool focus;
 
 };
 

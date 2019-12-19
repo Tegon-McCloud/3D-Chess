@@ -1,7 +1,9 @@
 #include "Input.h"
 #include "Window.h"
 
-Input::Input() : cursorVisible( true ) {}
+Input::Input() : cursorVisible( false ) {
+	SetCursor( LoadCursorW( NULL, IDC_ARROW ) );
+}
 
 Input::~Input() {
 	if ( !cursorVisible ) {
@@ -33,7 +35,7 @@ void Input::CenterMouse() {
 void Input::SetCursorVisible( bool visibility ) {
 	if ( cursorVisible == visibility ) return;
 	
-	ShowCursor( visibility );
+	printf( "%i", ShowCursor( visibility ));
 	cursorVisible = visibility;
 }
 
@@ -49,4 +51,12 @@ void Input::KeyPressed( unsigned char key ) {
 
 void Input::KeyReleased( unsigned char key ) {
 	keyStates[key] = false;
+}
+
+void Input::WindowFocused() {
+	if ( !cursorVisible ) ShowCursor( false );
+}
+
+void Input::WindowUnfocused() {
+	if( !cursorVisible) ShowCursor( true );
 }
