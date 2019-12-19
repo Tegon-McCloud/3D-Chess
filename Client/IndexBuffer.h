@@ -9,7 +9,6 @@
 
 class IndexBuffer : public Bindable {
 	
-
 public:
 	IndexBuffer( const unsigned short* indices, size_t size);
 	IndexBuffer() = delete;

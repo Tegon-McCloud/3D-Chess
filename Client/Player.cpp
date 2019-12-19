@@ -16,31 +16,31 @@ void Player::Update( float dt ) {
 	float cosYaw = cos( yaw );
 
 	if ( Window::Get().GetInput().IsKeyDown( 'W' ) ) {
-		x += 2.0f * dt * sinYaw;
-		z += 2.0f * dt * cosYaw;
+		x += 4.0f * dt * sinYaw;
+		z += 4.0f * dt * cosYaw;
 	}
 
 	if ( Window::Get().GetInput().IsKeyDown( 'A' ) ) {
-		x += 2.0f * dt * cosYaw;
-		z += 2.0f * dt * -sinYaw;
+		x += 4.0f * dt * cosYaw;
+		z += 4.0f * dt * -sinYaw;
 	}
 
 	if ( Window::Get().GetInput().IsKeyDown( 'S' ) ) {
-		x += 2.0f * dt * -sinYaw;
-		z += 2.0f * dt * -cosYaw;
+		x += 4.0f * dt * -sinYaw;
+		z += 4.0f * dt * -cosYaw;
 	}
 
 	if ( Window::Get().GetInput().IsKeyDown( 'D' ) ) {
-		x += 2.0f * dt * -cosYaw;
-		z += 2.0f * dt * sinYaw;
+		x += 4.0f * dt * -cosYaw;
+		z += 4.0f * dt * sinYaw;
 	}
 
 	if ( Window::Get().GetInput().IsKeyDown( ' ' ) ) {
-		y += 2.0f * dt;
+		y += 4.0f * dt;
 	}
 	
 	if ( Window::Get().GetInput().IsKeyDown( VK_SHIFT ) ) {
-		y -= 2.0f * dt;
+		y -= 4.0f * dt;
 	}
 	
 	if ( Window::Get().IsInFocus() ) {

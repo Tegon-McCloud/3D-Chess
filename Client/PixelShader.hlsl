@@ -11,6 +11,11 @@ cbuffer Material : register(b0) {
 	float specular_shininess;
 }
 
+cbuffer Light : register(b1) {
+	float3 light_dir;
+	float3 light_rgb;
+}
+
 
 inline float3 colAmbient() {
 	return ambient_intensity * diffuse_rgb;
@@ -25,8 +30,8 @@ inline float3 reflect( float3 normal ) {
 
 }
 
-inline float3 colSpecular( float3 normal, float3 fragPos ) {
-	return specular_intensity * pow( max( 0.0f, dot( reflect( normal ), normalize( -fragPos ) ) ), specular_shininess );
+inline float3 colSpecular( float3 normal, float4 fragPos ) {
+	return specular_intensity * pow( max( 0.0f, dot( reflect( normal ), normalize( -(float3)fragPos ) ) ), specular_shininess );
 }
 
 float4 main( PSIn input ) : SV_TARGET{

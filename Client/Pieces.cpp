@@ -34,13 +34,13 @@ Piece::Piece( const std::string& piece, Side s ) : Model( piece, s == WHITE ? mt
 	this->s = s;
 }
 
-void Piece::Draw( int level, int file, int rank ) {
+void Piece::Draw( float x, float y, float z) {
 	using namespace DirectX;
 
 	if ( s == WHITE ) {
-		Model::Draw( XMMatrixTranslation( rank * 1.0f, level * 1.0f, file * 1.0f ) );
+		Model::Draw( XMMatrixTranslation( x, y, z ) );
 	} else {
-		Model::Draw( XMMatrixScaling( -1.0f, 1.0f, -1.0f ) * XMMatrixTranslation( rank * 1.0f, level * 1.0f, file * 1.0f ) );
+		Model::Draw( XMMatrixScaling( -1.0f, 1.0f, -1.0f ) * XMMatrixTranslation( x, y, z ) );
 	}
 
 

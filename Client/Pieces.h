@@ -11,7 +11,7 @@ class Piece : public Model {
 public:
 	Piece( const std::string& piece, Side s );
 
-	void Draw( int level, int file, int rank );
+	void Draw( float x, float y, float z );
 
 	virtual char GetSymbol() = 0;
 

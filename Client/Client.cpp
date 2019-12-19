@@ -4,7 +4,7 @@
 #include "Util.h"
 #include "Shaders.h"
 #include "Pieces.h"
-#include "Player.h"
+#include "Chess.h"
 #include "Camera.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
@@ -16,21 +16,23 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	
 	Timer timer;
 
-	Unicorn pieces[] = {
-		Unicorn( WHITE ),
-		Unicorn( BLACK ),
-		Unicorn( WHITE ),
-		Unicorn( BLACK ),
-		Unicorn( WHITE ),
-		Unicorn( BLACK ),
-		Unicorn( WHITE ),
-		Unicorn( BLACK ),
-		Unicorn( WHITE ),
-		Unicorn( BLACK )
-	};
+	//Unicorn pieces[] = {
+	//	Unicorn( WHITE ),
+	//	Unicorn( BLACK ),
+	//	Unicorn( WHITE ),
+	//	Unicorn( BLACK ),
+	//	Unicorn( WHITE ),
+	//	Unicorn( BLACK ),
+	//	Unicorn( WHITE ),
+	//	Unicorn( BLACK ),
+	//	Unicorn( WHITE ),
+	//	Unicorn( BLACK )
+	//};
 
-	Player p;
-	p.Bind();
+	//Player p;
+	//p.Bind();
+
+	Chess c;
 
 	VertexShader vs( "VertexShader" );
 	vs.Bind();
@@ -53,11 +55,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			}
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
-			p.Update( dt );
-
-			for ( int i = 0; i < 10; i++ ) {
-				pieces[i].Draw( 0, 0, i - 4 );
-			}
+			
+			c.Update( dt );
+			c.Draw();
 
 			Window::Get().GetGraphics().Present();
 

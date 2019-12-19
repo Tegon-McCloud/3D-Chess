@@ -10,10 +10,19 @@ void Camera::UpdateBuffer() {
 
 	XMVECTOR pos = XMVectorSet( x, y, z, 1.0f );
 	XMVECTOR forward = XMVector3Transform( XMVectorSet( 0.0f, 0.0f, 1.0f, 0.0f ), XMMatrixRotationRollPitchYaw( pitch, yaw, roll ) );
-	cameraTransforms.worldToCam = XMMatrixTranspose( XMMatrixLookAtRH( pos, pos + forward, XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f ) ) );
-	cameraTransforms.proj = XMMatrixTranspose( XMMatrixPerspectiveFovRH( 1.5f, Window::Get().GetAspect(), 0.5f, 100.0f ) );
+	
+	struct alignas(16) {
+		XMMATRIX m1, m2;
+	} matrices = {
+		XMMatrixTranspose( XMMatrixLookAtRH( pos, pos + forward, XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f ) ) ),
+		XMMatrixTranspose( XMMatrixPerspectiveFovRH( 1.5f, Window::Get().GetAspect(), 0.5f, 100.0f ) )
+	};
 
-	buffer.Set( &cameraTransforms );
+	buffer.Set( reinterpret_cast< CameraTransforms* >( &matrices ) );
+	
+	XMStoreFloat4x4( &cameraTransforms.worldToCam, XMMatrixTranspose( matrices.m1 )  );
+	XMStoreFloat4x4( &cameraTransforms.proj, XMMatrixTranspose( matrices.m2 ) );
+
 }
 
 void Camera::Bind() {
