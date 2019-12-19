@@ -44,8 +44,12 @@ const Graphics& Window::GetGraphics() {
 	return gfx;
 }
 
-void Window::SetVisible( bool visible ) {
-	ShowWindow( hWnd, visible ? SW_SHOW : SW_HIDE );
+Input& Window::GetInput() {
+	return input;
+}
+
+void Window::SetVisible( bool visible, bool maximized ) {
+	ShowWindow( hWnd, visible ? maximized ? SW_MAXIMIZE : SW_SHOW : SW_HIDE );
 }
 
 std::optional<int> Window::ProcessMessages() const {
@@ -73,6 +77,10 @@ int Window::GetWidth() const {
 
 int Window::GetHeight() const {
 	return height;
+}
+
+bool Window::IsInFocus() const {
+	return GetFocus() == hWnd;
 }
 
 Window::operator HWND() const {
@@ -122,6 +130,9 @@ LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPAR
 	case WM_DESTROY:
 		PostQuitMessage( 0 );
 		break;
+	case WM_CLOSE:
+		PostQuitMessage( 0 );
+		break;
 
 	case WM_SIZE:
 		switch ( wParam ) {
@@ -133,7 +144,19 @@ LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPAR
 		}
 		break;
 
+	case WM_RBUTTONDOWN:
+	case WM_LBUTTONDOWN:
+		Get().input.MouseClick( LOWORD( lParam ), HIWORD( lParam ) );
+		break;
 
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		Get().input.KeyPressed( wParam );
+		break;
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		Get().input.KeyReleased( wParam );
+		break;
 	default:
 		return DefWindowProcW( hWnd, message, wParam, lParam );
 	}

@@ -15,7 +15,7 @@ public:
 	void UpdateBuffer();
 	void Bind();
 
-private:
+protected:
 
 	float x, y, z, pitch, yaw, roll;
 	ConstantBuffer< CameraTransforms, VS, 1u > buffer;

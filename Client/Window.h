@@ -3,6 +3,7 @@
 #include "WindowsStrict.h"
 #include "Graphics.h"
 #include <optional>
+#include "Input.h"
 
 class Window {
 
@@ -16,12 +17,15 @@ public:
 	HWND GetHandle() const;
 	const Graphics& GetGraphics();
 
-	void SetVisible( bool visible );
+	Input& GetInput();
+
+	void SetVisible( bool visible, bool maximized = false );
 
 	std::optional<int> ProcessMessages() const;
 
 	int GetWidth() const;
 	int GetHeight() const;
+	bool IsInFocus() const;
 
 	operator HWND() const;
 
@@ -48,6 +52,7 @@ private:
 	int x, y, width, height;
 	HWND hWnd;
 	Graphics gfx;
+	Input input;
 
 };
 

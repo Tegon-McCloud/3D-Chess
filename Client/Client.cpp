@@ -1,23 +1,22 @@
 #include "Window.h"
 #include <iostream>
 
-#include "Model.h"
 #include "Util.h"
-
-#include "Camera.h"
 #include "Shaders.h"
 #include "Pieces.h"
+#include "Player.h"
+#include "Camera.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
 
 	using namespace DirectX;
 
 	std::optional<int> rv;	// return value
-	Window::Get().SetVisible( true );
+	Window::Get().SetVisible( true, true );
 	
 	Timer timer;
 
-	Unicorn p[] = {
+	Unicorn pieces[] = {
 		Unicorn( WHITE ),
 		Unicorn( BLACK ),
 		Unicorn( WHITE ),
@@ -30,9 +29,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		Unicorn( BLACK )
 	};
 
-	Camera c( 0.0f, 3.0f, -6.0f, 0.5f, 0.0f, 0.0f );
-	c.UpdateBuffer();
-	c.Bind();
+	Player p;
+	p.Bind();
 
 	VertexShader vs( "VertexShader" );
 	vs.Bind();
@@ -55,10 +53,10 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			}
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
-			c.UpdateBuffer();
+			p.Update( dt );
 
 			for ( int i = 0; i < 10; i++ ) {
-				p[i].Draw( 0, 0, i - 4 );
+				pieces[i].Draw( 0, 0, i - 4 );
 			}
 
 			Window::Get().GetGraphics().Present();

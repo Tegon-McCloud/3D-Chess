@@ -1,11 +1,46 @@
 #include "Input.h"
+#include "Window.h"
 
-void Input::RegisterRightClickListener( std::function<void( int x, int y )> onClick ) {
-	
+Input::Input() : cursorVisible( true ) {}
+
+Input::~Input() {
+	if ( !cursorVisible ) {
+		ShowCursor( TRUE );
+	}
 }
 
-void Input::RightClick() {
+void Input::RegisterRightClickListener( const std::function<void( int x, int y )>& onClick ) {
+	onMouseClick.push_back( onClick );
+}
 
+bool Input::IsKeyDown( unsigned char key ) const {
+	return keyStates[key];
+}
+
+POINT Input::GetMousePos() {
+	POINT p;
+	GetCursorPos( &p );
+	ScreenToClient( Window::Get(), &p );
+	return p;
+}
+
+void Input::CenterMouse() {
+	POINT p = { Window::Get().GetWidth() / 2, Window::Get().GetHeight() / 2 };
+	ClientToScreen( Window::Get(), &p );
+	SetCursorPos( p.x, p.y );
+}
+
+void Input::SetCursorVisible( bool visibility ) {
+	if ( cursorVisible == visibility ) return;
+	
+	ShowCursor( visibility );
+	cursorVisible = visibility;
+}
+
+void Input::MouseClick( int x, int y ) {
+	for ( auto f : onMouseClick ) {
+		f( x, y );
+	}
 }
 
 void Input::KeyPressed( unsigned char key ) {
