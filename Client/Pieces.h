@@ -8,9 +8,14 @@ typedef enum {
 class Piece : public Model {
 
 public:
-	Piece( std::string piece, Side s );
+	Piece( const std::string& piece, Side s );
+
+	void Draw( int level, int file, int rank );
 
 	virtual char GetSymbol() = 0;
+
+	Side s;
+
 };
 
 #define PIECE_DECL( Name, Symbol ) \

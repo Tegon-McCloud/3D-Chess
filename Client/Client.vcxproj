@@ -164,12 +164,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Chess.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Pieces.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
@@ -178,12 +181,15 @@
   <ItemGroup>
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Chess.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Pieces.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="VertexBuffer.h" />

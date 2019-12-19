@@ -30,9 +30,20 @@ constexpr const Material mtlBlack = {
 	}
 };
 
-// if piece is black, flip over through x and invert polygon winding bcs we are in negative space after
-Piece::Piece( std::string piece, Side s ) : Model( piece, s == WHITE ? DirectX::XMMatrixIdentity() : DirectX::XMMatrixScaling( -1.0f, 1.0f, 1.0f), s == BLACK ){
-	AddBindable( std::make_shared < ConstantBuffer < Material, PS, 0u > >( s == WHITE ? &mtlWhite : &mtlBlack ) );
+Piece::Piece( const std::string& piece, Side s ) : Model( piece, s == WHITE ? mtlWhite : mtlBlack ) {
+	this->s = s;
+}
+
+void Piece::Draw( int level, int file, int rank ) {
+	using namespace DirectX;
+
+	if ( s == WHITE ) {
+		Model::Draw( XMMatrixTranslation( rank * 1.0f, level * 1.0f, file * 1.0f ) );
+	} else {
+		Model::Draw( XMMatrixScaling( -1.0f, 1.0f, -1.0f ) * XMMatrixTranslation( rank * 1.0f, level * 1.0f, file * 1.0f ) );
+	}
+
+
 }
 
 #define PIECE_IMPL( Name, Symbol ) \

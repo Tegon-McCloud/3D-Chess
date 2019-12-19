@@ -3,6 +3,8 @@
 #include <string>
 #include "ConstantBuffer.h"
 #include "DirectXMath.h"
+#include <unordered_map>
+#include <memory>
 
 typedef struct alignas(16) {
 	 struct {
@@ -23,17 +25,10 @@ typedef struct alignas(16) {
 class Model : public Drawable {
 
 public:
-	Model( std::string name, DirectX::XMMATRIX baseTransform = DirectX::XMMatrixIdentity(), bool flipWinding = false );
-	
-	void ApplyTransform( DirectX::XMMATRIX transform );
-	void SetTransform( DirectX::XMMATRIX transform );
+	Model( const std::string& name, const Material& m );
+
+	void Draw( const DirectX::XMMATRIX& transform );
 
 private:
-
-	DirectX::XMFLOAT4X4 transform;
-	DirectX::XMFLOAT4X4 baseTransform;
-
 	std::shared_ptr< ConstantBuffer< DirectX::XMMATRIX, VS, 0u > > pTransformBuffer;
-	
 };
-
