@@ -20,7 +20,7 @@ private:
 	std::shared_ptr<Model> pModel;
 	Side side;
 
-	static std::unordered_map< std::string, std::shared_ptr<Model> > models;
+	static std::unordered_map< std::string, std::shared_ptr<Model> > models; // improve performance by only holding each object once.
 };
 
 #define PIECE_DECL( Name, Symbol ) \

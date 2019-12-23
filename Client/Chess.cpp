@@ -1,14 +1,19 @@
 #include "Chess.h"
+#include "Pieces.h"
 
 Chess::Chess() {
 
 	player.Update( 0.0f );
 	player.Bind();
 
+	auto whiteSquare = std::make_shared< Model >( "Square", mtlWhite );
+	auto blackSquare = std::make_shared< Model >( "Square", mtlBlack );
+	
 	for ( int i = 0; i < 5; i++ ) {
 		for ( int j = 0; j < 5; j++ ) {
 			for ( int k = 0; k < 5; k++ ) {
 				
+				// Pawns
 				if ( k == 1 && i < 2) {
 					pieces[i][j][k].reset(new Pawn( WHITE ));
 				}
@@ -17,6 +22,9 @@ Chess::Chess() {
 					pieces[i][j][k].reset(new Pawn( BLACK ));
 				}
 
+				// Board
+				board[i][j][k] = (i + j + k) % 2 == 0 ? whiteSquare : blackSquare;
+				
 			}
 		}
 	}
@@ -58,6 +66,8 @@ void Chess::Draw() {
 				if ( pieces[i][j][k] ) {
 					pieces[i][j][k]->Draw( k * 2.5f, i * 5.0f, j * 2.5f );
 				}
+
+				board[i][j][k]->Draw( DirectX::XMMatrixTranslation( i * 2.5f, j * 5.0f, k * 2.5f ) );
 
 			}
 		}
