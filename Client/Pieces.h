@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Model.h"
+#include <unordered_map>
 
 typedef enum {
 	WHITE, BLACK
 } Side;
 
-class Piece : public Model {
+class Piece {
 
 public:
 	Piece( const std::string& piece, Side s );
@@ -15,8 +16,11 @@ public:
 
 	virtual char GetSymbol() = 0;
 
-	Side s;
+private:
+	std::shared_ptr<Model> pModel;
+	Side side;
 
+	static std::unordered_map< std::string, std::shared_ptr<Model> > models;
 };
 
 #define PIECE_DECL( Name, Symbol ) \

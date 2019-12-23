@@ -15,9 +15,7 @@ public:
 	void Draw();
 
 private:
-	std::array< std::array< std::array< std::shared_ptr< Piece >, 5 >, 5 >, 5 > board;
-
-
+	std::array< std::array< std::array< std::shared_ptr< Piece >, 5 >, 5 >, 5 > pieces;
 
 	Player player;
 };

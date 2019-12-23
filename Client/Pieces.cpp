@@ -30,17 +30,26 @@ constexpr const Material mtlBlack = {
 	}
 };
 
-Piece::Piece( const std::string& piece, Side s ) : Model( piece, s == WHITE ? mtlWhite : mtlBlack ) {
-	this->s = s;
+std::unordered_map< std::string, std::shared_ptr<Model> > Piece::models = std::unordered_map< std::string, std::shared_ptr<Model> >();
+
+Piece::Piece( const std::string& piece, Side s ) {
+	side = s;
+	
+	auto key = piece + (side == WHITE ? "W" : "B");
+
+	if ( models.find( key ) == models.end() ) {
+		models[key] = std::make_shared<Model>( piece, side == WHITE ? mtlWhite : mtlBlack );
+	}
+	pModel = models[key];
 }
 
 void Piece::Draw( float x, float y, float z) {
 	using namespace DirectX;
 
-	if ( s == WHITE ) {
-		Model::Draw( XMMatrixTranslation( x, y, z ) );
+	if ( side == WHITE ) {
+		pModel->Draw( XMMatrixTranslation( x, y, z ) );
 	} else {
-		Model::Draw( XMMatrixScaling( -1.0f, 1.0f, -1.0f ) * XMMatrixTranslation( x, y, z ) );
+		pModel->Draw( XMMatrixScaling( -1.0f, 1.0f, -1.0f ) * XMMatrixTranslation( x, y, z ) );
 	}
 
 
