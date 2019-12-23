@@ -16,7 +16,8 @@ public:
 	void UpdateBuffer();
 	void Bind(); // sets this as the camera to use
 
-	void ToViewSpace( DirectX::XMVECTOR& v ); // converts v from worldspace to viewspace
+	DirectX::XMVECTOR ToViewSpace3( const DirectX::XMVECTOR& v ); // converts v from worldspace to viewspace
+	DirectX::XMVECTOR ToViewSpace4( const DirectX::XMVECTOR& v );
 
 protected:
 

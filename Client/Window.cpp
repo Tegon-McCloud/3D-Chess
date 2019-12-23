@@ -110,7 +110,6 @@ LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPAR
 
 
 	case WM_CLOSE:
-		printf( "close message" );
 		PostQuitMessage( 0 );
 		break;
 		

@@ -29,7 +29,12 @@ void Camera::Bind() {
 	buffer.Bind();
 }
 
-void Camera::ToViewSpace( DirectX::XMVECTOR& v ) {
+DirectX::XMVECTOR Camera::ToViewSpace3( const DirectX::XMVECTOR& v ) {
 	using namespace DirectX;
+	return  XMVector3Transform( v, XMLoadFloat4x4( &cameraTransforms.worldToCam ) );
+}
 
+DirectX::XMVECTOR Camera::ToViewSpace4( const DirectX::XMVECTOR& v ) {
+	using namespace DirectX;
+	return  XMVector4Transform( v, XMLoadFloat4x4( &cameraTransforms.worldToCam ) );
 }

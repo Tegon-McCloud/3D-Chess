@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Pieces.h"
+#include "Player.h"
+#include "Lighting.h"
 
 #include <array>
 #include <memory>
-#include "Player.h"
+
 
 constexpr const Material mtlWhite = {
 	{					// ambient:
@@ -47,7 +49,8 @@ public:
 private:
 	std::array< std::array< std::array< std::shared_ptr< Piece >, 5 >, 5 >, 5 > pieces;
 	std::array< std::array< std::array< std::shared_ptr< Model >, 5 >, 5 >, 5 > board;
-	//ConstantBuffer< Light,  >
+	Light light;
+	ConstantBuffer < Light, PS, 1u > lightBuffer;
 
 	Player player;
 };

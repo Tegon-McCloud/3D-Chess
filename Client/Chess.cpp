@@ -6,6 +6,12 @@ Chess::Chess() {
 	player.Update( 0.0f );
 	player.Bind();
 
+	light.rgb = { 1.0f, 1.0f, 1.0f };
+	light.dir = { 0.0f, -1.0f, 0.0f };
+	lightBuffer.Set( &light );
+	lightBuffer.Bind();
+
+	// board setup
 	auto whiteSquare = std::make_shared< Model >( "Square", mtlWhite );
 	auto blackSquare = std::make_shared< Model >( "Square", mtlBlack );
 	
@@ -59,6 +65,15 @@ void Chess::Update( float dt ) {
 }
 
 void Chess::Draw() {
+	using namespace DirectX;
+
+	const XMVECTOR lightDirWorld = XMVector3Normalize( { 1.0f, -1.0f, 1.0f, 0.0f } );
+	XMVECTOR lightDirView = player.ToViewSpace4( lightDirWorld );
+
+	XMStoreFloat3( &light.dir, lightDirView );
+
+	lightBuffer.Set( &light );
+
 	for ( int i = 0; i < 5; i++ ) {
 		for ( int j = 0; j < 5; j++ ) {
 			for ( int k = 0; k < 5; k++ ) {
