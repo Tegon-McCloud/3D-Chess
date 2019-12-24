@@ -1,7 +1,7 @@
 #include "Header.hlsli"
 
 struct Vertex {
-	float3 pos : Position;
+	float3 pos : POSITION;
 };
 
 cbuffer Model : register(b0) {

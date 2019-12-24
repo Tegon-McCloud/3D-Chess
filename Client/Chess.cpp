@@ -1,7 +1,11 @@
 #include "Chess.h"
 #include "Pieces.h"
+#include "cmath"
 
-const std::unordered_map< char, int > alg = {
+#include <algorithm>
+#include <limits>
+
+const std::unordered_map< char, int > alg = {	// convert from character from algebraic notation to coordinate
 	{ 'A', 0 }, { 'B', 1 }, { 'C', 2 }, { 'D', 3 }, { 'E', 4 },
 	{ 'a', 0 }, { 'b', 1 }, { 'c', 2 }, { 'd', 3 }, { 'e', 4 },
 	{ '1', 0 }, { '2', 1 }, { '3', 2 }, { '4', 3 }, { '5', 4 },
@@ -14,7 +18,77 @@ Chess::Chess() {
 	player.Bind();
 
 	Window::Get().GetInput().RegisterRightClickListener( [ this ]( int x, int y ) -> void {
-		MovePiece( "Aa1", "Aa3" );
+
+		using namespace DirectX;
+
+		Ray r = player.LookRay();
+
+		int lvl = -1, fl = -1 , rnk = -1;
+		
+		float dist = std::numeric_limits<float>::infinity();
+
+		for ( int i = 0; i < 5; i++ ) {
+			for ( int j = 0; j < 5; j++ ) {
+				for ( int k = 0; k < 5; k++ ) {
+
+					if ( pieces[i][j][k] ) {
+
+						XMFLOAT3 boxMin;
+						boxMin.x = k * 3.0f - 0.5f;
+						boxMin.y = i * 6.0f - 0.0f;
+						boxMin.z = j * 3.0f - 0.5f;
+
+						XMFLOAT3 boxMax;
+						boxMax.x = k * 3.0f + 0.5f;
+						boxMax.y = i * 6.0f + 3.0f;
+						boxMax.z = j * 3.0f + 0.5f;
+
+						float tmin, tmax;
+
+						// yz-plane intersection distances
+						float txmin = (boxMin.x - r.ori.x) / r.dir.x;
+						float txmax = (boxMax.x - r.ori.x) / r.dir.x;
+						if ( txmin > txmax ) std::swap( txmin, txmax );
+						
+						tmin = txmin;
+						tmax = txmax;
+						
+						float tymin = (boxMin.y - r.ori.y) / r.dir.y;
+						float tymax = (boxMax.y - r.ori.y) / r.dir.y;
+						if ( tymin > tymax ) std::swap( tymin, tymax );
+
+						if ( tymax < tmin || tymin > tmax ) continue; // overshot in y direction
+						
+						if ( tymin > tmin ) tmin = tymin;
+						if ( tymax < tmax ) tmax = tymax;
+
+						float tzmin = (boxMin.z - r.ori.z) / r.dir.z;
+						float tzmax = (boxMax.z - r.ori.z) / r.dir.z;
+						if ( tzmin > tzmax ) std::swap( tzmin, tzmax );
+
+						if ( tzmax < tmin || tzmin > tmax ) continue; // overshot in z direction
+
+						if ( tzmin > tmin ) tmin = tzmin;
+						if ( tzmax < tmax ) tmax = tzmax;
+
+
+						if ( tmax < 0 ) continue;
+						float t = tmin > 0.0f ? tmin : tmax;
+
+						if ( t < dist ) {
+							dist = t;
+							lvl = i;
+							fl = j;
+							rnk = k;
+						}
+					}
+					
+				}
+			}
+		}
+		
+		printf( "%i, %i, %i\n", lvl, fl, rnk );
+
 	} );
 
 	light.rgb = { 1.0f, 1.0f, 1.0f };
@@ -90,7 +164,7 @@ void Chess::Draw() {
 			for ( int k = 0; k < 5; k++ ) {
 
 				if ( pieces[i][j][k] ) {
-					pieces[i][j][k]->Draw( k * 3.0f, i * 6.0f, j * 3.0f );	// rank -> x, level -> y, file -> z
+					pieces[i][j][k]->Draw( k * 3.0f, i * 6.0f, j * 3.0f );	// k(rank) -> x, i(level) -> y, j(file) -> z
 				}
 
 				board[i][j][k]->Draw( DirectX::XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );

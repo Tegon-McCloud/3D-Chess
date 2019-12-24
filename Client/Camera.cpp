@@ -18,7 +18,7 @@ void Camera::UpdateBuffer() {
 		XMMATRIX m1, m2;
 	} matrices = {
 		XMMatrixTranspose( XMMatrixLookAtRH( pos, pos + forward, XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f ) ) ),
-		XMMatrixTranspose( XMMatrixPerspectiveFovRH( 1.5f, Window::Get().GetAspect(), 0.5f, 100.0f ) )
+		XMMatrixTranspose( XMMatrixPerspectiveFovRH( 1.5f, Window::Get().GetAspect(), 0.5f, 50.0f ) )
 	};
 
 	buffer.Set( reinterpret_cast< CameraTransforms* >( &matrices ) );

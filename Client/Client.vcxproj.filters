@@ -150,9 +150,21 @@
     <FxCompile Include="GeometryShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="VertexShader2D.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader2D.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="GeometryShader2D.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Header.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Header2D.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

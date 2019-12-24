@@ -22,8 +22,6 @@ void Piece::Draw( float x, float y, float z) {
 	} else {
 		pModel->Draw( XMMatrixScaling( -1.0f, 1.0f, -1.0f ) * XMMatrixTranslation( x, y, z ) );
 	}
-
-
 }
 
 #define PIECE_IMPL( Name, Symbol ) \

@@ -8,10 +8,10 @@ typedef struct alignas(16) {
 	DirectX::XMFLOAT4X4 proj;
 } CameraTransforms;
 
-struct Ray {
+typedef struct {
 	DirectX::XMFLOAT4 ori;
 	DirectX::XMFLOAT4 dir;
-};
+} Ray;
 
 class Camera {
 
