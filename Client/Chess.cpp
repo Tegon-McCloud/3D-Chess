@@ -97,7 +97,8 @@ Chess::Chess() {
 				}
 			}
 		}
-		
+		selectedPos.reset( new Position( lvl, fl, rnk ) );
+
 		printf( "%i, %i, %i\n", lvl, fl, rnk );
 
 	} );
@@ -174,10 +175,6 @@ void Chess::Draw() {
 		for ( int j = 0; j < 5; j++ ) {
 			for ( int k = 0; k < 5; k++ ) {
 
-				if ( pieces[i][j][k] ) {
-					pieces[i][j][k]->Draw( k * 3.0f, i * 6.0f, j * 3.0f );	// k(rank) -> x, i(level) -> y, j(file) -> z
-				}
-
 				board[i][j][k]->Draw( XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
 
 			}
@@ -187,16 +184,25 @@ void Chess::Draw() {
 	Window::Get().GetGraphics().SetBlendEnabled( true );
 	Window::Get().GetGraphics().SetDepthEnabled( false );
 	
+
+	
+	if( selectedPos )
+		highlightBox->Draw( XMMatrixScaling( 1.1f, 3.0f, 1.1f ) * XMMatrixTranslation( selectedPos->r * 3.0f, selectedPos->l * 6.0f, selectedPos->f * 3.0f ) );
+
+	Window::Get().GetGraphics().SetBlendEnabled( false );
+	Window::Get().GetGraphics().SetDepthEnabled( true );
+
 	for ( int i = 0; i < 5; i++ ) {
 		for ( int j = 0; j < 5; j++ ) {
 			for ( int k = 0; k < 5; k++ ) {
-				highlightBox->Draw( XMMatrixScaling( 1.1f, 3.0f, 1.1f ) * XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
+				
+				if ( pieces[i][j][k] )
+					pieces[i][j][k]->Draw( k * 3.0f, i * 6.0f, j * 3.0f );
+
 			}
 		}
 	}
-	
-	Window::Get().GetGraphics().SetBlendEnabled( false );
-	Window::Get().GetGraphics().SetDepthEnabled( true );
+
 }
 
 void Chess::MovePiece( Position from, Position to ) {

@@ -96,6 +96,8 @@ float intersection( const Ray& r, const Box& b ) {
 
 
 
+Position::Position( int l, int f, int r ) : l(l), f(f), r(r) {}
+
 Position::Position( const std::string& alg ) {
 	const std::unordered_map< char, int > algMap = {	// convert from character from algebraic notation to coordinate
 		{ 'A', 0 }, { 'B', 1 }, { 'C', 2 }, { 'D', 3 }, { 'E', 4 },

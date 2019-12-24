@@ -46,7 +46,7 @@ typedef struct {
 float intersection( const Ray& r, const Box& b );
 
 struct Position {
-
+	Position( int l, int f, int r );
 	Position( const std::string& alg );
 	int l, f, r;
 	std::string toAlg();
