@@ -44,3 +44,10 @@ typedef struct {
 } Box;
 
 float intersection( const Ray& r, const Box& b );
+
+struct Position {
+
+	Position( const std::string& alg );
+	int l, f, r;
+	std::string toAlg();
+};

@@ -5,12 +5,6 @@
 #include <algorithm>
 #include <limits>
 
-const std::unordered_map< char, int > alg = {	// convert from character from algebraic notation to coordinate
-	{ 'A', 0 }, { 'B', 1 }, { 'C', 2 }, { 'D', 3 }, { 'E', 4 },
-	{ 'a', 0 }, { 'b', 1 }, { 'c', 2 }, { 'd', 3 }, { 'e', 4 },
-	{ '1', 0 }, { '2', 1 }, { '3', 2 }, { '4', 3 }, { '5', 4 },
-};
-
 constexpr const Material mtlWhiteSquare = {
 	{					// ambient:
 		0.2f				// intensity
@@ -186,20 +180,33 @@ void Chess::Draw() {
 
 				board[i][j][k]->Draw( XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
 
+			}
+		}
+	}
+
+	Window::Get().GetGraphics().SetBlendEnabled( true );
+	Window::Get().GetGraphics().SetDepthEnabled( false );
+	
+	for ( int i = 0; i < 5; i++ ) {
+		for ( int j = 0; j < 5; j++ ) {
+			for ( int k = 0; k < 5; k++ ) {
 				highlightBox->Draw( XMMatrixScaling( 1.1f, 3.0f, 1.1f ) * XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
 			}
 		}
 	}
+	
+	Window::Get().GetGraphics().SetBlendEnabled( false );
+	Window::Get().GetGraphics().SetDepthEnabled( true );
 }
 
-void Chess::MovePiece( std::string from, std::string to ) {
+void Chess::MovePiece( Position from, Position to ) {
 	CellAt( to ) = std::move( CellAt( from ) );
 }
 
-Piece& Chess::PieceAt( std::string pos ) {
+Piece& Chess::PieceAt( Position pos ) {
 	return *CellAt( pos );
 }
 
-std::shared_ptr<Piece>& Chess::CellAt( std::string pos ) {
-	return pieces[alg.at( pos[0] )][alg.at( pos[1] )][alg.at( pos[2] )];
+std::shared_ptr<Piece>& Chess::CellAt( Position pos ) {
+	return pieces[pos.l][pos.f][pos.r];
 }

@@ -2,6 +2,7 @@
 #include "WindowsStrict.h"
 
 #include <limits>
+#include <unordered_map>
 
 std::string GetLastErrorString(HRESULT hr) {
 	
@@ -91,4 +92,31 @@ float intersection( const Ray& r, const Box& b ) {
 	if ( tmax < 0 ) return std::numeric_limits<float>::infinity();
 	float t = tmin > 0.0f ? tmin : tmax;
 
+}
+
+
+
+Position::Position( const std::string& alg ) {
+	const std::unordered_map< char, int > algMap = {	// convert from character from algebraic notation to coordinate
+		{ 'A', 0 }, { 'B', 1 }, { 'C', 2 }, { 'D', 3 }, { 'E', 4 },
+		{ 'a', 0 }, { 'b', 1 }, { 'c', 2 }, { 'd', 3 }, { 'e', 4 },
+		{ '1', 0 }, { '2', 1 }, { '3', 2 }, { '4', 3 }, { '5', 4 },
+	};
+
+	l = algMap.at( alg[0] );
+	f = algMap.at( alg[1] );
+	r = algMap.at( alg[2] );
+}
+
+std::string Position::toAlg() {
+	const std::vector<char> levelMap	= { 'A', 'B', 'C', 'D', 'E' };
+	const std::vector<char> fileMap		= { 'a', 'b', 'c', 'd', 'e' };
+	const std::vector<char> rankMap		= { '1', '3', '3', '4', '5' };
+
+	std::string s;
+	s.push_back( levelMap[l] );
+	s.push_back( fileMap[f] );
+	s.push_back( rankMap[r] );
+
+	return s;
 }

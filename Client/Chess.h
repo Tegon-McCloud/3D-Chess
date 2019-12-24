@@ -3,13 +3,10 @@
 #include "Pieces.h"
 #include "Player.h"
 #include "Lighting.h"
+#include "Util.h"
 
 #include <array>
 #include <memory>
-
-typedef struct {
-	int l, f, r;
-} Position;
 
 /* An instance of Chess represents a current chess game. 
  */
@@ -20,13 +17,13 @@ public:
 
 	void Update( float dt );
 	void Draw();
-	void MovePiece(std::string from, std::string to);
+	void MovePiece( Position from, Position to );
 
-	Piece& PieceAt( std::string pos );
+	Piece& PieceAt( Position p );
 	
 private:
 
-	std::shared_ptr<Piece>& CellAt( std::string pos );
+	std::shared_ptr<Piece>& CellAt( Position p );
 
 	/* The board is a 5x5x5 array of pieces. The first index will be its level, second its file and third its rank.
 	 * This means that in the first index will not be x, as that is its level and should naturally be displayed on the y-axis.
@@ -34,12 +31,12 @@ private:
 	std::array< std::array< std::array< std::shared_ptr< Piece >, 5 >, 5 >, 5 > pieces;
 	std::array< std::array< std::array< std::shared_ptr< Model >, 5 >, 5 >, 5 > board;
 	std::shared_ptr<Model> highlightBox;
+	std::unique_ptr<Position> selectedPos;
 
 	Light light;
 	ConstantBuffer < Light, PS, 1u > lightBuffer;
 
 	Player player;
 
-	Position selectedPos;
 	
 };

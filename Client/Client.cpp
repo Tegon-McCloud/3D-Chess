@@ -25,7 +25,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	GeometryShader gs( "GeometryShader" );
 	gs.Bind();
 	
-	Window::Get().GetGraphics().SetBlendEnabled( true );
+	Window::Get().GetGraphics().SetBlendEnabled( false );
 	Window::Get().GetGraphics().SetDepthEnabled( true );
 
 	try {
