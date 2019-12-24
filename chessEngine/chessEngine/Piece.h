@@ -1,11 +1,9 @@
 #pragma once
-
-#include <typeinfo>
 #include <string>
 
 class Piece {
 public:
-	//static int idOf(const Piece& p);
-	virtual std::string GetSymbol(const Piece& p) = 0;
-private:
+	virtual void move(int* field[5][5][5], int x, int y, int z) = 0;
+	virtual void printMoves(int* field[5][5][5], int x, int y, int z) = 0;
+	virtual std::string getMoves(int* field[5][5][5], int x, int y, int z) = 0;
 };

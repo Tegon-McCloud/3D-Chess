@@ -3,6 +3,7 @@
 
 class Bishop : public Piece {
 public:
-	Bishop();
-	std::string GetSymbol(const Piece& p) override;
+	void move(int* field[5][5][5], int x, int y, int z) override;
+	void printMoves(int* field[5][5][5], int x, int y, int z) override;
+	std::string getMoves(int* field[5][5][5], int x, int y, int z) override;
 };

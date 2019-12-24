@@ -6,15 +6,24 @@
 class Game {
 public:
 	Game();
-	int getPieceId(int x, int y, int z);
-	void setPieceId(int x, int y, int z, int id);
+	void printEntireField();
+	void movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo);
 
 private:
 	int field[5][5][5];
+	int colour[5][5][5];	//0 is black, 1 is white and -1 is none
 	std::unordered_map<std::string, int> ids = {
-		{"Bishop", 0},
+		{"Empty", 0},
 		{"Pawn", 1},
-		{"Rook", 2},
-		{"Empty", 3}
+		{"Knight", 2},
+		{"Bishop", 3},
+		{"Rook", 4},
+		{"Unicorn", 5},
+		{"Queen", 6},
+		{"King", 7}
 	};
+	void setPieceId(int x, int y, int z, int id);
+	void setPieceColour(int x, int y, int z, int colour);
+	int getPieceId(int x, int y, int z);
+	int getPieceColour(int x, int y, int z);
 };
