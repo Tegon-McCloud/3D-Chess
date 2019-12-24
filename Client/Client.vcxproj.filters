@@ -60,7 +60,7 @@
     <ClCompile Include="Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BlendState.cpp">
+    <ClCompile Include="States.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,7 +116,7 @@
     <ClInclude Include="Lighting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BlendState.h">
+    <ClInclude Include="States.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -145,6 +145,7 @@
     <Resource Include="Resources\Square.obj">
       <Filter>Resource Files</Filter>
     </Resource>
+    <Resource Include="Resources\Box.obj" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">
@@ -161,10 +162,5 @@
     <None Include="Header.hlsli">
       <Filter>Shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\Box.obj">
-      <Filter>Resource Files</Filter>
-    </Object>
   </ItemGroup>
 </Project>

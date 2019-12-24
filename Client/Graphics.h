@@ -3,6 +3,7 @@
 #include "WRL.h"
 #include "d3d11.h"
 #include "DirectXMath.h"
+#include "States.h"
 
 /* The Graphics type, is instantiated by the Window on creation.
  * It manages the DX11 pipeline.
@@ -31,10 +32,13 @@ public:
 	// displays currently drawn frame
 	void Present() const;
 
+	void SetDepthEnabled( bool enable ) const;
+	void SetBlendEnabled( bool enable ) const;
+
 	// getters for DX11 interfaces
 	ID3D11Device* GetDevice() const;
 	ID3D11DeviceContext* GetContext() const;
-
+	
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;
@@ -42,5 +46,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRTV;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
 
+	BlendState blendState;
+	DepthState depthState;
 };
 

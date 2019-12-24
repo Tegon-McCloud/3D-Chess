@@ -4,7 +4,6 @@
 #include "Util.h"
 #include "Shaders.h"
 #include "Chess.h"
-#include "BlendState.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
 
@@ -26,8 +25,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	GeometryShader gs( "GeometryShader" );
 	gs.Bind();
 	
-	BlendState b( true );
-	b.Bind();
+	Window::Get().GetGraphics().SetBlendEnabled( true );
+	Window::Get().GetGraphics().SetDepthEnabled( true );
 
 	try {
 		while ( true ) {

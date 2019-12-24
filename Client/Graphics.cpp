@@ -98,6 +98,9 @@ Graphics::Graphics(HWND hWnd ) {
 
 	ThrowIfFailed( D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, deviceFlags, NULL, 0, D3D11_SDK_VERSION, &sd, 
 												  &pSwap, &pDevice, NULL, &pContext) );
+	
+	blendState.Init( pDevice.Get() );
+	depthState.Init( pDevice.Get() );
 }
 
 Graphics::~Graphics() {
@@ -132,13 +135,6 @@ void Graphics::SizeChanged() {
 	ThrowIfFailed( pSwap->GetBuffer( 0u, __uuidof(ID3D11Resource), &pBB ) ); // get the swapchains first backbuffer
 	ThrowIfFailed( pDevice->CreateRenderTargetView( pBB.Get(), nullptr, &pRTV ) ); // create rtv of it and store the interface in pRTV
 	
-	// create and bind depth stencil state to output merger
-	D3D11_DEPTH_STENCIL_DESC dsd = defaultDepthStencilDesc;
-
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDSS;
-	pDevice->CreateDepthStencilState( &dsd, &pDSS );
-	pContext->OMSetDepthStencilState( pDSS.Get(), 1u );
-
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pDS; // pointer to texture holding depth and stencil info
 
 	DXGI_SWAP_CHAIN_DESC sd;
@@ -185,6 +181,14 @@ void Graphics::Clear( const float* rgba ) const {
 
 void Graphics::Present() const {
 	ThrowIfFailed( pSwap->Present( 1u, 0u ) );
+}
+
+void Graphics::SetDepthEnabled( bool enable ) const {
+	depthState.Enabled( enable );
+}
+
+void Graphics::SetBlendEnabled( bool enable ) const {
+	blendState.Enabled( enable );
 }
 
 ID3D11Device* Graphics::GetDevice() const {
