@@ -52,3 +52,5 @@ float Timer::Time() {
 void Timer::Reset() {
 	lastReset = std::chrono::steady_clock::now();
 }
+
+

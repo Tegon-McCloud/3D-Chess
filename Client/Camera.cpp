@@ -11,6 +11,9 @@ void Camera::UpdateBuffer() {
 	XMVECTOR pos = XMVectorSet( x, y, z, 1.0f );
 	XMVECTOR forward = XMVector3Transform( XMVectorSet( 0.0f, 0.0f, 1.0f, 0.0f ), XMMatrixRotationRollPitchYaw( pitch, yaw, roll ) );
 	
+	XMStoreFloat4( &lookRay.ori, pos );
+	XMStoreFloat4( &lookRay.dir, forward );
+
 	struct alignas(16) {
 		XMMATRIX m1, m2;
 	} matrices = {
@@ -29,7 +32,16 @@ void Camera::Bind() {
 	buffer.Bind();
 }
 
-void Camera::ToViewSpace( DirectX::XMVECTOR& v ) {
+DirectX::XMVECTOR Camera::ToViewSpace3( const DirectX::XMVECTOR& v ) {
 	using namespace DirectX;
+	return  XMVector3Transform( v, XMLoadFloat4x4( &cameraTransforms.worldToCam ) );
+}
 
+DirectX::XMVECTOR Camera::ToViewSpace4( const DirectX::XMVECTOR& v ) {
+	using namespace DirectX;
+	return  XMVector4Transform( v, XMLoadFloat4x4( &cameraTransforms.worldToCam ) );
+}
+
+Ray Camera::LookRay() {
+	return lookRay;
 }

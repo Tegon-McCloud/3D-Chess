@@ -1,7 +1,5 @@
 #include "Header.hlsli"
 
-static const float3 lightDir = normalize(float3( 1.0f, -1.0f, 1.0f ));
-
 cbuffer Material : register(b0) {
 	float ambient_intensity;
 
@@ -22,12 +20,11 @@ inline float3 colAmbient() {
 }
 
 inline float3 colDiffuse( float3 normal ) {
-	return diffuse_rgb * max( 0.0f, dot( -lightDir, normal ));
+	return diffuse_rgb * max( 0.0f, dot( light_dir, normal ));
 }
 
 inline float3 reflect( float3 normal ) {
-	return lightDir - 2.0f * normal * dot( lightDir, normal );
-
+	return light_dir - 2.0f * normal * dot( light_dir, normal );
 }
 
 inline float3 colSpecular( float3 normal, float4 fragPos ) {

@@ -136,6 +136,9 @@
     <Resource Include="Resources\Unicorn.obj">
       <Filter>Resource Files</Filter>
     </Resource>
+    <Resource Include="Resources\Square.obj">
+      <Filter>Resource Files</Filter>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">
@@ -152,10 +155,5 @@
     <None Include="Header.hlsli">
       <Filter>Shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\Square.obj">
-      <Filter>Resource Files</Filter>
-    </Object>
   </ItemGroup>
 </Project>
