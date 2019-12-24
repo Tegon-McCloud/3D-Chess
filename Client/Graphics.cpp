@@ -184,7 +184,6 @@ void Graphics::Clear( const float* rgba ) const {
 }
 
 void Graphics::Present() const {
-
 	ThrowIfFailed( pSwap->Present( 1u, 0u ) );
 }
 

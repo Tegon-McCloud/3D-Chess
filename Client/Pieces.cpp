@@ -1,6 +1,38 @@
 #include "Pieces.h"
 #include "Chess.h"
 
+constexpr const Material mtlWhitePiece = {
+	{					// ambient:
+		0.2f				// intensity
+	},
+	{					// diffuse:
+		1.0f,				// r
+		1.0f,				// g
+		1.0f				// b
+	},
+	{					// specular:
+		0.1,				// intensity
+		24.0f				// shininess
+	},
+	0.0f				// transparency
+};
+
+constexpr const Material mtlBlackPiece = {
+	{					// ambient:
+		0.2f				// intensity
+	},
+	{					// diffuse:
+		0.1f,				// r
+		0.1f,				// g
+		0.1f				// b
+	},
+	{					// specular:
+		0.1,				// intensity
+		24.0f				// shininess
+	},
+	0.0f				// transparency
+};
+
 std::unordered_map< std::string, std::shared_ptr<Model> > Piece::models = std::unordered_map< std::string, std::shared_ptr<Model> >();
 
 Piece::Piece( const std::string& piece, Side s ) {
@@ -9,7 +41,7 @@ Piece::Piece( const std::string& piece, Side s ) {
 	auto key = piece + (side == WHITE ? "W" : "B");
 
 	if ( models.find( key ) == models.end() ) {
-		models[key] = std::make_shared<Model>( piece, side == WHITE ? mtlWhite : mtlBlack );
+		models[key] = std::make_shared<Model>( piece, side == WHITE ? mtlWhitePiece : mtlBlackPiece );
 	}
 	pModel = models[key];
 }

@@ -19,6 +19,8 @@ typedef struct alignas(16) {
 		float intensity, shininess;
 	} specular;
 
+	float transparency;
+
 } Material;
 
 

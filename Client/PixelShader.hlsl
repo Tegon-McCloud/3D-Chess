@@ -7,6 +7,8 @@ cbuffer Material : register(b0) {
 
 	float specular_intensity;
 	float specular_shininess;
+
+	float transparency;
 }
 
 cbuffer Light : register(b1) {
@@ -35,5 +37,5 @@ float4 main( PSIn input ) : SV_TARGET{
 
 	input.normal = normalize( input.normal );
 
-	return float4( saturate( colAmbient() + colDiffuse( input.normal ) + colSpecular( input.normal, input.viewPos ) ), 1.0f);
+	return float4( saturate( colAmbient() + colDiffuse( input.normal ) + colSpecular( input.normal, input.viewPos ) ), 1.0f - transparency);
 }

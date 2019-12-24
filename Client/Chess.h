@@ -7,37 +7,12 @@
 #include <array>
 #include <memory>
 
+typedef struct {
+	int l, f, r;
+} Position;
 
-constexpr const Material mtlWhite = {
-	{					// ambient:
-		0.2f				// intensity
-	},
-	{					// diffuse:
-		1.0f,				// r
-		1.0f,				// g
-		1.0f				// b
-	},
-	{					// specular:
-		0.1,				// intensity
-		24.0f				// shininess
-	}
-};
-
-constexpr const Material mtlBlack = {
-	{					// ambient:
-		0.2f				// intensity
-	},
-	{					// diffuse:
-		0.1f,				// r
-		0.1f,				// g
-		0.1f				// b
-	},
-	{					// specular:
-		0.1,				// intensity
-		24.0f				// shininess
-	}
-};
-
+/* An instance of Chess represents a current chess game. 
+ */
 class Chess {
 
 public:

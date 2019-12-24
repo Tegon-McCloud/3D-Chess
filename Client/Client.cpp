@@ -3,9 +3,8 @@
 
 #include "Util.h"
 #include "Shaders.h"
-#include "Pieces.h"
 #include "Chess.h"
-#include "Camera.h"
+#include "BlendState.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
 
@@ -15,22 +14,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	Window::Get().SetVisible( true, true );
 	
 	Timer timer;
-
-	//Unicorn pieces[] = {
-	//	Unicorn( WHITE ),
-	//	Unicorn( BLACK ),
-	//	Unicorn( WHITE ),
-	//	Unicorn( BLACK ),
-	//	Unicorn( WHITE ),
-	//	Unicorn( BLACK ),
-	//	Unicorn( WHITE ),
-	//	Unicorn( BLACK ),
-	//	Unicorn( WHITE ),
-	//	Unicorn( BLACK )
-	//};
-
-	//Player p;
-	//p.Bind();
 
 	Chess c;
 
@@ -42,8 +25,10 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	
 	GeometryShader gs( "GeometryShader" );
 	gs.Bind();
-
 	
+	BlendState b( true );
+	b.Bind();
+
 	try {
 		while ( true ) {
 			float dt = timer.Time();

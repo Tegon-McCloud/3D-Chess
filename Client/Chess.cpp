@@ -11,6 +11,38 @@ const std::unordered_map< char, int > alg = {	// convert from character from alg
 	{ '1', 0 }, { '2', 1 }, { '3', 2 }, { '4', 3 }, { '5', 4 },
 };
 
+constexpr const Material mtlWhiteSquare = {
+	{					// ambient:
+		0.2f				// intensity
+	},
+	{					// diffuse:
+		1.0f,				// r
+		1.0f,				// g
+		1.0f				// b
+	},
+	{					// specular:
+		0.1,				// intensity
+		24.0f				// shininess
+	},
+	0.0f				// transparency
+};
+
+constexpr const Material mtlBlackSquare = {
+	{					// ambient:
+		0.2f				// intensity
+	},
+	{					// diffuse:
+		0.1f,				// r
+		0.1f,				// g
+		0.1f				// b
+	},
+	{					// specular:
+		0.1,				// intensity
+		24.0f				// shininess
+	},
+	0.0f				// transparency
+};
+
 // Chess
 Chess::Chess() {
 
@@ -31,27 +63,25 @@ Chess::Chess() {
 			for ( int j = 0; j < 5; j++ ) {
 				for ( int k = 0; k < 5; k++ ) {
 
-					if ( pieces[i][j][k] ) {
+					if ( !pieces[i][j][k] ) continue;
 
-						Box hitbox;
-						hitbox.min.x = k * 3.0f - 0.5f;
-						hitbox.min.y = i * 6.0f - 0.0f;
-						hitbox.min.z = j * 3.0f - 0.5f;
+					Box hitbox;
+					hitbox.min.x = k * 3.0f - 0.5f;
+					hitbox.min.y = i * 6.0f - 0.0f;
+					hitbox.min.z = j * 3.0f - 0.5f;
 
-						hitbox.max.x = k * 3.0f + 0.5f;
-						hitbox.max.y = i * 6.0f + 3.0f;
-						hitbox.max.z = j * 3.0f + 0.5f;
+					hitbox.max.x = k * 3.0f + 0.5f;
+					hitbox.max.y = i * 6.0f + 3.0f;
+					hitbox.max.z = j * 3.0f + 0.5f;
 
-						float t = intersection( r, hitbox );
+					float t = intersection( r, hitbox );
 
-						if ( t < dist ) {
-							dist = t;
-							lvl = i;
-							fl = j;
-							rnk = k;
-						}
+					if ( t < dist ) {
+						dist = t;
+						lvl = i;
+						fl = j;
+						rnk = k;
 					}
-					
 				}
 			}
 		}
@@ -66,8 +96,8 @@ Chess::Chess() {
 	lightBuffer.Bind();
 
 	// board setup
-	auto whiteSquare = std::make_shared< Model >( "Square", mtlWhite );
-	auto blackSquare = std::make_shared< Model >( "Square", mtlBlack );
+	auto whiteSquare = std::make_shared< Model >( "Square", mtlWhiteSquare );
+	auto blackSquare = std::make_shared< Model >( "Square", mtlBlackSquare );
 	
 	for ( int i = 0; i < 5; i++ ) {
 		for ( int j = 0; j < 5; j++ ) {
