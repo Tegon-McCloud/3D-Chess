@@ -30,7 +30,9 @@ public:
 	Model( const std::string& name, const Material& m );
 
 	void Draw( const DirectX::XMMATRIX& transform );
+	void SetMaterial( const Material& mtl );
 
 private:
 	std::shared_ptr< ConstantBuffer< DirectX::XMMATRIX, VS, 0u > > pTransformBuffer;
+	std::shared_ptr< ConstantBuffer< Material, PS, 0u > > pMaterialBuffer;
 };

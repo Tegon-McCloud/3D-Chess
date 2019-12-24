@@ -50,14 +50,17 @@ Model::Model( const std::string& name, const Material& m ) {
 	AddBindable( std::make_shared<IndexBuffer>( &indices[0], indices.size() ) );
 
 	using namespace DirectX;
-	auto cb = std::make_shared< ConstantBuffer < XMMATRIX, VS, 0u > >( &XMMatrixIdentity() );
-	pTransformBuffer = cb;
-	AddBindable( std::move( cb ) );
+	pTransformBuffer = std::make_shared< ConstantBuffer<XMMATRIX, VS, 0u>>( &XMMatrixIdentity() );
+	AddBindable( pTransformBuffer );
 
-	AddBindable( std::make_shared < ConstantBuffer < Material, PS, 0u > >( &m ) );
+	pMaterialBuffer = std::make_shared < ConstantBuffer < Material, PS, 0u > >( &m );
+	AddBindable( pMaterialBuffer );
 }
 
 void Model::Draw( const DirectX::XMMATRIX& transform ) {
 	pTransformBuffer->Set( &DirectX::XMMatrixTranspose( transform ) );
 	Drawable::Draw();
+}
+
+void Model::SetMaterial( const Material& mtl ) {
 }

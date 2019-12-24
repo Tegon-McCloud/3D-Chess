@@ -43,8 +43,26 @@ constexpr const Material mtlBlackSquare = {
 	0.0f				// transparency
 };
 
+constexpr const Material mtlSelectedBox = {
+	{					// ambient:
+		0.2f				// intensity
+	},
+	{					// diffuse:
+		0.1f,				// r
+		0.5f,				// g
+		0.1f				// b
+	},
+	{					// specular:
+		0.1,				// intensity
+		24.0f				// shininess
+	},
+	0.5f				// transparency
+};
+
 // Chess
 Chess::Chess() {
+
+	highlightBox = std::make_shared<Model>( "Box", mtlSelectedBox );
 
 	player.Update( 0.0f );
 	player.Bind();
@@ -166,7 +184,9 @@ void Chess::Draw() {
 					pieces[i][j][k]->Draw( k * 3.0f, i * 6.0f, j * 3.0f );	// k(rank) -> x, i(level) -> y, j(file) -> z
 				}
 
-				board[i][j][k]->Draw( DirectX::XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
+				board[i][j][k]->Draw( XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
+
+				highlightBox->Draw( XMMatrixScaling( 1.1f, 3.0f, 1.1f ) * XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
 			}
 		}
 	}

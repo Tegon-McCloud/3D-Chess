@@ -33,9 +33,13 @@ private:
 	 */
 	std::array< std::array< std::array< std::shared_ptr< Piece >, 5 >, 5 >, 5 > pieces;
 	std::array< std::array< std::array< std::shared_ptr< Model >, 5 >, 5 >, 5 > board;
+	std::shared_ptr<Model> highlightBox;
+
 	Light light;
 	ConstantBuffer < Light, PS, 1u > lightBuffer;
 
 	Player player;
 
+	Position selectedPos;
+	
 };
