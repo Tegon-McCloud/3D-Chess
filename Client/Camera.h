@@ -1,5 +1,6 @@
 #pragma once
 #include "ConstantBuffer.h"
+#include "Util.h"
 
 #include "DirectXMath.h"
 
@@ -7,11 +8,6 @@ typedef struct alignas(16) {
 	DirectX::XMFLOAT4X4 worldToCam;
 	DirectX::XMFLOAT4X4 proj;
 } CameraTransforms;
-
-typedef struct {
-	DirectX::XMFLOAT4 ori;
-	DirectX::XMFLOAT4 dir;
-} Ray;
 
 class Camera {
 

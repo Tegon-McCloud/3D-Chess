@@ -2,6 +2,7 @@
 
 #include "WindowsStrict.h"
 
+#include "DirectXMath.h"
 #include <string>
 #include <sstream>
 #include <stdexcept>
@@ -30,3 +31,16 @@ public:
 private:
 	std::chrono::steady_clock::time_point lastReset;
 };
+
+
+typedef struct {
+	DirectX::XMFLOAT3 ori;
+	DirectX::XMFLOAT3 dir;
+} Ray;
+
+typedef struct {
+	DirectX::XMFLOAT3 min;
+	DirectX::XMFLOAT3 max;
+} Box;
+
+float intersection( const Ray& r, const Box& b );

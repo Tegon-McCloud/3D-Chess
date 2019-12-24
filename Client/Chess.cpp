@@ -1,6 +1,6 @@
 #include "Chess.h"
 #include "Pieces.h"
-#include "cmath"
+#include "Util.h"
 
 #include <algorithm>
 #include <limits>
@@ -33,47 +33,16 @@ Chess::Chess() {
 
 					if ( pieces[i][j][k] ) {
 
-						XMFLOAT3 boxMin;
-						boxMin.x = k * 3.0f - 0.5f;
-						boxMin.y = i * 6.0f - 0.0f;
-						boxMin.z = j * 3.0f - 0.5f;
+						Box hitbox;
+						hitbox.min.x = k * 3.0f - 0.5f;
+						hitbox.min.y = i * 6.0f - 0.0f;
+						hitbox.min.z = j * 3.0f - 0.5f;
 
-						XMFLOAT3 boxMax;
-						boxMax.x = k * 3.0f + 0.5f;
-						boxMax.y = i * 6.0f + 3.0f;
-						boxMax.z = j * 3.0f + 0.5f;
+						hitbox.max.x = k * 3.0f + 0.5f;
+						hitbox.max.y = i * 6.0f + 3.0f;
+						hitbox.max.z = j * 3.0f + 0.5f;
 
-						float tmin, tmax;
-
-						// yz-plane intersection distances
-						float txmin = (boxMin.x - r.ori.x) / r.dir.x;
-						float txmax = (boxMax.x - r.ori.x) / r.dir.x;
-						if ( txmin > txmax ) std::swap( txmin, txmax );
-						
-						tmin = txmin;
-						tmax = txmax;
-						
-						float tymin = (boxMin.y - r.ori.y) / r.dir.y;
-						float tymax = (boxMax.y - r.ori.y) / r.dir.y;
-						if ( tymin > tymax ) std::swap( tymin, tymax );
-
-						if ( tymax < tmin || tymin > tmax ) continue; // overshot in y direction
-						
-						if ( tymin > tmin ) tmin = tymin;
-						if ( tymax < tmax ) tmax = tymax;
-
-						float tzmin = (boxMin.z - r.ori.z) / r.dir.z;
-						float tzmax = (boxMax.z - r.ori.z) / r.dir.z;
-						if ( tzmin > tzmax ) std::swap( tzmin, tzmax );
-
-						if ( tzmax < tmin || tzmin > tmax ) continue; // overshot in z direction
-
-						if ( tzmin > tmin ) tmin = tzmin;
-						if ( tzmax < tmax ) tmax = tzmax;
-
-
-						if ( tmax < 0 ) continue;
-						float t = tmin > 0.0f ? tmin : tmax;
+						float t = intersection( r, hitbox );
 
 						if ( t < dist ) {
 							dist = t;

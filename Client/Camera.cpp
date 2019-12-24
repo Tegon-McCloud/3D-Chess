@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "Util.h"
 
 Camera::Camera( float x, float y, float z, float pitch, float yaw, float roll )
 	: x( x ), y( y ), z( z ), pitch( pitch ), yaw( yaw ), roll( roll ) {}
@@ -11,8 +10,8 @@ void Camera::UpdateBuffer() {
 	XMVECTOR pos = XMVectorSet( x, y, z, 1.0f );
 	XMVECTOR forward = XMVector3Transform( XMVectorSet( 0.0f, 0.0f, 1.0f, 0.0f ), XMMatrixRotationRollPitchYaw( pitch, yaw, roll ) );
 	
-	XMStoreFloat4( &lookRay.ori, pos );
-	XMStoreFloat4( &lookRay.dir, forward );
+	XMStoreFloat3( &lookRay.ori, pos );
+	XMStoreFloat3( &lookRay.dir, forward );
 
 	struct alignas(16) {
 		XMMATRIX m1, m2;
