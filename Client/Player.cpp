@@ -2,13 +2,7 @@
 #include <algorithm>
 #include <cmath>
 
-Player::Player() : Camera( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f ) {
-
-	Window::Get().GetInput().RegisterRightClickListener( []( int x, int y ) -> void {
-		printf( "yoyoyo\n" );
-	} );
-
-}
+Player::Player() : Camera( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f ) {}
 
 void Player::Update( float dt ) {
 

@@ -6,6 +6,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <chrono>
+#include <array>
 
 constexpr const float pi = 3.14159265359f;
 

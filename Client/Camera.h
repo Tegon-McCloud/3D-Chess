@@ -8,6 +8,11 @@ typedef struct alignas(16) {
 	DirectX::XMFLOAT4X4 proj;
 } CameraTransforms;
 
+struct Ray {
+	DirectX::XMFLOAT4 ori;
+	DirectX::XMFLOAT4 dir;
+};
+
 class Camera {
 
 public:
@@ -19,10 +24,14 @@ public:
 	DirectX::XMVECTOR ToViewSpace3( const DirectX::XMVECTOR& v ); // converts v from worldspace to viewspace
 	DirectX::XMVECTOR ToViewSpace4( const DirectX::XMVECTOR& v );
 
-protected:
+	Ray LookRay();
 
-	CameraTransforms cameraTransforms;
+protected:
 	float x, y, z, pitch, yaw, roll;
 	ConstantBuffer< CameraTransforms, VS, 1u > buffer;
+
+	// precalculated on buffer update:
+	CameraTransforms cameraTransforms;
+	Ray lookRay;
 };
 
