@@ -3,7 +3,8 @@
 
 class Bishop : public Piece {
 public:
-	void move(int* field[5][5][5], int x, int y, int z) override;
-	void printMoves(int* field[5][5][5], int x, int y, int z) override;
-	std::string getMoves(int* field[5][5][5], int x, int y, int z) override;
+	Bishop();
+	void move(int* colours[5][5][5], int* field[5][5][5], int x, int y, int z, int colour) override;
+	void printMoves(int* colours[5][5][5], int* field[5][5][5], int x, int y, int z, int colour) override;
+	std::string getMoves(int* colours[5][5][5], int* field[5][5][5], int x, int y, int z, int colour) override;
 };
