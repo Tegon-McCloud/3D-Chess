@@ -2,13 +2,16 @@
 #include "Chess.h"
 
 constexpr const Material mtlWhitePiece = {
+	{					// color
+		1.0f,				// r
+		1.0f,				// g
+		1.0f				// b
+	},
 	{					// ambient:
 		0.2f				// intensity
 	},
 	{					// diffuse:
-		1.0f,				// r
-		1.0f,				// g
-		1.0f				// b
+		1.0f				// intensity
 	},
 	{					// specular:
 		0.1,				// intensity
@@ -18,13 +21,16 @@ constexpr const Material mtlWhitePiece = {
 };
 
 constexpr const Material mtlBlackPiece = {
+	{					// color
+		0.1f,				// r
+		0.1f,				// g
+		0.1f				// b
+	},
 	{					// ambient:
 		0.2f				// intensity
 	},
 	{					// diffuse:
-		0.1f,				// r
-		0.1f,				// g
-		0.1f				// b
+		1.0f				// intensity
 	},
 	{					// specular:
 		0.1,				// intensity

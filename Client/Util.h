@@ -45,9 +45,31 @@ typedef struct {
 
 float intersection( const Ray& r, const Box& b );
 
-struct Position {
-	Position( int l, int f, int r );
-	Position( const std::string& alg );
+struct PositionLFR {
+	PositionLFR( const PositionLFR& p );
+	PositionLFR( int l, int f, int r );
+
 	int l, f, r;
+};
+
+struct PositionXYZ {
+	PositionXYZ( const PositionXYZ& p );
+	PositionXYZ( int x, int y, int z );
+
+	int y, z, x;
+};
+
+union Position {
+	Position();
+	Position( const Position& p );
+	Position( const PositionLFR& p );
+	Position( const PositionXYZ& p );
+	Position( const std::string& alg );
+
+	bool operator==( const Position& p );
+
 	std::string toAlg();
+
+	PositionLFR lfr;
+	PositionXYZ xyz;
 };

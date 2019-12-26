@@ -7,12 +7,16 @@
 #include <string>
 
 typedef struct alignas(16) {
+	struct {
+		float r, g, b;
+	} color;
+
 	 struct {
 		float intensity;
 	} ambient;
 
 	struct {
-		float r, g, b;
+		float intensity;
 	} diffuse;
 	
 	struct {

@@ -6,13 +6,16 @@
 #include <limits>
 
 constexpr const Material mtlWhiteSquare = {
+	{					// color
+		1.0f,				// r
+		1.0f,				// g
+		1.0f				// b
+	},
 	{					// ambient:
 		0.2f				// intensity
 	},
 	{					// diffuse:
-		1.0f,				// r
-		1.0f,				// g
-		1.0f				// b
+		1.0f				// intensity
 	},
 	{					// specular:
 		0.1,				// intensity
@@ -22,13 +25,16 @@ constexpr const Material mtlWhiteSquare = {
 };
 
 constexpr const Material mtlBlackSquare = {
+	{					// color
+		0.1f,				// r
+		0.1f,				// g
+		0.1f				// b
+	},
 	{					// ambient:
 		0.2f				// intensity
 	},
 	{					// diffuse:
-		0.1f,				// r
-		0.1f,				// g
-		0.1f				// b
+		1.0f				// intensity
 	},
 	{					// specular:
 		0.1,				// intensity
@@ -38,19 +44,22 @@ constexpr const Material mtlBlackSquare = {
 };
 
 constexpr const Material mtlSelectedBox = {
-	{					// ambient:
-		0.2f				// intensity
-	},
-	{					// diffuse:
+	{					// color
 		0.1f,				// r
 		0.5f,				// g
 		0.1f				// b
+	},
+	{					// ambient:
+		1.0f				// intensity
+	},
+	{					// diffuse:
+		0.0f				// intensity
 	},
 	{					// specular:
 		0.1,				// intensity
 		24.0f				// shininess
 	},
-	0.5f				// transparency
+	0.5f				// transparency			// transparency
 };
 
 // Chess
@@ -67,8 +76,8 @@ Chess::Chess() {
 
 		Ray r = player.LookRay();
 
-		int lvl = -1, fl = -1 , rnk = -1;
-		
+		PositionLFR clickedPos( -1, -1, -1 );
+
 		float dist = std::numeric_limits<float>::infinity();
 
 		for ( int i = 0; i < 5; i++ ) {
@@ -90,16 +99,27 @@ Chess::Chess() {
 
 					if ( t < dist ) {
 						dist = t;
-						lvl = i;
-						fl = j;
-						rnk = k;
+						clickedPos.l = i;
+						clickedPos.f = j;
+						clickedPos.r = k;
 					}
 				}
 			}
 		}
-		selectedPos.reset( new Position( lvl, fl, rnk ) );
 
-		printf( "%i, %i, %i\n", lvl, fl, rnk );
+		if ( Position( clickedPos ) == Position( PositionLFR( -1, -1, -1 ) ) ) {
+			selectedPos.reset();
+			return;
+		};
+
+		if ( !selectedPos ) {
+			selectedPos.reset( new PositionLFR( clickedPos ) );
+		} else {
+			MovePiece( *selectedPos, clickedPos );
+			selectedPos.reset();
+		}
+		
+
 
 	} );
 
@@ -177,25 +197,7 @@ void Chess::Draw() {
 
 				board[i][j][k]->Draw( XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
 
-			}
-		}
-	}
 
-	Window::Get().GetGraphics().SetBlendEnabled( true );
-	Window::Get().GetGraphics().SetDepthEnabled( false );
-	
-
-	
-	if( selectedPos )
-		highlightBox->Draw( XMMatrixScaling( 1.1f, 3.0f, 1.1f ) * XMMatrixTranslation( selectedPos->r * 3.0f, selectedPos->l * 6.0f, selectedPos->f * 3.0f ) );
-
-	Window::Get().GetGraphics().SetBlendEnabled( false );
-	Window::Get().GetGraphics().SetDepthEnabled( true );
-
-	for ( int i = 0; i < 5; i++ ) {
-		for ( int j = 0; j < 5; j++ ) {
-			for ( int k = 0; k < 5; k++ ) {
-				
 				if ( pieces[i][j][k] )
 					pieces[i][j][k]->Draw( k * 3.0f, i * 6.0f, j * 3.0f );
 
@@ -203,16 +205,25 @@ void Chess::Draw() {
 		}
 	}
 
+	Window::Get().GetGraphics().SetBlendEnabled( true );
+	Window::Get().GetGraphics().SetDepthEnabled( false );
+	
+	if( selectedPos )
+		highlightBox->Draw( XMMatrixScaling( 1.1f, 3.0f, 1.1f ) * XMMatrixTranslation( selectedPos->r * 3.0f, selectedPos->l * 6.0f, selectedPos->f * 3.0f ) );
+
+	Window::Get().GetGraphics().SetBlendEnabled( false );
+	Window::Get().GetGraphics().SetDepthEnabled( true );
+
 }
 
-void Chess::MovePiece( Position from, Position to ) {
+void Chess::MovePiece( PositionLFR from, PositionLFR to ) {
 	CellAt( to ) = std::move( CellAt( from ) );
 }
 
-Piece& Chess::PieceAt( Position pos ) {
+Piece& Chess::PieceAt( PositionLFR pos ) {
 	return *CellAt( pos );
 }
 
-std::shared_ptr<Piece>& Chess::CellAt( Position pos ) {
+std::shared_ptr<Piece>& Chess::CellAt( PositionLFR pos ) {
 	return pieces[pos.l][pos.f][pos.r];
 }

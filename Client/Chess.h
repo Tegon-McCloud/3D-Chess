@@ -17,13 +17,13 @@ public:
 
 	void Update( float dt );
 	void Draw();
-	void MovePiece( Position from, Position to );
+	void MovePiece( PositionLFR from, PositionLFR to );
 
-	Piece& PieceAt( Position p );
+	Piece& PieceAt( PositionLFR p );
 	
 private:
 
-	std::shared_ptr<Piece>& CellAt( Position p );
+	std::shared_ptr<Piece>& CellAt( PositionLFR p );
 
 	/* The board is a 5x5x5 array of pieces. The first index will be its level, second its file and third its rank.
 	 * This means that in the first index will not be x, as that is its level and should naturally be displayed on the y-axis.
@@ -31,7 +31,7 @@ private:
 	std::array< std::array< std::array< std::shared_ptr< Piece >, 5 >, 5 >, 5 > pieces;
 	std::array< std::array< std::array< std::shared_ptr< Model >, 5 >, 5 >, 5 > board;
 	std::shared_ptr<Model> highlightBox;
-	std::unique_ptr<Position> selectedPos;
+	std::unique_ptr<PositionLFR> selectedPos;
 
 	Light light;
 	ConstantBuffer < Light, PS, 1u > lightBuffer;

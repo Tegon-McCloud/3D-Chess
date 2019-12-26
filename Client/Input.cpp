@@ -1,9 +1,7 @@
 #include "Input.h"
 #include "Window.h"
 
-Input::Input() : cursorVisible( false ) {
-	SetCursor( LoadCursorW( NULL, IDC_ARROW ) );
-}
+Input::Input() : cursorVisible( false ) {}
 
 Input::~Input() {
 	if ( !cursorVisible ) {

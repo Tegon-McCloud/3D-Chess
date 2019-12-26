@@ -22,7 +22,8 @@ enum Stage {
 
 template<typename T, Stage S, unsigned char slot>
 class ConstantBuffer : public Bindable { 
-	
+	static_assert(alignof(T) == 16, "T must be 16 byte aligned.");
+
 public:
 	ConstantBuffer();
 	ConstantBuffer( const T* init );

@@ -1,9 +1,11 @@
 #include "Header.hlsli"
 
 cbuffer Material : register(b0) {
+	float3 color;
+	
 	float ambient_intensity;
 
-	float3 diffuse_rgb;
+	float diffuse_intensity;
 
 	float specular_intensity;
 	float specular_shininess;
@@ -18,11 +20,11 @@ cbuffer Light : register(b1) {
 
 
 inline float3 colAmbient() {
-	return ambient_intensity * diffuse_rgb;
+	return ambient_intensity * color;
 }
 
 inline float3 colDiffuse( float3 normal ) {
-	return diffuse_rgb * max( 0.0f, dot( light_dir, normal ));
+	return color * diffuse_intensity * max( 0.0f, dot( light_dir, normal ));
 }
 
 inline float3 reflect( float3 normal ) {
