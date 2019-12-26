@@ -163,7 +163,7 @@ void Game::setPieceColour(int x, int y, int z, int colour) {
 	Game::colour[x][y][z] = colour;
 }
 
-void Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo, int type) {
+void Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo) {
 	/*if (getPieceColour(xFrom, yFrom, zFrom) == getPieceColour(xTo, yTo, zTo)) {
 		return;
 	}
@@ -172,6 +172,7 @@ void Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo,
 	setPieceId(xFrom, yFrom, zFrom, ids["Empty"]);
 	setPieceColour(xFrom, yFrom, zFrom, -1);*/
 	// above is the good stuff
-	Bishop b = Bishop();
-	b.printMoves(&colour, &field, xFrom, yFrom, zFrom, type);
+	// also good stuff 1 line below
+	//Piece::printMoves(colour, field, xFrom, yFrom, zFrom, getPieceColour(xFrom, yFrom, zFrom), getPieceId(xFrom, yFrom, zFrom));
+	Piece::printMoves(colour, field, xFrom, yFrom, zFrom, 1, 3);
 }
