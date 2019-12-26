@@ -250,6 +250,155 @@ std::string Piece::getMoves(int colours [5][5][5], int field[5][5][5], int x, in
 	case 4:
 		return getRookMoves(colours, field, x, y, z, colour);
 		break;
+
+	//Unicorn logic
+	case 5:
+		return getUnicornMoves(colours, field, x, y, z, colour);
+		break;
+
+	//Queen logic
+	case 6:
+		ss << getBishopMoves(colours, field, x, y, z, colour) << getRookMoves(colours, field, x, y, z, colour) << getUnicornMoves(colours, field, x, y, z, colour);
+		return ss.str();
+		break;
+
+	//King logic
+	case 7:
+		//Floor 1 above the king
+		if (z + 1 < 5) {
+			if (colours[x][y][z + 1] != colour) {
+				ss << x << y << z + 1 << ' ';
+			}
+			if (y + 1 < 5) {
+				if (colours[x][y + 1][z + 1] != colour) {
+					ss << x << y + 1 << z + 1 << ' ';
+				}
+			}
+			if (y - 1 >= 0) {
+				if (colours[x][y - 1][z + 1] != colour) {
+					ss << x << y - 1 << z + 1 << ' ';
+				}
+			}
+			if (x + 1 < 5) {
+				if (colours[x + 1][y][z + 1] != colour) {
+					ss << x + 1 << y << z + 1 << ' ';
+				}
+				if (y + 1 < 5) {
+					if (colours[x + 1][y + 1][z + 1] != colour) {
+						ss << x + 1 << y + 1 << z + 1 << ' ';
+					}
+				}
+				if (y - 1 >= 0) {
+					if (colours[x + 1][y - 1][z + 1] != colour) {
+						ss << x + 1 << y - 1 << z + 1 << ' ';
+					}
+				}
+			}
+			if (x - 1 >= 0) {
+				if (colours[x - 1][y][z + 1] != colour) {
+					ss << x - 1 << y << z + 1 << ' ';
+				}
+				if (y + 1 < 5) {
+					if (colours[x - 1][y + 1][z + 1] != colour) {
+						ss << x - 1 << y + 1 << z + 1 << ' ';
+					}
+				}
+				if (y - 1 >= 0) {
+					if (colours[x - 1][y - 1][z + 1] != colour) {
+						ss << x - 1 << y - 1 << z + 1 << ' ';
+					}
+				}
+			}
+		}
+		//Floor 1 below the king
+		if (z - 1 >= 0) {
+			if (colours[x][y][z - 1] != colour) {
+				ss << x << y << z - 1 << ' ';
+			}
+			if (y + 1 < 5) {
+				if (colours[x][y + 1][z - 1] != colour) {
+					ss << x << y + 1 << z - 1 << ' ';
+				}
+			}
+			if (y - 1 >= 0) {
+				if (colours[x][y - 1][z - 1] != colour) {
+					ss << x << y - 1 << z - 1 << ' ';
+				}
+			}
+			if (x + 1 < 5) {
+				if (colours[x + 1][y][z - 1] != colour) {
+					ss << x + 1 << y << z - 1 << ' ';
+				}
+				if (y + 1 < 5) {
+					if (colours[x + 1][y + 1][z - 1] != colour) {
+						ss << x + 1 << y + 1 << z - 1 << ' ';
+					}
+				}
+				if (y - 1 >= 0) {
+					if (colours[x + 1][y - 1][z - 1] != colour) {
+						ss << x + 1 << y - 1 << z - 1 << ' ';
+					}
+				}
+			}
+			if (x - 1 >= 0) {
+				if (colours[x - 1][y][z - 1] != colour) {
+					ss << x - 1 << y << z - 1 << ' ';
+				}
+				if (y + 1 < 5) {
+					if (colours[x - 1][y + 1][z - 1] != colour) {
+						ss << x - 1 << y + 1 << z - 1 << ' ';
+					}
+				}
+				if (y - 1 >= 0) {
+					if (colours[x - 1][y - 1][z - 1] != colour) {
+						ss << x - 1 << y - 1 << z - 1 << ' ';
+					}
+				}
+			}
+		}
+		//Same floor as king
+		if (y + 1 < 5) {
+			if (colours[x][y + 1][z] != colour) {
+				ss << x << y + 1 << z << ' ';
+			}
+		}
+		if (y - 1 >= 0) {
+			if (colours[x][y - 1][z] != colour) {
+				ss << x << y - 1 << z << ' ';
+			}
+		}
+		if (x + 1 < 5) {
+			if (colours[x + 1][y][z] != colour) {
+				ss << x + 1 << y << z << ' ';
+			}
+			if (y + 1 < 5) {
+				if (colours[x + 1][y + 1][z] != colour) {
+					ss << x + 1 << y + 1 << z << ' ';
+				}
+			}
+			if (y - 1 >= 0) {
+				if (colours[x + 1][y - 1][z] != colour) {
+					ss << x + 1 << y - 1 << z << ' ';
+				}
+			}
+		}
+		if (x - 1 >= 0) {
+			if (colours[x - 1][y][z] != colour) {
+				ss << x - 1 << y << z << ' ';
+			}
+			if (y + 1 < 5) {
+				if (colours[x - 1][y + 1][z] != colour) {
+					ss << x - 1 << y + 1 << z << ' ';
+				}
+			}
+			if (y - 1 >= 0) {
+				if (colours[x - 1][y - 1][z] != colour) {
+					ss << x - 1 << y - 1 << z << ' ';
+				}
+			}
+		}
+		return ss.str();
+		break;
 	}
 };
 
@@ -257,7 +406,8 @@ std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int
 	std::stringstream ss;
 	bool temp;	//temp = has it hit something
 	int shortestDist;
-	//x positive y positive z positive
+	//x positive y positive z positive dir
+	temp = true;
 	if ((4 - x <= 4 - y) && (4 - x <= 4 - z)) {
 		shortestDist = 4 - x;
 	}
@@ -278,7 +428,160 @@ std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int
 			ss << x + i << y + i << z + i << ' ';
 		}
 	}
-	//TODO finish the unicorn
+	//x positive y positive z negative dir
+	temp = true;
+	if ((4 - x <= 4 - y) && (4 - x <= z)) {
+		shortestDist = 4 - x;
+	}
+	else if ((4 - y <= 4 - x) && (4 - y <= z)) {
+		shortestDist = 4 - y;
+	}
+	else {
+		shortestDist = z;
+	}
+	for (int i = 1; i <= shortestDist && temp; i++) {
+		if (colours[x + i][y + i][z - i] == colour) {
+			temp = false;
+		}
+		else {
+			if (field[x + i][y + i][z - i] == (colour - 1)*-1 && colours[x + i][y + i][z - i] != -1) {
+				temp = false;
+			}
+			ss << x + i << y + i << z - i << ' ';
+		}
+	}
+	//x positive y positive z positive dir
+	temp = true;
+	if ((4 - x <= y) && (4 - x <= 4 - z)) {
+		shortestDist = 4 - x;
+	}
+	else if ((y <= 4 - x) && (y <= 4 - z)) {
+		shortestDist = y;
+	}
+	else {
+		shortestDist = 4 - z;
+	}
+	for (int i = 1; i <= shortestDist && temp; i++) {
+		if (colours[x + i][y - i][z + i] == colour) {
+			temp = false;
+		}
+		else {
+			if (field[x + i][y - i][z + i] == (colour - 1)*-1 && colours[x + i][y - i][z + i] != -1) {
+				temp = false;
+			}
+			ss << x + i << y - i << z + i << ' ';
+		}
+	}
+	//x positive y positive z negative dir
+	temp = true;
+	if ((4 - x <= y) && (4 - x <= z)) {
+		shortestDist = 4 - x;
+	}
+	else if ((y <= 4 - x) && (y <= z)) {
+		shortestDist = y;
+	}
+	else {
+		shortestDist = z;
+	}
+	for (int i = 1; i <= shortestDist && temp; i++) {
+		if (colours[x + i][y - i][z - i] == colour) {
+			temp = false;
+		}
+		else {
+			if (field[x + i][y - i][z - i] == (colour - 1)*-1 && colours[x + i][y - i][z - i] != -1) {
+				temp = false;
+			}
+			ss << x + i << y - i << z - i << ' ';
+		}
+	}
+	//x positive y positive z positive dir
+	temp = true;
+	if ((x <= 4 - y) && (x <= 4 - z)) {
+		shortestDist = x;
+	}
+	else if ((4 - y <= x) && (4 - y <= 4 - z)) {
+		shortestDist = 4 - y;
+	}
+	else {
+		shortestDist = 4 - z;
+	}
+	for (int i = 1; i <= shortestDist && temp; i++) {
+		if (colours[x - i][y + i][z + i] == colour) {
+			temp = false;
+		}
+		else {
+			if (field[x - i][y + i][z + i] == (colour - 1)*-1 && colours[x - i][y + i][z + i] != -1) {
+				temp = false;
+			}
+			ss << x - i << y + i << z + i << ' ';
+		}
+	}
+	//x positive y positive z negative dir
+	temp = true;
+	if ((x <= 4 - y) && (x <= z)) {
+		shortestDist = x;
+	}
+	else if ((4 - y <= x) && (4 - y <= z)) {
+		shortestDist = 4 - y;
+	}
+	else {
+		shortestDist = z;
+	}
+	for (int i = 1; i <= shortestDist && temp; i++) {
+		if (colours[x - i][y + i][z - i] == colour) {
+			temp = false;
+		}
+		else {
+			if (field[x - i][y + i][z - i] == (colour - 1)*-1 && colours[x - i][y + i][z - i] != -1) {
+				temp = false;
+			}
+			ss << x - i << y + i << z - i << ' ';
+		}
+	}
+	//x positive y positive z positive dir
+	temp = true;
+	if ((x <= y) && (x <= 4 - z)) {
+		shortestDist = x;
+	}
+	else if ((y <= x) && (y <= 4 - z)) {
+		shortestDist = y;
+	}
+	else {
+		shortestDist = 4 - z;
+	}
+	for (int i = 1; i <= shortestDist && temp; i++) {
+		if (colours[x - i][y - i][z + i] == colour) {
+			temp = false;
+		}
+		else {
+			if (field[x - i][y - i][z + i] == (colour - 1)*-1 && colours[x - i][y - i][z + i] != -1) {
+				temp = false;
+			}
+			ss << x - i << y - i << z + i << ' ';
+		}
+	}
+	//x positive y positive z negative dir
+	temp = true;
+	if ((x <= y) && (x <= z)) {
+		shortestDist = x;
+	}
+	else if ((y <= x) && (y <= z)) {
+		shortestDist = y;
+	}
+	else {
+		shortestDist = z;
+	}
+	for (int i = 1; i <= shortestDist && temp; i++) {
+		if (colours[x - i][y - i][z - i] == colour) {
+			temp = false;
+		}
+		else {
+			if (field[x - i][y - i][z - i] == (colour - 1)*-1 && colours[x - i][y - i][z - i] != -1) {
+				temp = false;
+			}
+			ss << x - i << y - i << z - i << ' ';
+		}
+	}
 	return ss.str();
 }
 

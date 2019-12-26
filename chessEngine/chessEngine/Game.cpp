@@ -83,15 +83,15 @@ Game::Game() {
 	setPieceColour(4, 3, 4, 0);
 
 
-	setPieceId(0, 4, 3, ids["Bishop"]);
+	setPieceId(0, 4, 3, ids["Unicorn"]);
 	setPieceColour(0, 4, 3, 0);
-	setPieceId(1, 4, 3, ids["Unicorn"]);
+	setPieceId(1, 4, 3, ids["Bishop"]);
 	setPieceColour(1, 4, 3, 0);
 	setPieceId(2, 4, 3, ids["Queen"]);
 	setPieceColour(2, 4, 3, 0);
-	setPieceId(3, 4, 3, ids["Bishop"]);
+	setPieceId(3, 4, 3, ids["Unicorn"]);
 	setPieceColour(3, 4, 3, 0);
-	setPieceId(4, 4, 3, ids["Unicorn"]);
+	setPieceId(4, 4, 3, ids["Bishop"]);
 	setPieceColour(4, 4, 3, 0);
 
 	setPieceId(0, 3, 3, ids["Pawn"]);
@@ -174,5 +174,5 @@ void Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo)
 	// above is the good stuff
 	// also good stuff 1 line below
 	//Piece::printMoves(colour, field, xFrom, yFrom, zFrom, getPieceColour(xFrom, yFrom, zFrom), getPieceId(xFrom, yFrom, zFrom));
-	Piece::printMoves(colour, field, xFrom, yFrom, zFrom, 1, 3);
+	Piece::printMoves(colour, field, xFrom, yFrom, zFrom, 1, ids["Queen"]);
 }
