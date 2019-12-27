@@ -151,7 +151,9 @@
     <Resource Include="Resources\Square.obj">
       <Filter>Resource Files</Filter>
     </Resource>
-    <Resource Include="Resources\Box.obj" />
+    <Resource Include="Resources\Box.obj">
+      <Filter>Resource Files</Filter>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">
