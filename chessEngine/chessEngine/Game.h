@@ -1,13 +1,12 @@
 #pragma once
 #include "Piece.h"
-#include "Bishop.h"
 #include <unordered_map>
 
 class Game {
 public:
 	Game();
 	void printEntireField();
-	void movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo, int type);
+	void movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo);
 
 private:
 	int field[5][5][5];
