@@ -104,7 +104,7 @@ Game::Game() {
 	setPieceColour(3, 3, 3, 0);
 	setPieceId(4, 3, 3, ids["Pawn"]);
 	setPieceColour(4, 3, 3, 0);
-}
+};
 
 void Game::printEntireField() {
 	for (int i = 4; i >= 0; i--) {
@@ -145,34 +145,80 @@ void Game::printEntireField() {
 		ss.clear();
 	}
 	std::cout << "\n";
-}
+};
 
 int Game::getPieceId(int x, int y, int z) {
 	return field[x][y][z];
-}
+};
 
 void Game::setPieceId(int x, int y, int z, int id) {
 	field[x][y][z] = id;
-}
+};
 
 int Game::getPieceColour(int x, int y, int z) {
 	return colour[x][y][z];
-}
+};
 
 void Game::setPieceColour(int x, int y, int z, int colour) {
 	Game::colour[x][y][z] = colour;
-}
+};
+
+std::string Game::getPieceMoves(int x, int y, int z) {
+	if (getPieceColour(x, y, z) == -1) {
+		return "No piece on the selected square";
+	}
+	if (getPieceColour(x, y, z) != colourToMove) {
+		return "This is not your colour";
+	}
+	if (Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z)) == "") {
+		return "This piece can't move";
+	}
+	return Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z));
+};
 
 void Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo) {
-	/*if (getPieceColour(xFrom, yFrom, zFrom) == getPieceColour(xTo, yTo, zTo)) {
-		return;
-	}
 	setPieceId(xTo, yTo, zTo, getPieceId(xFrom, yFrom, zFrom));
 	setPieceColour(xTo, yTo, zTo, getPieceColour(xFrom, yFrom, zFrom));
 	setPieceId(xFrom, yFrom, zFrom, ids["Empty"]);
-	setPieceColour(xFrom, yFrom, zFrom, -1);*/
-	// above is the good stuff
-	// also good stuff 1 line below
-	//Piece::printMoves(colour, field, xFrom, yFrom, zFrom, getPieceColour(xFrom, yFrom, zFrom), getPieceId(xFrom, yFrom, zFrom));
-	Piece::printMoves(colour, field, xFrom, yFrom, zFrom, 1, ids["Queen"]);
-}
+	setPieceColour(xFrom, yFrom, zFrom, -1);
+};
+
+std::string Game::move(std::stringstream& ss) {
+	//TODO error checking perhaps, but maybe not needed
+	int xFrom, yFrom, zFrom, xTo, yTo, zTo;
+	ss >> xFrom;
+	ss >> yFrom;
+	ss >> zFrom;
+	ss >> xTo;
+	ss >> yTo;
+	ss >> zTo;
+	std::string movesOfPiece = getPieceMoves(xFrom, yFrom, zFrom);
+	if (movesOfPiece == "No piece on the selected square") {
+		return movesOfPiece;
+	}
+	if (movesOfPiece == "This is not your colour") {
+		return movesOfPiece;
+	}
+	if (movesOfPiece == "This piece can't move") {
+		return movesOfPiece;
+	}
+	bool canMove = false;
+	for (int i = 0; i < movesOfPiece.length(); i+=4) {
+		std::stringstream ss;
+		ss << movesOfPiece[i] << ' ' << movesOfPiece[i + 1] << ' ' << movesOfPiece[i + 2] << ' ';
+		int xCurr, yCurr, zCurr;
+		ss >> xCurr;
+		ss >> yCurr;
+		ss >> zCurr;
+		if (xTo == xCurr && yTo == yCurr && zTo == zCurr) {
+			canMove = true;
+		}
+	}
+	if (!canMove) {
+		return "You can't move to the selected square";
+	}
+	movePiece(xFrom, yFrom, zFrom, xTo, yTo, zTo);
+	//TODO Checkmate checking
+	colourToMove = (colourToMove - 1)*-1;
+	return "You moved :)";
+};

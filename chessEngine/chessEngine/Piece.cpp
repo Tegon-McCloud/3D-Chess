@@ -400,6 +400,7 @@ std::string Piece::getMoves(int colours [5][5][5], int field[5][5][5], int x, in
 		return ss.str();
 		break;
 	}
+	return "Wrong type of piece";
 };
 
 std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int x, int y, int z, int colour) {

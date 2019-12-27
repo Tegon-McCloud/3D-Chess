@@ -6,7 +6,8 @@ class Game {
 public:
 	Game();
 	void printEntireField();
-	void movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo);
+	std::string getPieceMoves(int x, int y, int z);
+	std::string move(std::stringstream& s);
 
 private:
 	int field[5][5][5];
@@ -21,8 +22,10 @@ private:
 		{"Queen", 6},
 		{"King", 7}
 	};
+	int colourToMove = 1;
 	// måske endnu et map som er fra int til bogstaver, kinda, altså position 1,4,1 er jo B5b eller sådan noget, og det her skal måske ind i bishop eller piece eller noget
 
+	void movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo);
 	void setPieceId(int x, int y, int z, int id);
 	void setPieceColour(int x, int y, int z, int colour);
 	int getPieceId(int x, int y, int z);
