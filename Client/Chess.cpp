@@ -43,7 +43,7 @@ constexpr const Material mtlBlackSquare = {
 	0.0f				// transparency
 };
 
-constexpr const Material mtlSelectedBox = {
+constexpr const Material mtlSelected = {
 	{					// color
 		0.1f,				// r
 		0.5f,				// g
@@ -63,9 +63,11 @@ constexpr const Material mtlSelectedBox = {
 };
 
 // Chess
-Chess::Chess() {
-
-	highlightBox = std::make_shared<Model>( "Box", mtlSelectedBox );
+Chess::Chess() : 
+	pieces(5, std::array<std::array<std::shared_ptr<Piece>, 5>, 5>()), 
+	whiteSquare( "Square", mtlWhiteSquare ), 
+	blackSquare( "Square", mtlBlackSquare ),
+	highlightBox( "Box", mtlSelected ) {
 
 	player.Update( 0.0f );
 	player.Bind();
@@ -118,8 +120,6 @@ Chess::Chess() {
 			MovePiece( *selectedPos, clickedPos );
 			selectedPos.reset();
 		}
-		
-
 
 	} );
 
@@ -129,9 +129,6 @@ Chess::Chess() {
 	lightBuffer.Bind();
 
 	// board setup
-	auto whiteSquare = std::make_shared< Model >( "Square", mtlWhiteSquare );
-	auto blackSquare = std::make_shared< Model >( "Square", mtlBlackSquare );
-	
 	for ( int i = 0; i < 5; i++ ) {
 		for ( int j = 0; j < 5; j++ ) {
 			for ( int k = 0; k < 5; k++ ) {
@@ -144,9 +141,6 @@ Chess::Chess() {
 				if ( k == 3 && i > 2 ) {
 					pieces[i][j][k].reset(new Pawn( BLACK ));
 				}
-
-				// Board
-				board[i][j][k] = (i + j + k) % 2 == 0 ? whiteSquare : blackSquare;
 				
 			}
 		}
@@ -195,8 +189,7 @@ void Chess::Draw() {
 		for ( int j = 0; j < 5; j++ ) {
 			for ( int k = 0; k < 5; k++ ) {
 
-				board[i][j][k]->Draw( XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
-
+				((i + j + k) % 2 == 0 ? whiteSquare : blackSquare).Draw( XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
 
 				if ( pieces[i][j][k] )
 					pieces[i][j][k]->Draw( k * 3.0f, i * 6.0f, j * 3.0f );
@@ -209,7 +202,7 @@ void Chess::Draw() {
 	Window::Get().GetGraphics().SetDepthEnabled( false );
 	
 	if( selectedPos )
-		highlightBox->Draw( XMMatrixScaling( 1.1f, 3.0f, 1.1f ) * XMMatrixTranslation( selectedPos->r * 3.0f, selectedPos->l * 6.0f, selectedPos->f * 3.0f ) );
+		highlightBox.Draw( XMMatrixScaling( 1.1f, 3.0f, 1.1f ) * XMMatrixTranslation( selectedPos->r * 3.0f, selectedPos->l * 6.0f, selectedPos->f * 3.0f ) );
 
 	Window::Get().GetGraphics().SetBlendEnabled( false );
 	Window::Get().GetGraphics().SetDepthEnabled( true );

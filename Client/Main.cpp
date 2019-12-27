@@ -55,17 +55,5 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 }
 
 int main() {
-	//return WinMain( NULL, NULL, NULL, 0 );
-
-	Client c( "localhost", "8877" );
-
-	c.SendMSG( "yay" );
-
-	std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-
-	std::string response;
-	c.GetMSG( response );
-	std::cout << response << "\n";
-
-	return 0;
+	return WinMain( NULL, NULL, NULL, 0 );
 }
