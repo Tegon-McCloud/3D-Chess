@@ -222,6 +222,7 @@ void Chess::MovePiece( PositionLFR from, PositionLFR to ) {
 
 Piece& Chess::PieceAt( PositionLFR pos ) {
 	return *CellAt( pos );
+
 }
 
 std::shared_ptr<Piece>& Chess::CellAt( PositionLFR pos ) {

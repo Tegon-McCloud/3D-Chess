@@ -10,7 +10,14 @@
 #include <array>
 #include <optional>
 
+// Constants:
 constexpr const float pi = 3.14159265359f;
+
+// Error handling:
+std::string GetLastErrorString( HRESULT hr );
+
+void ThrowIfFailed( HRESULT hr );
+void WSAThrowIfFailed( int r );
 
 class BadHResultError : public std::runtime_error {
 
@@ -18,10 +25,14 @@ public:
 	BadHResultError( HRESULT hr );
 };
 
+class BadWSAResultError : public std::runtime_error {
 
-std::string GetLastErrorString(HRESULT hr);
-void ThrowIfFailed(HRESULT hr);
+public:
+	BadWSAResultError( int r );
+};
 
+
+// Time and position keeping:
 class Timer {
 
 public:
@@ -31,19 +42,6 @@ public:
 private:
 	std::chrono::steady_clock::time_point lastReset;
 };
-
-
-typedef struct {
-	DirectX::XMFLOAT3 ori;
-	DirectX::XMFLOAT3 dir;
-} Ray;
-
-typedef struct {
-	DirectX::XMFLOAT3 min;
-	DirectX::XMFLOAT3 max;
-} Box;
-
-float intersection( const Ray& r, const Box& b );
 
 struct PositionLFR {
 	PositionLFR( const PositionLFR& p );
@@ -73,3 +71,16 @@ union Position {
 	PositionLFR lfr;
 	PositionXYZ xyz;
 };
+
+// Raytracing
+struct Ray {
+	DirectX::XMFLOAT3 ori;
+	DirectX::XMFLOAT3 dir;
+};
+
+struct Box {
+	DirectX::XMFLOAT3 min;
+	DirectX::XMFLOAT3 max;
+};
+
+float intersection( const Ray& r, const Box& b );
