@@ -9,7 +9,7 @@ Input::~Input() {
 	}
 }
 
-void Input::RegisterRightClickListener( const std::function<void( int x, int y )>& onClick ) {
+void Input::RegisterClickListener( const std::function<void( int x, int y )>& onClick ) const {
 	onMouseClick.push_back( onClick );
 }
 
@@ -17,14 +17,14 @@ bool Input::IsKeyDown( unsigned char key ) const {
 	return keyStates[key];
 }
 
-POINT Input::GetMousePos() {
+POINT Input::GetMousePos() const {
 	POINT p;
 	GetCursorPos( &p );
 	ScreenToClient( Window::Get(), &p );
 	return p;
 }
 
-void Input::CenterMouse() {
+void Input::CenterMouse() const {
 	POINT p = { Window::Get().GetWidth() / 2, Window::Get().GetHeight() / 2 };
 	ClientToScreen( Window::Get(), &p );
 	SetCursorPos( p.x, p.y );

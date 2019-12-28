@@ -1,9 +1,14 @@
 #pragma once
 
-#include "WRL.h"
-#include "d3d11.h"
-#include "DirectXMath.h"
+struct ID3D11Device; 
+struct ID3D11DeviceContext;
+struct IDXGISwapChain;
+struct ID3D11RenderTargetView;
+struct ID3D11DepthStencilView;
+
 #include "States.h"
+
+#include "WRL.h"
 
 /* The Graphics type, is instantiated by the Window on creation.
  * It manages the DX11 pipeline.
@@ -32,7 +37,9 @@ public:
 	// displays currently drawn frame
 	void Present() const;
 
+	// setter for using depth or not
 	void SetDepthEnabled( bool enable ) const;
+	// setter for using alpha blending or not
 	void SetBlendEnabled( bool enable ) const;
 
 	// getters for DX11 interfaces

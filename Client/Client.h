@@ -3,6 +3,7 @@
 #include "Winsock2.h"
 #include <mutex>
 #include <queue>
+#include <thread>
 
 class Client {
 

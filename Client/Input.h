@@ -3,8 +3,8 @@
 #include "WindowsStrict.h"
 
 #include <bitset>
-#include <functional>
 #include <vector>
+#include <functional>
 
 class Input {
 
@@ -14,10 +14,10 @@ public:
 	Input();
 	~Input();
 	
-	void RegisterRightClickListener( const std::function< void( int x, int y ) >& onClick );
+	void RegisterClickListener( const std::function< void( int x, int y ) >& onClick ) const;
 	bool IsKeyDown( unsigned char key ) const;
-	POINT GetMousePos();
-	void CenterMouse();
+	POINT GetMousePos() const;
+	void CenterMouse() const;
 	void SetCursorVisible( bool visibility );
 
 private:
@@ -28,7 +28,7 @@ private:
 	void WindowUnfocused();
 
 	std::bitset< 256u > keyStates;
-	std::vector< std::function< void( int x, int y ) > > onMouseClick;
+	mutable std::vector<std::function< void( int x, int y )>> onMouseClick; // because of the functional programming technique used, constness cannot be maintained
 	bool cursorVisible;
 
 };

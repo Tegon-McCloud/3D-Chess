@@ -24,7 +24,7 @@ Client::Client( std::string ip, std::string port ) : clientSocket( INVALID_SOCKE
 			throw BadWSAResultError( WSAGetLastError() );
 		}
 
-		WSAThrowIfFailed( connect( clientSocket, info->ai_addr, info->ai_addrlen ) );
+		WSAThrowIfFailed( connect( clientSocket, info->ai_addr, (int) info->ai_addrlen ) );
 
 	} catch ( BadWSAResultError& e ) {
 		freeaddrinfo( info );
@@ -60,7 +60,7 @@ bool Client::GetMSG( std::string& msg ) {
 }
 
 void Client::SendMSG( const std::string& msg ) {
-	send( clientSocket, msg.c_str(), msg.length(), 0 );
+	send( clientSocket, msg.c_str(), (int) msg.length(), 0 );
 }
 
 void Client::Loop() {

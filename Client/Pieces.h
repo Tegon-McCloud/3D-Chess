@@ -4,9 +4,9 @@
 
 #include <unordered_map>
 
-typedef enum {
+enum Side {
 	WHITE, BLACK
-} Side;
+};
 
 class Piece {
 
@@ -24,6 +24,7 @@ private:
 	static std::unordered_map< std::string, std::shared_ptr<Model> > models; // improve performance by only holding each model only once.
 };
 
+// macro abuse to declare a class for each piece quickly
 #define PIECE_DECL( Name, Symbol ) \
 class Name : public Piece {\
 public:\

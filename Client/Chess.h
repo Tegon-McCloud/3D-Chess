@@ -1,10 +1,13 @@
 #pragma once
 
-#include "Pieces.h"
+class Piece;
+struct PositionLFR;
+
+#include "Model.h"
 #include "Player.h"
 #include "Lighting.h"
-#include "Util.h"
 
+#include <vector>
 #include <array>
 #include <memory>
 
@@ -31,14 +34,14 @@ private:
 	std::shared_ptr<Piece>& CellAt( PositionLFR p );
 
 	/*
-	nx5x5 array of shared pointers to pieces. The first index will be its level, second its file and third its rank.
-	This means that in the first index will not be x, as that is its level and should naturally be displayed on the y-axis.
+	nx5x5 array of shared pointers to pieces. The first index represents its level, second its file and third its rank.
+	This means that in the first index will not be x, as that is its level and should be displayed on the y-axis.
 	The outermost dimension is a vector so it is all allocated on heap.
 	sizeof( std::shared_ptr ) is 16 and 16 * 5 * 5 * 5 = 2000, too much for the stack.
 	*/
 	std::vector<std::array<std::array<std::shared_ptr<Piece>, 5>, 5>> pieces;
 
-	// The models of a black and white square.
+	// models of a black and white square.
 	Model whiteSquare, blackSquare;
 	// model of a 1x1x1 box, used for highlighting various positions.
 	Model highlightBox;

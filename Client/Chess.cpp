@@ -72,11 +72,9 @@ Chess::Chess() :
 	player.Update( 0.0f );
 	player.Bind();
 
-	Window::Get().GetInput().RegisterRightClickListener( [ this ]( int x, int y ) -> void {
+	Window::Get().GetInput().RegisterClickListener( [ this ]( int x, int y ) -> void {
 
 		using namespace DirectX;
-
-		Ray r = player.LookRay();
 
 		PositionLFR clickedPos( -1, -1, -1 );
 
@@ -97,7 +95,7 @@ Chess::Chess() :
 					hitbox.max.y = i * 6.0f + 3.0f;
 					hitbox.max.z = j * 3.0f + 0.5f;
 
-					float t = intersection( r, hitbox );
+					float t = intersection( player.LookRay(), hitbox );
 
 					if ( t < dist ) {
 						dist = t;

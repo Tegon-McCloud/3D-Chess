@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Drawable.h"
 #include "ConstantBuffer.h"
 
@@ -6,7 +7,7 @@
 #include <memory>
 #include <string>
 
-typedef struct alignas(16) {
+struct alignas(16) Material {
 	struct {
 		float r, g, b;
 	} color;
@@ -25,8 +26,7 @@ typedef struct alignas(16) {
 
 	float transparency;
 
-} Material;
-
+} ;
 
 class Model : public Drawable {
 

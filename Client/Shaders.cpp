@@ -1,4 +1,10 @@
 #include "Shaders.h"
+#include "Util.h"
+#include "Window.h"
+
+#include "WRL.h"
+#include "d3d11.h"
+#include "D3DCompiler.h"
 
 VertexShader::VertexShader( std::string name ) {
 	

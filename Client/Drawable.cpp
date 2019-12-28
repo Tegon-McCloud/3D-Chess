@@ -2,6 +2,8 @@
 #include "Window.h"
 #include "IndexBuffer.h"
 
+#include "d3d11.h"
+
 void Drawable::Draw() {
 	
 	for ( std::shared_ptr<Bindable>& b : bindables ) {

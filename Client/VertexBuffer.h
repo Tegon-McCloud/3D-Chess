@@ -1,12 +1,10 @@
 #pragma once
 
+struct ID3D11Buffer;
+
 #include "Bindable.h"
 
 #include "WRL.h"
-#include "d3d11.h"
-#include <unordered_map>
-#include <string>
-
 
 typedef struct {
 	float x, y, z;

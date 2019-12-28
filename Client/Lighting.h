@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ConstantBuffer.h"
-
 #include "DirectXMath.h"
 
 typedef struct alignas(16) {

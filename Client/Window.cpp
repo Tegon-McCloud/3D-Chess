@@ -12,15 +12,15 @@ HWND Window::GetHandle() const {
 	return hWnd;
 }
 
-const Graphics& Window::GetGraphics() {
+const Graphics& Window::GetGraphics() const {
 	return gfx;
 }
 
-Input& Window::GetInput() {
+const Input& Window::GetInput() const {
 	return input;
 }
 
-void Window::SetVisible( bool visible, bool maximized ) {
+void Window::SetVisible( bool visible, bool maximized ) const {
 	ShowWindow( hWnd, visible ? maximized ? SW_MAXIMIZE : SW_SHOW : SW_HIDE );
 }
 
@@ -115,33 +115,33 @@ LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPAR
 		
 
 	case WM_SIZE:
-		if(wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED) Get().SizeChanged( LOWORD( lParam ), HIWORD( lParam ) );
+		if(wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED) GetInternal().SizeChanged( LOWORD( lParam ), HIWORD( lParam ) );
 		break;
 
 
 	case WM_RBUTTONDOWN:
 	case WM_LBUTTONDOWN:
-		Get().input.MouseClick( LOWORD( lParam ), HIWORD( lParam ) );
+		GetInternal().input.MouseClick( LOWORD( lParam ), HIWORD( lParam ) );
 		break;
 		
 
 	case WM_KEYDOWN:
-		Get().input.KeyPressed( static_cast<unsigned char>(wParam) );
+		GetInternal().input.KeyPressed( static_cast<unsigned char>(wParam) );
 		break;
 	case WM_KEYUP:
-		Get().input.KeyReleased( static_cast<unsigned char>(wParam) );
+		GetInternal().input.KeyReleased( static_cast<unsigned char>(wParam) );
 		break;
 
 
 	case WM_SETFOCUS:
-		Get().input.WindowFocused();
-		Get().focus = true;
+		GetInternal().input.WindowFocused();
+		GetInternal().focus = true;
 		break;
 	
 	
 	case WM_KILLFOCUS:
-		Get().input.WindowUnfocused();
-		Get().focus = false;
+		GetInternal().input.WindowUnfocused();
+		GetInternal().focus = false;
 		break;
 
 

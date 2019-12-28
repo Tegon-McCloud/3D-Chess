@@ -1,6 +1,10 @@
 #pragma once
+
+struct ID3D11Device;
+struct ID3D11BlendState;
+struct ID3D11DepthStencilState;
+
 #include "WRL.h"
-#include "d3d11.h"
 
 class BlendState {
 

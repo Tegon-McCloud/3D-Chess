@@ -2,6 +2,8 @@
 #include "Util.h"
 #include "Window.h"
 
+#include "d3d11.h"
+
 void BlendState::Init( ID3D11Device* pDevice ) {
 
 	D3D11_BLEND_DESC bd = { 0 };

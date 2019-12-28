@@ -1,14 +1,7 @@
 #include "Graphics.h"
 #include "Util.h"
-#include "Window.h"
-#include "d3dcompiler.h"
-#include "DirectXMath.h"
 
-#include "IndexBuffer.h"
-#include "VertexBuffer.h"
-#include "ConstantBuffer.h"
-#include "Camera.h"
-#include "Shaders.h"
+#include "d3d11.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")

@@ -14,19 +14,23 @@ class Camera {
 public:
 	Camera( float x, float y, float z, float yaw, float pitch, float roll );
 
-	void UpdateBuffer();
-	void Bind(); // sets this as the camera to use
+	// update the GPU buffer which contains the camera transformations. Has to be called every frame the camera moves.
+	void UpdateBuffer(); 
+	// sets this as the camera to use
+	void Bind();
 
-	DirectX::XMVECTOR ToViewSpace3( const DirectX::XMVECTOR& v ); // converts v from worldspace to viewspace
+	// converts v from worldspace to viewspace as a direction or position vector
+	DirectX::XMVECTOR ToViewSpace3( const DirectX::XMVECTOR& v ); 
 	DirectX::XMVECTOR ToViewSpace4( const DirectX::XMVECTOR& v );
 
-	Ray LookRay();
+	// gets a reference to a Ray that is pointing directly foward from the camera
+	const Ray& LookRay(); 
 
 protected:
 	float x, y, z, pitch, yaw, roll;
 	ConstantBuffer< CameraTransforms, VS, 1u > buffer;
 
-	// precalculated on buffer update:
+	// precalculated on each buffer update
 	CameraTransforms cameraTransforms;
 	Ray lookRay;
 };

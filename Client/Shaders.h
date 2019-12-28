@@ -1,7 +1,11 @@
 #pragma once
 
-#include "ConstantBuffer.h"
-#include "D3DCompiler.h"
+#include "Bindable.h"
+
+#include "d3d11.h"
+#include "WRL.h"
+#include <string>
+
 
 class VertexShader : public Bindable {
 

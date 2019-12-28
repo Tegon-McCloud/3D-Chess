@@ -164,6 +164,6 @@ float intersection( const Ray& r, const Box& b ) {
 
 
 	if ( tmax < 0 ) return std::numeric_limits<float>::infinity();
-	float t = tmin > 0.0f ? tmin : tmax;
-
+	
+	return tmin > 0.0f ? tmin : tmax;
 }

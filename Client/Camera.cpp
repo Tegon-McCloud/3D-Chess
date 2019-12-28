@@ -41,6 +41,6 @@ DirectX::XMVECTOR Camera::ToViewSpace4( const DirectX::XMVECTOR& v ) {
 	return  XMVector4Transform( v, XMLoadFloat4x4( &cameraTransforms.worldToCam ) );
 }
 
-Ray Camera::LookRay() {
+const Ray& Camera::LookRay() {
 	return lookRay;
 }

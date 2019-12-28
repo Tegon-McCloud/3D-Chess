@@ -2,6 +2,8 @@
 #include "Util.h"
 #include "Window.h"
 
+#include "d3d11.h"
+
 constexpr const D3D11_BUFFER_DESC defaultIndexBufferDesc = {
 	0u,							// ByteWidth
 	D3D11_USAGE_DEFAULT,		// Usage
