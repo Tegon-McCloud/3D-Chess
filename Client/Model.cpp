@@ -1,13 +1,12 @@
 #include "Model.h"
-#include <vector>
-#include <iostream>
-#include <sstream>
-#include <fstream>
-
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
+
 #include "DirectXMath.h"
+#include <vector>
+#include <sstream>
+#include <fstream>
 
 Model::Model( const std::string& name, const Material& m ) {
 	std::ifstream ifs( "Resources\\" + name + ".obj");

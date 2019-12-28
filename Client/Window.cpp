@@ -1,9 +1,6 @@
 #include "Window.h"
 
-#include <iostream>
-
-#include <dxgi.h>
-#include "Util.h"
+#include <stdexcept>
 
 // Window
 Window::Window() : width(1080), height(720), gfx(Create()) {}

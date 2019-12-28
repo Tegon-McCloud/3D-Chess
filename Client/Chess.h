@@ -49,7 +49,6 @@ private:
 	// a pointer to a Position that is currently selected by the player
 	std::unique_ptr<PositionLFR> selectedPos;
 
-
 	Light light; 
 	ConstantBuffer<Light, PS, 1u> lightBuffer;
 

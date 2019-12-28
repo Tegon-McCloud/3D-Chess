@@ -86,14 +86,15 @@ Chess::Chess() :
 
 					if ( !pieces[i][j][k] ) continue;
 
+					PieceInfo info = pieces[i][j][k]->GetInfo();
 					Box hitbox;
-					hitbox.min.x = k * 3.0f - 0.5f;
-					hitbox.min.y = i * 6.0f - 0.0f;
-					hitbox.min.z = j * 3.0f - 0.5f;
+					hitbox.min.x = k * 3.0f - 0.5f * info.diameter;
+					hitbox.min.y = i * 6.0f - 0.0f * info.height;
+					hitbox.min.z = j * 3.0f - 0.5f * info.diameter;
 
-					hitbox.max.x = k * 3.0f + 0.5f;
-					hitbox.max.y = i * 6.0f + 3.0f;
-					hitbox.max.z = j * 3.0f + 0.5f;
+					hitbox.max.x = k * 3.0f + 0.5f * info.diameter;
+					hitbox.max.y = i * 6.0f + 1.0f * info.height;
+					hitbox.max.z = j * 3.0f + 0.5f * info.diameter;
 
 					float t = intersection( player.LookRay(), hitbox );
 
@@ -133,40 +134,47 @@ Chess::Chess() :
 				
 				// Pawns
 				if ( k == 1 && i < 2) {
-					pieces[i][j][k].reset(new Pawn( WHITE ));
+					pieces[i][j][k].reset(new Piece( "Pawn", WHITE ));
 				}
 
 				if ( k == 3 && i > 2 ) {
-					pieces[i][j][k].reset(new Pawn( BLACK ));
+					pieces[i][j][k].reset(new Piece( "Pawn", BLACK ));
 				}
 				
 			}
 		}
 	}
 
-	pieces[0][0][0].reset( new Rook( WHITE ) );
-	pieces[0][1][0].reset( new Knight( WHITE ) );
-	pieces[0][2][0].reset( new King( WHITE ) );
-	pieces[0][3][0].reset( new Knight( WHITE ) );
-	pieces[0][4][0].reset( new Rook( WHITE ) );
+#define SETW(l, f, r, piece) pieces[l][f][r].reset( new Piece( #piece, WHITE ) )
 	
-	pieces[1][0][0].reset( new Bishop( WHITE ) );
-	pieces[1][1][0].reset( new Unicorn( WHITE ) );
-	pieces[1][2][0].reset( new Queen( WHITE ) );
-	pieces[1][3][0].reset( new Bishop( WHITE ) );
-	pieces[1][4][0].reset( new Unicorn( WHITE ) );
+	SETW( 0, 0, 0, Rook );
+	SETW( 0, 1, 0, Knight );
+	SETW( 0, 2, 0, King );
+	SETW( 0, 3, 0, Knight );
+	SETW( 0, 4, 0, Rook );
+	
+	SETW( 1, 0, 0, Bishop );
+	SETW( 1, 1, 0, Unicorn );
+	SETW( 1, 2, 0, Queen );
+	SETW( 1, 3, 0, Bishop );
+	SETW( 1, 4, 0, Unicorn );
 
-	pieces[4][0][4].reset( new Rook( BLACK ) );
-	pieces[4][1][4].reset( new Knight( BLACK ) );
-	pieces[4][2][4].reset( new King( BLACK ) );
-	pieces[4][3][4].reset( new Knight( BLACK ) );
-	pieces[4][4][4].reset( new Rook( BLACK ) );
+#undef SETW
+#define SETB(l, f, r, piece) pieces[l][f][r].reset( new Piece( #piece, BLACK ) );
+	
+	SETB( 4, 0, 4, Rook );
+	SETB( 4, 1, 4, Knight );
+	SETB( 4, 2, 4, King );
+	SETB( 4, 3, 4, Knight );
+	SETB( 4, 4, 4, Rook );
 
-	pieces[3][0][4].reset( new Unicorn( BLACK ) );
-	pieces[3][1][4].reset( new Bishop( BLACK ) );
-	pieces[3][2][4].reset( new Queen( BLACK ) );
-	pieces[3][3][4].reset( new Unicorn( BLACK ) );
-	pieces[3][4][4].reset( new Bishop( BLACK ) );
+	SETB( 3, 0, 4, Unicorn );
+	SETB( 3, 0, 4, Bishop );
+	SETB( 3, 0, 4, Queen );
+	SETB( 3, 0, 4, Unicorn );
+	SETB( 3, 0, 4, Bishop );
+
+#undef SETB
 }
 
 void Chess::Update( float dt ) {
@@ -199,9 +207,11 @@ void Chess::Draw() {
 	Window::Get().GetGraphics().SetBlendEnabled( true );
 	Window::Get().GetGraphics().SetDepthEnabled( false );
 	
-	if( selectedPos )
-		highlightBox.Draw( XMMatrixScaling( 1.1f, 3.0f, 1.1f ) * XMMatrixTranslation( selectedPos->r * 3.0f, selectedPos->l * 6.0f, selectedPos->f * 3.0f ) );
-
+	if ( selectedPos ) {
+		PieceInfo info = PieceAt( *selectedPos ).GetInfo();
+		highlightBox.Draw( XMMatrixScaling( info.diameter, info.height, info.diameter ) * XMMatrixTranslation( selectedPos->r * 3.0f, selectedPos->l * 6.0f, selectedPos->f * 3.0f ) );
+	}
+		
 	Window::Get().GetGraphics().SetBlendEnabled( false );
 	Window::Get().GetGraphics().SetDepthEnabled( true );
 

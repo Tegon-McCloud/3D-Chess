@@ -13,11 +13,11 @@ void Drawable::Draw() {
 	Window::Get().GetGraphics().GetContext()->DrawIndexed( (UINT) indexCount, 0, 0 );
 }
 
-void Drawable::AddBindable( std::shared_ptr<Bindable> b ) {
+void Drawable::AddBindable( const std::shared_ptr<Bindable>& b ) {
 
 	if ( IndexBuffer* ib = dynamic_cast<IndexBuffer*>(b.get()) ) {
 		indexCount = ib->GetSize();
 	}
 
-	bindables.push_back( std::move( b ) );
+	bindables.push_back( b );
 }
