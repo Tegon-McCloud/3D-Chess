@@ -5,35 +5,26 @@
 #include "ws2tcpip.h"
 #include <thread>
 #include <cassert>
+#include <regex>
+#ifdef _DEBUG
+#include <iostream>
+#endif // _DEBUG
+
 
 #pragma comment(lib, "Ws2_32.lib")
 
-Client::Client( std::string ip, std::string port ) : clientSocket( INVALID_SOCKET ) {
+// Client
+Client::Client( const std::string& ipAndPort ) : clientSocket( INVALID_SOCKET ) {
 
-	addrinfo hints = { 0 };
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
+	const std::regex ipRegex( "([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}|localhost):[0-9]{1,5}" );
 
-	addrinfo* info;
-	try {
-		WSAThrowIfFailed( getaddrinfo( ip.c_str(), port.c_str(), &hints, &info ) );
-		
-		clientSocket = socket( info->ai_family, info->ai_socktype, info->ai_protocol );
-		if ( clientSocket == INVALID_SOCKET ) {
-			throw BadWSAResultError( WSAGetLastError() );
-		}
-
-		WSAThrowIfFailed( connect( clientSocket, info->ai_addr, (int) info->ai_addrlen ) );
-
-	} catch ( BadWSAResultError& e ) {
-		freeaddrinfo( info );
-		throw e;
+	if ( !std::regex_match( ipAndPort, ipRegex ) ) {
+		throw std::runtime_error( "Client received string that wasn't an ip and port." );
 	}
-	
-	freeaddrinfo( info );
 
-	loopThread = std::thread( &Client::Loop, this );
+	size_t colonIndex = ipAndPort.find(":");
+
+	loopThread = std::thread( &Client::ConnectAndLoop, this, ipAndPort.substr( 0, colonIndex ), ipAndPort.substr( colonIndex + 1 ) );
 }
 
 Client::~Client() {
@@ -63,23 +54,61 @@ void Client::SendMSG( const std::string& msg ) {
 	send( clientSocket, msg.c_str(), (int) msg.length(), 0 );
 }
 
-void Client::Loop() {
+int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
+	
+	int result;
+
+	addrinfo hints = { 0 };
+	hints.ai_family = AF_INET;			// IPv4
+	hints.ai_socktype = SOCK_STREAM;	// stream-based
+	hints.ai_protocol = IPPROTO_TCP;	// TCP
+
+	addrinfo* info;
+
+	result = getaddrinfo( ip.c_str(), port.c_str(), &hints, &info );
+	if ( result != 0 ) {
+		return result;
+	}
+
+	clientSocket = socket( info->ai_family, info->ai_socktype, info->ai_protocol );
+	if ( clientSocket == INVALID_SOCKET ) {
+		freeaddrinfo( info );
+		return WSAGetLastError();
+	}
+
+	result = connect( clientSocket, info->ai_addr, (int)info->ai_addrlen );
+	if ( result != 0 ) {
+#ifdef _DEBUG
+		std::cout << "failed to connect to address: " << ip << ":" << port << "\n";
+#endif // _DEBUG
+		freeaddrinfo( info );
+		return result;
+	}
+
+	freeaddrinfo( info );
 
 	constexpr int bufLength = 2048;
 	char* recvBuf = new char[bufLength]; // heap allocation bcs 2 kB is a bit high for stack
 	int recvLength = 0;
 
 	while ( true ) {
-		
+
 		recvLength = recv( clientSocket, recvBuf, bufLength, 0 );
 
 		if ( recvLength <= 0 ) break; // connection broken from serverside
-		
+
 		mutex.lock();
 		messages.push( std::string( recvBuf, recvLength ) );
 		mutex.unlock();
 	}
 
+	delete[] recvBuf;
+
+#ifdef _DEBUG
+	std::cout << "connection to server broken\n";
+#endif // _DEBUG
+
+	return 0;
 }
 
 // WSALoader
@@ -99,3 +128,4 @@ WSALoader::WSALoader() {
 WSALoader::~WSALoader() {
 	WSACleanup();
 }
+

@@ -32,8 +32,7 @@ std::optional<int> Window::ProcessMessages() const {
 		}
 
 		DispatchMessageW( &msg );
-		TranslateMessage( &msg );
-
+		//TranslateMessage( &msg );
 	}
 
 	return std::optional<int>();
@@ -162,7 +161,7 @@ WindowClass::WindowClass() {
 	wndCls.cbWndExtra = 0;
 	wndCls.hInstance = GetModuleHandle( NULL );
 	wndCls.hIcon = NULL;
-	wndCls.hCursor = LoadCursor( NULL, (LPTSTR)IDC_IBEAM );
+	wndCls.hCursor = LoadCursor( NULL, (LPTSTR)IDC_ARROW );
 	wndCls.hbrBackground = NULL;
 	wndCls.lpszMenuName = NULL;
 	wndCls.lpszClassName = wndClsName;

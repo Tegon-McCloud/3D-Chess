@@ -27,7 +27,6 @@ std::string GetLastErrorString(HRESULT hr) {
 
 }
 
-#ifdef _DEBUG
 void ThrowIfFailed( HRESULT hr ) {
 	if ( FAILED( hr ) ) {
 		throw BadHResultError( hr );
@@ -39,11 +38,6 @@ void WSAThrowIfFailed( int r ) {
 		throw BadWSAResultError( r );
 	}
 }
-#else
-void ThrowIfFailed( hr ) {}
-void WSAThrowIfFailed( int r ) {}
-#endif // _DEBUG
-
 
 // BadHResultError
 BadHResultError::BadHResultError( HRESULT hr ) : std::runtime_error(GetLastErrorString(hr)) {}

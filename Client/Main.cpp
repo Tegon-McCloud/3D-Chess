@@ -4,18 +4,20 @@
 #include "Util.h"
 #include "Shaders.h"
 #include "Chess.h"
-#include "Client.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
 
 	using namespace DirectX;
+	
+	std::string cmdLine( lpCmdLine );
 
 	std::optional<int> rv;	// return value
-	Window::Get().SetVisible( true, true );
 	
 	Timer timer;
 
-	Chess c;
+	Window::Get().SetVisible( true, true );
+
+	Chess chess( cmdLine );
 
 	VertexShader vs( "VertexShader" );
 	vs.Bind();
@@ -41,8 +43,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
 			
-			c.Update( dt );
-			c.Draw();
+			chess.Update( dt );
+			chess.Draw();
 
 			Window::Get().GetGraphics().Present();
 
@@ -55,5 +57,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 }
 
 int main() {
-	return WinMain( NULL, NULL, NULL, 0 );
+
+	char cmdLine[] = "127.0.0.1:8877";
+	return WinMain( GetModuleHandle( NULL ), NULL, cmdLine, 0 );
 }

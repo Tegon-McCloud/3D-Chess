@@ -5,10 +5,11 @@
 #include <queue>
 #include <thread>
 
+
 class Client {
 
 public:
-	Client( std::string ip, std::string port );
+	Client( const std::string& ipAndPort );
 	~Client();
 
 	Client( const Client& ) = delete;
@@ -18,7 +19,7 @@ public:
 	void SendMSG( const std::string& msg );
 	
 private:
-	void Loop();
+	int ConnectAndLoop( const std::string& ip, const std::string& port );
 
 	SOCKET clientSocket;
 
@@ -40,3 +41,5 @@ private:
 
 	static WSALoader loader;
 };
+
+

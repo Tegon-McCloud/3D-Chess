@@ -63,11 +63,12 @@ constexpr const Material mtlSelected = {
 };
 
 // Chess
-Chess::Chess() : 
+Chess::Chess( const std::string& cmdLine ) : 
 	pieces(5, std::array<std::array<std::shared_ptr<Piece>, 5>, 5>()), 
 	whiteSquare( "Square", mtlWhiteSquare ), 
 	blackSquare( "Square", mtlBlackSquare ),
-	highlightBox( "Box", mtlSelected ) {
+	highlightBox( "Box", mtlSelected ),
+	client(cmdLine) {
 
 	player.Update( 0.0f );
 	player.Bind();
@@ -169,10 +170,10 @@ Chess::Chess() :
 	SETB( 4, 4, 4, Rook );
 
 	SETB( 3, 0, 4, Unicorn );
-	SETB( 3, 0, 4, Bishop );
-	SETB( 3, 0, 4, Queen );
-	SETB( 3, 0, 4, Unicorn );
-	SETB( 3, 0, 4, Bishop );
+	SETB( 3, 1, 4, Bishop );
+	SETB( 3, 2, 4, Queen );
+	SETB( 3, 3, 4, Unicorn );
+	SETB( 3, 4, 4, Bishop );
 
 #undef SETB
 }
