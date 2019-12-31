@@ -6,9 +6,9 @@ struct ID3D11Buffer;
 
 #include "WRL.h"
 
-typedef struct {
+struct Vertex {
 	float x, y, z;
-} Vertex;
+};
 
 class VertexBuffer : public Bindable {
 

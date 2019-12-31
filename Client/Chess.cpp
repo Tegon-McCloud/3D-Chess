@@ -62,6 +62,45 @@ constexpr const Material mtlSelected = {
 	0.5f				// transparency			// transparency
 };
 
+constexpr const Material mtlMove = {
+	{					// color
+		0.1f,				// r
+		0.1f,				// g
+		0.5f				// b
+	},
+	{					// ambient:
+		1.0f				// intensity
+	},
+	{					// diffuse:
+		0.0f				// intensity
+	},
+	{					// specular:
+		0.1,				// intensity
+		24.0f				// shininess
+	},
+	0.5f				// transparency			// transparency
+};
+
+constexpr const Material mtlCapture = {
+	{					// color
+		0.5f,				// r
+		0.1f,				// g
+		0.1f				// b
+	},
+	{					// ambient:
+		1.0f				// intensity
+	},
+	{					// diffuse:
+		0.0f				// intensity
+	},
+	{					// specular:
+		0.1,				// intensity
+		24.0f				// shininess
+	},
+	0.5f				// transparency			// transparency
+};
+
+
 // Chess
 Chess::Chess( const std::string& cmdLine ) : 
 	pieces(5, std::array<std::array<std::shared_ptr<Piece>, 5>, 5>()), 
@@ -76,48 +115,21 @@ Chess::Chess( const std::string& cmdLine ) :
 	Window::Get().GetInput().RegisterClickListener( [ this ]( int x, int y ) -> void {
 
 		using namespace DirectX;
+		
+		std::optional<PositionLFR> clickedPos = PieceHit( player.LookRay() );
 
-		PositionLFR clickedPos( -1, -1, -1 );
-
-		float dist = std::numeric_limits<float>::infinity();
-
-		for ( int i = 0; i < 5; i++ ) {
-			for ( int j = 0; j < 5; j++ ) {
-				for ( int k = 0; k < 5; k++ ) {
-
-					if ( !pieces[i][j][k] ) continue;
-
-					PieceInfo info = pieces[i][j][k]->GetInfo();
-					Box hitbox;
-					hitbox.min.x = k * 3.0f - 0.5f * info.diameter;
-					hitbox.min.y = i * 6.0f - 0.0f * info.height;
-					hitbox.min.z = j * 3.0f - 0.5f * info.diameter;
-
-					hitbox.max.x = k * 3.0f + 0.5f * info.diameter;
-					hitbox.max.y = i * 6.0f + 1.0f * info.height;
-					hitbox.max.z = j * 3.0f + 0.5f * info.diameter;
-
-					float t = intersection( player.LookRay(), hitbox );
-
-					if ( t < dist ) {
-						dist = t;
-						clickedPos.l = i;
-						clickedPos.f = j;
-						clickedPos.r = k;
-					}
-				}
-			}
-		}
-
-		if ( Position( clickedPos ) == Position( PositionLFR( -1, -1, -1 ) ) ) {
+		
+		if ( !clickedPos ) {
 			selectedPos.reset();
 			return;
 		};
 
 		if ( !selectedPos ) {
-			selectedPos.reset( new PositionLFR( clickedPos ) );
+			selectedPos.reset( new PositionLFR( clickedPos.value() ) );
+
+			client.SendMSG( std::string( "p:" ) + Position( *selectedPos ).toAlg() );
 		} else {
-			MovePiece( *selectedPos, clickedPos );
+			MovePiece( *selectedPos, clickedPos.value() );
 			selectedPos.reset();
 		}
 
@@ -180,6 +192,26 @@ Chess::Chess( const std::string& cmdLine ) :
 
 void Chess::Update( float dt ) {
 	player.Update( dt );
+
+	std::string msg;
+
+	while ( client.GetMSG( msg ) ) {
+		printf( "processing: %s\n", msg.c_str() );
+
+		if ( msg[0] == 'p' ) {
+
+			highlights.clear();
+			msg.erase( 0, 2 );
+
+			while ( msg.length() != 0 ) {
+				highlights.push_back( Position( msg ).lfr );
+				msg.erase( 0, 4 );
+			}
+
+		}
+
+	}
+
 }
 
 void Chess::Draw() {
@@ -208,9 +240,32 @@ void Chess::Draw() {
 	Window::Get().GetGraphics().SetBlendEnabled( true );
 	Window::Get().GetGraphics().SetDepthEnabled( false );
 	
+	
+
 	if ( selectedPos ) {
-		PieceInfo info = PieceAt( *selectedPos ).GetInfo();
-		highlightBox.Draw( XMMatrixScaling( info.diameter, info.height, info.diameter ) * XMMatrixTranslation( selectedPos->r * 3.0f, selectedPos->l * 6.0f, selectedPos->f * 3.0f ) );
+		const PieceInfo& info = PieceAt( *selectedPos ).GetInfo();
+		highlightBox.SetMaterial( mtlSelected );
+		highlightBox.Draw( 
+			XMMatrixScaling( info.diameter, info.height, info.diameter ) *
+			XMMatrixTranslation( selectedPos->r * 3.0f, selectedPos->l * 6.0f, selectedPos->f * 3.0f )
+		);
+	}
+	
+	for ( auto it = highlights.cbegin(); it != highlights.cend(); it++ ) {
+		
+		if ( pieces[it->f][it->l][it->r] ) {
+			const PieceInfo& info = PieceAt( *it ).GetInfo();
+			highlightBox.SetMaterial( mtlCapture );
+			highlightBox.Draw(
+				XMMatrixScaling( info.diameter, info.height, info.diameter ) *
+				XMMatrixTranslation( it->r * 3.0f, it->l * 6.0f, it->f * 3.0f )
+			);
+
+		} else {
+
+
+		}
+
 	}
 		
 	Window::Get().GetGraphics().SetBlendEnabled( false );
@@ -229,4 +284,44 @@ Piece& Chess::PieceAt( PositionLFR pos ) {
 
 std::shared_ptr<Piece>& Chess::CellAt( PositionLFR pos ) {
 	return pieces[pos.l][pos.f][pos.r];
+}
+
+std::optional<PositionLFR> Chess::PieceHit( const Ray& r ) {
+
+	PositionLFR hitpos( -1, -1, -1 );
+	float dist = std::numeric_limits<float>::infinity();
+
+	for ( int i = 0; i < 5; i++ ) {
+		for ( int j = 0; j < 5; j++ ) {
+			for ( int k = 0; k < 5; k++ ) {
+
+				if ( !pieces[i][j][k] ) continue;
+
+				PieceInfo info = pieces[i][j][k]->GetInfo();
+				Box hitbox;
+				hitbox.min.x = k * 3.0f - 0.5f * info.diameter;
+				hitbox.min.y = i * 6.0f - 0.0f * info.height;
+				hitbox.min.z = j * 3.0f - 0.5f * info.diameter;
+
+				hitbox.max.x = k * 3.0f + 0.5f * info.diameter;
+				hitbox.max.y = i * 6.0f + 1.0f * info.height;
+				hitbox.max.z = j * 3.0f + 0.5f * info.diameter;
+
+				float t = intersection( player.LookRay(), hitbox );
+
+				if ( t < dist ) {
+					dist = t;
+					hitpos.l = i;
+					hitpos.f = j;
+					hitpos.r = k;
+				}
+			}
+		}
+	}
+
+	if ( hitpos.l != -1 ) {
+		return hitpos;
+	} else {
+		return std::optional<PositionLFR>();
+	}
 }

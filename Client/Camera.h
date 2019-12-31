@@ -4,10 +4,10 @@
 
 #include "DirectXMath.h"
 
-typedef struct alignas(16) {
+struct alignas(16) CameraTransforms {
 	DirectX::XMFLOAT4X4 worldToCam;
 	DirectX::XMFLOAT4X4 proj;
-} CameraTransforms;
+};
 
 class Camera {
 

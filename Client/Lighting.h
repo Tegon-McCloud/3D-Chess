@@ -2,7 +2,7 @@
 
 #include "DirectXMath.h"
 
-typedef struct alignas(16) {
+struct alignas(16) Light {
 	DirectX::XMFLOAT3 dir;
 	DirectX::XMFLOAT3 rgb;
-} Light;
+};

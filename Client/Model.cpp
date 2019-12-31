@@ -62,4 +62,5 @@ void Model::Draw( const DirectX::XMMATRIX& transform ) {
 }
 
 void Model::SetMaterial( const Material& mtl ) {
+	pMaterialBuffer->Set( &mtl );
 }

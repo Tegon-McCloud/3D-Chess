@@ -31,7 +31,7 @@ private:
 
 public:
 	// clears render target and depth stencil buffer
-	void Clear( const float& r, const float& g, const float& b ) const;
+	void Clear( float r, float g, float b ) const;
 	void Clear( const float* rgba ) const;
 
 	// displays currently drawn frame

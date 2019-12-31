@@ -34,6 +34,8 @@ private:
 
 	std::shared_ptr<Piece>& CellAt( PositionLFR p );
 
+	std::optional<PositionLFR> PieceHit( const Ray& r );
+
 	/*
 	nx5x5 array of shared pointers to pieces. The first index represents its level, second its file and third its rank.
 	This means that in the first index will not be x, as that is its level and should be displayed on the y-axis.
@@ -49,6 +51,8 @@ private:
 
 	// a pointer to a Position that is currently selected by the player
 	std::unique_ptr<PositionLFR> selectedPos;
+	// the positions that are currently highlighted
+	std::vector<PositionLFR> highlights;
 	
 	Light light; 
 	ConstantBuffer<Light, PS, 1u> lightBuffer;

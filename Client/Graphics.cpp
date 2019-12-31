@@ -101,7 +101,7 @@ Graphics::~Graphics() {
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D11Debug> pDebug;
 	pDevice.As( &pDebug );
-#endif // !_DEBUG
+#endif // _DEBUG
 
 	pDevice.Reset();
 	pSwap.Reset();
@@ -111,7 +111,7 @@ Graphics::~Graphics() {
 
 #ifdef _DEBUG
 	pDebug->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
-#endif // !_DEBUG
+#endif // _DEBUG
 
 }
 
@@ -157,7 +157,7 @@ void Graphics::SizeChanged() {
 
 }
 
-void Graphics::Clear( const float& r, const float& g, const float& b ) const {
+void Graphics::Clear( float r, float g, float b ) const {
 
 	const float rgba[4] = {
 		r, g, b, 1.0f

@@ -38,13 +38,13 @@ Client::~Client() {
 bool Client::GetMSG( std::string& msg ) {
 	mutex.lock();
 
-	if ( messages.empty() ) { // calling front() on an empty std::queue is undefined behaviour
+	if ( inbox.empty() ) { // calling front() on an empty std::queue is undefined behaviour
 		mutex.unlock();
 		return false;
 	}
 
-	msg = messages.front();
-	messages.pop();
+	msg = inbox.front();
+	inbox.pop();
 	mutex.unlock();
 	
 	return true;
@@ -55,6 +55,50 @@ void Client::SendMSG( const std::string& msg ) {
 }
 
 int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
+	
+	Connect( ip, port );
+	
+	// for receiving
+	const int bufLength = 2048;
+	char* recvBuf = new char[bufLength];
+	int recvLength = 0;
+	
+	// for processing
+	std::stringstream stream;
+	std::string streamBuf;
+	int delimitterIndex;
+
+	while ( true ) {
+
+		recvLength = recv( clientSocket, recvBuf, bufLength, 0 );
+		if ( recvLength <= 0 ) break; // connection broken from serverside
+		
+		stream.write( recvBuf, recvLength ); // write received data to stream
+		
+		// split the received data into pieces seperated by ;
+		while ( true ) {
+			streamBuf = stream.str();
+			delimitterIndex = streamBuf.find( ';' ); // find the first index of a ;
+			if ( delimitterIndex == std::string::npos ) break;
+
+			mutex.lock();
+			inbox.push( streamBuf.substr( 0, delimitterIndex ) ); // write everything earlier than the ; to the inbox
+			mutex.unlock();
+			stream.str( streamBuf.substr( delimitterIndex + 1 ) ); // set the streams content to be what came after the ;
+		}
+
+	}
+
+	delete[] recvBuf;
+
+#ifdef _DEBUG
+	std::cout << "connection to server broken\n";
+#endif // _DEBUG
+
+	return 0;
+}
+
+int Client::Connect( const std::string& ip, const std::string& port ) {
 	
 	int result;
 
@@ -86,27 +130,6 @@ int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
 	}
 
 	freeaddrinfo( info );
-
-	constexpr int bufLength = 2048;
-	char* recvBuf = new char[bufLength]; // heap allocation bcs 2 kB is a bit high for stack
-	int recvLength = 0;
-
-	while ( true ) {
-
-		recvLength = recv( clientSocket, recvBuf, bufLength, 0 );
-
-		if ( recvLength <= 0 ) break; // connection broken from serverside
-
-		mutex.lock();
-		messages.push( std::string( recvBuf, recvLength ) );
-		mutex.unlock();
-	}
-
-	delete[] recvBuf;
-
-#ifdef _DEBUG
-	std::cout << "connection to server broken\n";
-#endif // _DEBUG
 
 	return 0;
 }
