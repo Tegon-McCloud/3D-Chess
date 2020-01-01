@@ -66,7 +66,7 @@ int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
 	// for processing
 	std::stringstream stream;
 	std::string streamBuf;
-	int delimitterIndex;
+	size_t delimitterIndex;
 
 	while ( true ) {
 

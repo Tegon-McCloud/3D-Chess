@@ -21,7 +21,7 @@ public:
 	void SetCursorVisible( bool visibility );
 
 private:
-	void MouseClick( int x, int y );
+	void MouseClick( POINTS p );
 	void KeyPressed( unsigned char key );
 	void KeyReleased( unsigned char key );
 	void WindowFocused();

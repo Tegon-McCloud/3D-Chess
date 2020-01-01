@@ -1,5 +1,7 @@
 #pragma once
 
+struct Material;
+
 #include "WindowsStrict.h"
 
 #include "DirectXMath.h"
@@ -81,6 +83,8 @@ struct Ray {
 struct Box {
 	DirectX::XMFLOAT3 min;
 	DirectX::XMFLOAT3 max;
+
+	void Draw( const Material& mtl );
 };
 
 float intersection( const Ray& r, const Box& b );

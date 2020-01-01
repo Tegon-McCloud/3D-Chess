@@ -37,9 +37,9 @@ void Input::SetCursorVisible( bool visibility ) {
 	cursorVisible = visibility;
 }
 
-void Input::MouseClick( int x, int y ) {
+void Input::MouseClick( POINTS p ) {
 	for ( auto f : onMouseClick ) {
-		f( x, y );
+		f( p.x, p.y );
 	}
 }
 

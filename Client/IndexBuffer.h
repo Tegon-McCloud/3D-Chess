@@ -1,4 +1,5 @@
 #pragma once
+#include <stdint.h>
 
 struct ID3D11Buffer;
 
@@ -9,7 +10,7 @@ struct ID3D11Buffer;
 class IndexBuffer : public Bindable {
 	
 public:
-	IndexBuffer( const unsigned short* indices, size_t size);
+	IndexBuffer( const uint16_t * indices, size_t size);
 	IndexBuffer() = delete;
 
 	void Bind() override;

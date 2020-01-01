@@ -3,6 +3,7 @@
 
 #include <limits>
 #include <unordered_map>
+#include "Model.h"
 
 std::string GetLastErrorString(HRESULT hr) {
 	
@@ -160,4 +161,17 @@ float intersection( const Ray& r, const Box& b ) {
 	if ( tmax < 0 ) return std::numeric_limits<float>::infinity();
 	
 	return tmin > 0.0f ? tmin : tmax;
+}
+
+void Box::Draw( const Material& mtl ) {
+	using namespace DirectX;
+	static Model model( "Box", mtl );
+
+	model.SetMaterial( mtl );
+	model.Draw(
+		XMMatrixScaling( max.x - min.x, max.y - min.y, max.z - min.z ) *
+		XMMatrixTranslation( (min.x + max.x) / 2.0f, min.y, (min.z + max.z) / 2.0f )
+	);
+
+
 }

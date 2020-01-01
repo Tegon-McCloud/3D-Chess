@@ -28,7 +28,7 @@ public:
 
 protected:
 	float x, y, z, pitch, yaw, roll;
-	ConstantBuffer< CameraTransforms, VS, 1u > buffer;
+	ConstantBuffer<CameraTransforms, VS, 1u> buffer;
 
 	// precalculated on each buffer update
 	CameraTransforms cameraTransforms;

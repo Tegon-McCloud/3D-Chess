@@ -32,9 +32,16 @@ public:
 
 private:
 
+	void ForEachPos( std::function<void(int, int, int)> f );
+
 	std::shared_ptr<Piece>& CellAt( PositionLFR p );
+	std::shared_ptr<Piece>& CellAt( int l, int f, int r );
 
 	std::optional<PositionLFR> PieceHit( const Ray& r );
+	std::optional<PositionLFR> HighlightHit( const Ray& r );
+
+	Box BoxAt( PositionLFR p );
+	Box BoxAt( int l, int f, int r );
 
 	/*
 	nx5x5 array of shared pointers to pieces. The first index represents its level, second its file and third its rank.
@@ -46,8 +53,6 @@ private:
 
 	// models of a black and white square.
 	Model whiteSquare, blackSquare;
-	// model of a box, used for highlighting various positions.
-	Model highlightBox;
 
 	// a pointer to a Position that is currently selected by the player
 	std::unique_ptr<PositionLFR> selectedPos;

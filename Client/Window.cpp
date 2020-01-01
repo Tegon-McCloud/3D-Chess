@@ -117,7 +117,9 @@ LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPAR
 
 	case WM_RBUTTONDOWN:
 	case WM_LBUTTONDOWN:
-		GetInternal().input.MouseClick( LOWORD( lParam ), HIWORD( lParam ) );
+		printf( "yay\n" );
+
+		GetInternal().input.MouseClick( MAKEPOINTS(lParam) );
 		break;
 		
 
@@ -155,7 +157,7 @@ WindowClass::WindowClass() {
 
 	WNDCLASSW wndCls = { 0 };
 
-	wndCls.style = CS_DBLCLKS | CS_PARENTDC;
+	wndCls.style = CS_PARENTDC;
 	wndCls.lpfnWndProc = (WNDPROC)(Window::Procedure);
 	wndCls.cbClsExtra = 0;
 	wndCls.cbWndExtra = 0;

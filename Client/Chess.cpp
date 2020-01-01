@@ -1,5 +1,5 @@
 #include "Chess.h"
-#include "Pieces.h"
+#include "Piece.h"
 #include "Util.h"
 
 #include <algorithm>
@@ -100,13 +100,11 @@ constexpr const Material mtlCapture = {
 	0.5f				// transparency			// transparency
 };
 
-
 // Chess
 Chess::Chess( const std::string& cmdLine ) : 
 	pieces(5, std::array<std::array<std::shared_ptr<Piece>, 5>, 5>()), 
 	whiteSquare( "Square", mtlWhiteSquare ), 
 	blackSquare( "Square", mtlBlackSquare ),
-	highlightBox( "Box", mtlSelected ),
 	client(cmdLine) {
 
 	player.Update( 0.0f );
@@ -116,22 +114,27 @@ Chess::Chess( const std::string& cmdLine ) :
 
 		using namespace DirectX;
 		
-		std::optional<PositionLFR> clickedPos = PieceHit( player.LookRay() );
+		if ( selectedPos ) {
+			
+			std::optional<PositionLFR> hitpos = HighlightHit( player.LookRay() );
 
-		
-		if ( !clickedPos ) {
-			selectedPos.reset();
-			return;
-		};
+			if ( hitpos ) {
+				
 
-		if ( !selectedPos ) {
-			selectedPos.reset( new PositionLFR( clickedPos.value() ) );
+			} else {
+				selectedPos.reset( nullptr );
+			}
 
-			client.SendMSG( std::string( "p:" ) + Position( *selectedPos ).toAlg() );
 		} else {
-			MovePiece( *selectedPos, clickedPos.value() );
-			selectedPos.reset();
+			std::optional<PositionLFR> hitpos = PieceHit( player.LookRay() );
+			
+			if ( hitpos ) {
+
+				selectedPos.reset( new PositionLFR( hitpos.value() ) );
+				client.SendMSG( std::string("p:") + Position( *selectedPos ).toAlg() );
+			}
 		}
+
 
 	} );
 
@@ -237,33 +240,16 @@ void Chess::Draw() {
 		}
 	}
 
+
 	Window::Get().GetGraphics().SetBlendEnabled( true );
 	Window::Get().GetGraphics().SetDepthEnabled( false );
 	
-	
-
 	if ( selectedPos ) {
-		const PieceInfo& info = PieceAt( *selectedPos ).GetInfo();
-		highlightBox.SetMaterial( mtlSelected );
-		highlightBox.Draw( 
-			XMMatrixScaling( info.diameter, info.height, info.diameter ) *
-			XMMatrixTranslation( selectedPos->r * 3.0f, selectedPos->l * 6.0f, selectedPos->f * 3.0f )
-		);
-	}
-	
-	for ( auto it = highlights.cbegin(); it != highlights.cend(); it++ ) {
 		
-		if ( pieces[it->f][it->l][it->r] ) {
-			const PieceInfo& info = PieceAt( *it ).GetInfo();
-			highlightBox.SetMaterial( mtlCapture );
-			highlightBox.Draw(
-				XMMatrixScaling( info.diameter, info.height, info.diameter ) *
-				XMMatrixTranslation( it->r * 3.0f, it->l * 6.0f, it->f * 3.0f )
-			);
+		BoxAt( *selectedPos ).Draw( mtlSelected );
 
-		} else {
-
-
+		for ( auto it = highlights.cbegin(); it != highlights.cend(); it++ ) {
+			BoxAt( *it ).Draw( CellAt( *it ) ? mtlCapture : mtlMove );
 		}
 
 	}
@@ -277,43 +263,40 @@ void Chess::MovePiece( PositionLFR from, PositionLFR to ) {
 	CellAt( to ) = std::move( CellAt( from ) );
 }
 
-Piece& Chess::PieceAt( PositionLFR pos ) {
-	return *CellAt( pos );
-
+void Chess::ForEachPos( std::function<void( int, int, int )> f ) {
+	for ( int i = 0; i < 5; i++ ) {
+		for ( int j = 0; j < 5; j++ ) {
+			for ( int k = 0; k < 5; k++ ) {
+				f( i, j, k );
+			}
+		}
+	}
 }
 
 std::shared_ptr<Piece>& Chess::CellAt( PositionLFR pos ) {
 	return pieces[pos.l][pos.f][pos.r];
 }
 
+std::shared_ptr<Piece>& Chess::CellAt( int l, int f, int r ) {
+	return pieces[l][f][r];
+}
+
 std::optional<PositionLFR> Chess::PieceHit( const Ray& r ) {
 
 	PositionLFR hitpos( -1, -1, -1 );
 	float dist = std::numeric_limits<float>::infinity();
-
+	
 	for ( int i = 0; i < 5; i++ ) {
 		for ( int j = 0; j < 5; j++ ) {
 			for ( int k = 0; k < 5; k++ ) {
+				if ( CellAt( i, j, k ) ) {
 
-				if ( !pieces[i][j][k] ) continue;
+					float t = intersection( r, BoxAt( i, j, k ) );
+					if ( t < dist ) {
+						dist = t;
+						hitpos = PositionLFR( i, j, k );
+					}
 
-				PieceInfo info = pieces[i][j][k]->GetInfo();
-				Box hitbox;
-				hitbox.min.x = k * 3.0f - 0.5f * info.diameter;
-				hitbox.min.y = i * 6.0f - 0.0f * info.height;
-				hitbox.min.z = j * 3.0f - 0.5f * info.diameter;
-
-				hitbox.max.x = k * 3.0f + 0.5f * info.diameter;
-				hitbox.max.y = i * 6.0f + 1.0f * info.height;
-				hitbox.max.z = j * 3.0f + 0.5f * info.diameter;
-
-				float t = intersection( player.LookRay(), hitbox );
-
-				if ( t < dist ) {
-					dist = t;
-					hitpos.l = i;
-					hitpos.f = j;
-					hitpos.r = k;
 				}
 			}
 		}
@@ -324,4 +307,60 @@ std::optional<PositionLFR> Chess::PieceHit( const Ray& r ) {
 	} else {
 		return std::optional<PositionLFR>();
 	}
+}
+
+std::optional<PositionLFR> Chess::HighlightHit( const Ray& r ) {
+
+	if ( !selectedPos || !CellAt( *selectedPos ) || highlights.empty() ) return std::optional<PositionLFR>();
+	
+	PositionLFR hitpos( -1, -1, -1 );
+	float dist = std::numeric_limits<float>::infinity();
+
+	for ( auto it = highlights.cbegin(); it != highlights.cend(); it++ ) {
+		
+		float t = intersection( r, BoxAt( *it ) );
+
+		if ( t < dist ) {
+			dist = t;
+			hitpos = *it;
+		}
+	}
+
+	if ( hitpos.l != -1 ) {
+		return hitpos;
+	} else {
+		return std::optional<PositionLFR>();
+	}
+}
+
+Box Chess::BoxAt( PositionLFR p ) {
+	
+	PieceInfo info;
+	std::shared_ptr<Piece>& cell = CellAt( p );
+
+	if( cell ) {
+		info = cell->GetInfo();
+	} else if ( selectedPos && (cell = CellAt( p )) != nullptr ) {
+		info = cell->GetInfo();
+	} else {
+		info.diameter = 1.0f;
+		info.height = 1.0f;
+		info.symbol = '?';
+	}
+	
+	Box b;
+
+	b.min.x = p.r * 3.0f - 0.5f * info.diameter;
+	b.min.y = p.l * 6.0f - 0.0f * info.height;
+	b.min.z = p.f * 3.0f - 0.5f * info.diameter;
+
+	b.max.x = p.r * 3.0f + 0.5f * info.diameter;
+	b.max.y = p.l * 6.0f + 1.0f * info.height;
+	b.max.z = p.f * 3.0f + 0.5f * info.diameter;
+
+	return b;
+}
+
+Box Chess::BoxAt( int l, int f, int r ) {
+	return BoxAt( PositionLFR( l, f, r ) );
 }

@@ -172,7 +172,7 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Pieces.cpp" />
+    <ClCompile Include="Piece.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="States.cpp" />
@@ -192,7 +192,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Lighting.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="Pieces.h" />
+    <ClInclude Include="Piece.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="States.h" />
