@@ -2,7 +2,8 @@
 #include <algorithm>
 #include <cmath>
 
-Player::Player() : Camera( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f ) {}
+Player::Player( const Box& movementBounds ) : Camera( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f ),
+	bounds( movementBounds ) {}
 
 void Player::Update( float dt ) {
 
@@ -10,33 +11,40 @@ void Player::Update( float dt ) {
 	float cosYaw = cos( yaw );
 
 	if ( Window::Get().GetInput().IsKeyDown( 'W' ) ) {
-		x += 4.0f * dt * sinYaw;
-		z += 4.0f * dt * cosYaw;
+		x += 6.0f * dt * sinYaw;
+		z += 6.0f * dt * cosYaw;
 	}
 
 	if ( Window::Get().GetInput().IsKeyDown( 'A' ) ) {
-		x += 4.0f * dt * cosYaw;
-		z += 4.0f * dt * -sinYaw;
+		x += 6.0f * dt * cosYaw;
+		z += 6.0f * dt * -sinYaw;
 	}
 
 	if ( Window::Get().GetInput().IsKeyDown( 'S' ) ) {
-		x += 4.0f * dt * -sinYaw;
-		z += 4.0f * dt * -cosYaw;
+		x += 6.0f * dt * -sinYaw;
+		z += 6.0f * dt * -cosYaw;
 	}
 
 	if ( Window::Get().GetInput().IsKeyDown( 'D' ) ) {
-		x += 4.0f * dt * -cosYaw;
-		z += 4.0f * dt * sinYaw;
+		x += 6.0f * dt * -cosYaw;
+		z += 6.0f * dt * sinYaw;
 	}
 
 	if ( Window::Get().GetInput().IsKeyDown( ' ' ) ) {
-		y += 4.0f * dt;
+		y += 6.0f * dt;
 	}
 	
 	if ( Window::Get().GetInput().IsKeyDown( VK_SHIFT ) ) {
-		y -= 4.0f * dt;
+		y -= 6.0f * dt;
 	}
 	
+	x = std::max( x, bounds.min.x );
+	y = std::max( y, bounds.min.y );
+	z = std::max( z, bounds.min.z );
+	x = std::min( x, bounds.max.x );
+	y = std::min( y, bounds.max.y );
+	z = std::min( z, bounds.max.z );
+
 	if ( Window::Get().IsInFocus() ) {
 		POINT mp = Window::Get().GetInput().GetMousePos();
 		mp.x -= Window::Get().GetWidth() / 2;

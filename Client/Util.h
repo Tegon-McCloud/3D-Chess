@@ -68,23 +68,34 @@ union Position {
 
 	bool operator==( const Position& p );
 
-	std::string toAlg();
+	std::string ToAlg();
 
 	PositionLFR lfr;
 	PositionXYZ xyz;
 };
 
-// Raytracing
+enum Side {
+	WHITE, BLACK
+};
+
+// Math/Raytracing
 struct Ray {
 	DirectX::XMFLOAT3 ori;
 	DirectX::XMFLOAT3 dir;
 };
 
 struct Box {
+	Box();
+	Box( const DirectX::XMFLOAT3& min, const DirectX::XMFLOAT3& max );
+	Box( float minx, float miny, float minz, float maxx, float maxy, float maxz );
+
+	void Draw( const Material& mtl );
+
 	DirectX::XMFLOAT3 min;
 	DirectX::XMFLOAT3 max;
 
-	void Draw( const Material& mtl );
+
 };
 
 float intersection( const Ray& r, const Box& b );
+

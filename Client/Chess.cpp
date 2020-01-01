@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <iostream>
 
 constexpr const Material mtlWhiteSquare = {
 	{					// color
@@ -105,7 +106,10 @@ Chess::Chess( const std::string& cmdLine ) :
 	pieces(5, std::array<std::array<std::shared_ptr<Piece>, 5>, 5>()), 
 	whiteSquare( "Square", mtlWhiteSquare ), 
 	blackSquare( "Square", mtlBlackSquare ),
-	client(cmdLine) {
+	client( cmdLine ),
+	mySide( WHITE ),
+	myTurn( false ),
+	player( Box( -20.0f, -20.0f, -20.0f, 35.0f, 50.0f, 35.0f ) ) {
 
 	player.Update( 0.0f );
 	player.Bind();
@@ -114,15 +118,19 @@ Chess::Chess( const std::string& cmdLine ) :
 
 		using namespace DirectX;
 		
+		if ( !myTurn ) return;
+
 		if ( selectedPos ) {
 			
 			std::optional<PositionLFR> hitpos = HighlightHit( player.LookRay() );
 
 			if ( hitpos ) {
-				
-
+				client.SendMSG( std::string( "m:" ) +
+								Position( *selectedPos ).ToAlg() +
+								Position( hitpos.value() ).ToAlg()
+				);
 			} else {
-				selectedPos.reset( nullptr );
+				selectedPos.reset();
 			}
 
 		} else {
@@ -131,7 +139,9 @@ Chess::Chess( const std::string& cmdLine ) :
 			if ( hitpos ) {
 
 				selectedPos.reset( new PositionLFR( hitpos.value() ) );
-				client.SendMSG( std::string("p:") + Position( *selectedPos ).toAlg() );
+				client.SendMSG( std::string( "p:" ) 
+								+ Position( *selectedPos ).ToAlg()
+				);
 			}
 		}
 
@@ -201,8 +211,8 @@ void Chess::Update( float dt ) {
 	while ( client.GetMSG( msg ) ) {
 		printf( "processing: %s\n", msg.c_str() );
 
-		if ( msg[0] == 'p' ) {
-
+		switch ( msg[0] ) {
+		case 'p':
 			highlights.clear();
 			msg.erase( 0, 2 );
 
@@ -210,7 +220,33 @@ void Chess::Update( float dt ) {
 				highlights.push_back( Position( msg ).lfr );
 				msg.erase( 0, 4 );
 			}
+			break;
 
+		case 'm': 
+		{ // new scope to avoid errors with declaring 'from' and 'to'
+			highlights.clear();
+			selectedPos.reset();
+
+			msg.erase( 0, 2 );
+			Position from( msg );
+			msg.erase( 0, 3 );
+			Position to( msg );
+
+			MovePiece( from.lfr, to.lfr );
+			break;
+		}
+		case 't':
+			myTurn = (msg[2] == 'b') ^ (mySide == WHITE);
+			break;
+
+		case 's':
+			mySide = msg[2] == 'w' ? WHITE : BLACK;
+			break;
+
+#ifdef _DEBUG
+		default:
+			std::cout << "Unknown command received from server:\n" << msg << "\n";
+#endif // _DEBUG
 		}
 
 	}
@@ -240,7 +276,6 @@ void Chess::Draw() {
 		}
 	}
 
-
 	Window::Get().GetGraphics().SetBlendEnabled( true );
 	Window::Get().GetGraphics().SetDepthEnabled( false );
 	
@@ -259,18 +294,8 @@ void Chess::Draw() {
 
 }
 
-void Chess::MovePiece( PositionLFR from, PositionLFR to ) {
+void Chess::MovePiece( const PositionLFR& from, const PositionLFR& to ) {
 	CellAt( to ) = std::move( CellAt( from ) );
-}
-
-void Chess::ForEachPos( std::function<void( int, int, int )> f ) {
-	for ( int i = 0; i < 5; i++ ) {
-		for ( int j = 0; j < 5; j++ ) {
-			for ( int k = 0; k < 5; k++ ) {
-				f( i, j, k );
-			}
-		}
-	}
 }
 
 std::shared_ptr<Piece>& Chess::CellAt( PositionLFR pos ) {
@@ -336,11 +361,11 @@ std::optional<PositionLFR> Chess::HighlightHit( const Ray& r ) {
 Box Chess::BoxAt( PositionLFR p ) {
 	
 	PieceInfo info;
-	std::shared_ptr<Piece>& cell = CellAt( p );
+	std::shared_ptr<Piece> cell = CellAt( p );
 
 	if( cell ) {
 		info = cell->GetInfo();
-	} else if ( selectedPos && (cell = CellAt( p )) != nullptr ) {
+	} else if ( selectedPos && (cell = CellAt( *selectedPos )) != nullptr ) {
 		info = cell->GetInfo();
 	} else {
 		info.diameter = 1.0f;

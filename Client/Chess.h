@@ -1,12 +1,12 @@
 #pragma once
 
 class Piece;
-struct PositionLFR;
 
 #include "Model.h"
 #include "Player.h"
 #include "Lighting.h"
 #include "Client.h"
+#include "Util.h"
 
 #include <vector>
 #include <array>
@@ -24,22 +24,24 @@ public:
 	Chess( const Chess& ) = delete;
 	Chess& operator=( const Chess& ) = delete;
 
+	// call Update on the player and process messages from the server
 	void Update( float dt );
+	// render the board, pieces and highlighted boxes
 	void Draw();
-	void MovePiece( PositionLFR from, PositionLFR to );
-
-	Piece& PieceAt( PositionLFR p );
+	// moves the piece at 'from' to 'to'
+	void MovePiece( const PositionLFR& from, const PositionLFR& to );
 
 private:
-
-	void ForEachPos( std::function<void(int, int, int)> f );
-
+	// retrieve a reference to the shared_ptr that holds the piece at the specified position
 	std::shared_ptr<Piece>& CellAt( PositionLFR p );
 	std::shared_ptr<Piece>& CellAt( int l, int f, int r );
 
+	// trace a ray and determine with piece was hit first by it
 	std::optional<PositionLFR> PieceHit( const Ray& r );
+	// trace a ray and determine which highlighted field was hit first by it
 	std::optional<PositionLFR> HighlightHit( const Ray& r );
 
+	// calculate a box with an appropriate size and positioning for the specified cell
 	Box BoxAt( PositionLFR p );
 	Box BoxAt( int l, int f, int r );
 
@@ -65,4 +67,7 @@ private:
 	Player player;
 
 	Client client;
+
+	Side mySide;
+	bool myTurn;
 };

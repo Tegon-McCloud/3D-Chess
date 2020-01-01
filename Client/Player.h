@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Camera.h"
+#include "Util.h"
 
+#include <memory>
 
 /*
 Player is a specialized Camera, that moves when pressing WASD and rotates when mouse is moved.
@@ -11,9 +13,20 @@ move the camera the correct distant and update the cameras buffers.
 class Player : public Camera {
 
 public:
+	Player( const Box& movementBounds = Box(
+		-std::numeric_limits<float>::infinity(),
+		-std::numeric_limits<float>::infinity(),
+		-std::numeric_limits<float>::infinity(),
+		std::numeric_limits<float>::infinity(),
+		std::numeric_limits<float>::infinity(),
+		std::numeric_limits<float>::infinity()
+	));
 
-	Player();
 	void Update( float dt );
+
+private:
+
+	Box bounds;
 
 };
 

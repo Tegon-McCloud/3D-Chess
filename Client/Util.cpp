@@ -109,7 +109,7 @@ bool Position::operator==( const Position& p ) {
 	return lfr.l == p.lfr.l && lfr.f == p.lfr.f && lfr.r == p.lfr.r;
 }
 
-std::string Position::toAlg() {
+std::string Position::ToAlg() {
 
 	const std::vector<char> levelMap = { 'A', 'B', 'C', 'D', 'E' };
 	const std::vector<char> fileMap = { 'a', 'b', 'c', 'd', 'e' };
@@ -162,6 +162,18 @@ float intersection( const Ray& r, const Box& b ) {
 	
 	return tmin > 0.0f ? tmin : tmax;
 }
+
+Box::Box() :
+	min( {0.0f, 0.0f, 0.0f} ),
+	max() {}
+
+Box::Box( const DirectX::XMFLOAT3& min, const DirectX::XMFLOAT3& max ) :
+	min( min ),
+	max( max ) {}
+
+Box::Box( float minx, float miny, float minz, float maxx, float maxy, float maxz ) :
+	min( {minx, miny, minz} ),
+	max( {maxx, maxy, maxz} ) {}
 
 void Box::Draw( const Material& mtl ) {
 	using namespace DirectX;

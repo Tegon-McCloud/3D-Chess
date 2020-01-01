@@ -117,8 +117,6 @@ LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPAR
 
 	case WM_RBUTTONDOWN:
 	case WM_LBUTTONDOWN:
-		printf( "yay\n" );
-
 		GetInternal().input.MouseClick( MAKEPOINTS(lParam) );
 		break;
 		

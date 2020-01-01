@@ -7,13 +7,15 @@
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
 
+	printf( "2\n" );
+
 	using namespace DirectX;
 	
 	std::string cmdLine( lpCmdLine );
 
 	std::optional<int> rv;	// return value
 	
-	Timer timer;
+	Timer timer; // for keeping track of how long has passed between frames
 
 	Window::Get().SetVisible( true, true );
 
@@ -57,7 +59,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 }
 
 int main() {
-
+	printf( "1\n" );
 	char cmdLine[] = "127.0.0.1:8877";
 	return WinMain( GetModuleHandle( NULL ), NULL, cmdLine, 0 );
 }

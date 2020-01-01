@@ -1,12 +1,9 @@
 #pragma once
 
 #include "Model.h"
+#include "Util.h"
 
 #include <unordered_map>
-
-enum Side {
-	WHITE, BLACK
-};
 
 struct PieceInfo {
 	char symbol;

@@ -28,7 +28,7 @@ private:
 	void WindowUnfocused();
 
 	std::bitset< 256u > keyStates;
-	mutable std::vector<std::function< void( int x, int y )>> onMouseClick; // because of the functional programming technique used, constness cannot be maintained
+	mutable std::vector<std::function< void( int x, int y )>> onMouseClick;
 	bool cursorVisible;
 
 };
