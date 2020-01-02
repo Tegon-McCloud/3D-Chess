@@ -81,13 +81,13 @@ void Server::getMSG( int side, std::string& msg ) {
 	char* recvBuf = new char[bufLength]; // heap allocation bcs 2 kB is a bit high for stack
 	int recvLength = 0;
 
-	recvLength = recv( side == 0 ? clientWhite : clientBlack, recvBuf, bufLength, 0 );
+	recvLength = recv( side == 1 ? clientWhite : clientBlack, recvBuf, bufLength, 0 );
 
 	msg = std::string( recvBuf, recvLength );
 }
 
 void Server::sendMSG( int side, const std::string& msg ) {
-	send( side == 0 ? clientWhite : clientBlack, msg.c_str(), msg.length(), 0 );
+	send( side == 1 ? clientWhite : clientBlack, msg.c_str(), msg.length(), 0 );
 }
 
 // WSALoader
