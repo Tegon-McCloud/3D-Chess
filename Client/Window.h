@@ -48,6 +48,10 @@ public:
 		return Get().gfx.pContext.Get();
 	}
 
+	inline static const ID2D1DeviceContext* GFXContext2D() {
+		return Get().gfx.pContext2D.Get();
+	}
+
 private:
 	
 	static Window& GetInternal() {

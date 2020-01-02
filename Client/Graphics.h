@@ -8,6 +8,7 @@ struct ID3D11DepthStencilView;
 
 #include "States.h"
 
+#include "d2d1_1.h"
 #include "WRL.h"
 
 /* The Graphics type, is instantiated by the Window on creation.
@@ -45,13 +46,24 @@ public:
 	// getters for DX11 interfaces
 	ID3D11Device* GetDevice() const;
 	ID3D11DeviceContext* GetContext() const;
-	
+	ID2D1DeviceContext* GetContext2D() const;
+
+	D2D1_SIZE_U GetTargetSize() const;
+
 private:
+	// 3D
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRTV;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
+
+	// 2D
+	Microsoft::WRL::ComPtr<ID2D1Factory1> pFactory2D;
+	Microsoft::WRL::ComPtr<ID2D1Device> pDevice2D;
+	Microsoft::WRL::ComPtr<ID2D1DeviceContext> pContext2D;
+	Microsoft::WRL::ComPtr<ID2D1Bitmap1> pBitmapTarget2D;
+
 
 	BlendState blendState;
 	DepthState depthState;

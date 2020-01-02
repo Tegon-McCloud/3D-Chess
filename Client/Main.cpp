@@ -28,8 +28,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	GeometryShader gs( "GS" );
 	gs.Bind();
 
-	Window::Get().GetGraphics().SetBlendEnabled( false );
-	Window::Get().GetGraphics().SetDepthEnabled( true );
+	Window::GFX().SetBlendEnabled( false );
+	Window::GFX().SetDepthEnabled( true );
 
 	try {
 		while ( true ) {
@@ -41,12 +41,20 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 				return rv.value();
 			}
 
-			Window::Get().GetGraphics().Clear( 0.0f, 0.5f, 1.0f );
+			Window::GFX().Clear( 0.0f, 0.5f, 1.0f );
 			
 			chess.Update( dt );
 			chess.Draw();
 
-			Window::Get().GetGraphics().Present();
+			Window::GFX().GetContext2D()->BeginDraw();
+
+			chess.DrawHUD();
+
+			Window::GFX().GetContext2D()->EndDraw();
+
+			Window::GFX().Present();
+
+
 
 		}
 	} catch ( std::runtime_error e ) {

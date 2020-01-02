@@ -29,7 +29,7 @@ Client::Client( const std::string& ipAndPort ) : clientSocket( INVALID_SOCKET ) 
 
 Client::~Client() {
 	if ( clientSocket != INVALID_SOCKET ) {
-		shutdown( clientSocket, SD_SEND );
+		shutdown( clientSocket, SD_BOTH );
 		loopThread.join();
 		closesocket( clientSocket );
 	}
@@ -56,8 +56,14 @@ void Client::SendMSG( const std::string& msg ) {
 
 int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
 	
-	Connect( ip, port );
+	int result = 0;
+
+	result = Connect( ip, port );
 	
+	if ( result != 0 ) {
+		return result;
+	}
+
 	// for receiving
 	const int bufLength = 2048;
 	char* recvBuf = new char[bufLength];
@@ -71,7 +77,10 @@ int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
 	while ( true ) {
 
 		recvLength = recv( clientSocket, recvBuf, bufLength, 0 );
-		if ( recvLength <= 0 ) break; // connection broken from serverside
+		if ( recvLength <= 0 ) { // connection broken from serverside or some error occured
+			result = recvLength;
+			break;
+		}; 
 		
 		stream.write( recvBuf, recvLength ); // write received data to stream
 		
@@ -92,10 +101,10 @@ int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
 	delete[] recvBuf;
 
 #ifdef _DEBUG
-	std::cout << "connection to server broken\n";
+	std::cout << "connection to server broken with exit code: " << result << "\n";
 #endif // _DEBUG
 
-	return 0;
+	return result;
 }
 
 int Client::Connect( const std::string& ip, const std::string& port ) {

@@ -1,16 +1,18 @@
 #include "Graphics.h"
 #include "Util.h"
 
+#include "d2d1_1helper.h"
 #include "d3d11.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 #pragma comment(lib, "dxguid.lib")
+#pragma comment(lib, "d2d1.lib")
 
 #ifdef _DEBUG
-constexpr const UINT deviceFlags = D3D11_CREATE_DEVICE_DEBUG;
+constexpr const UINT deviceFlags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #else
-constexpr const UINT deviceFlags = 0u;
+constexpr const UINT deviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #endif // _DEBUG
 
 constexpr const DXGI_SWAP_CHAIN_DESC defaultSwapChainDesc = {
@@ -89,9 +91,21 @@ Graphics::Graphics(HWND hWnd ) {
 	DXGI_SWAP_CHAIN_DESC sd = defaultSwapChainDesc;
 	sd.OutputWindow = hWnd;
 
-	ThrowIfFailed( D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, deviceFlags, NULL, 0, D3D11_SDK_VERSION, &sd, 
-												  &pSwap, &pDevice, NULL, &pContext) );
+	const D3D_FEATURE_LEVEL fl[] = {
+		D3D_FEATURE_LEVEL_11_1
+	};
+
+	ThrowIfFailed( D2D1CreateFactory<ID2D1Factory1>( D2D1_FACTORY_TYPE_SINGLE_THREADED, &pFactory2D ) );
 	
+	ThrowIfFailed( D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, deviceFlags, fl, 1, D3D11_SDK_VERSION, &sd, 
+												  &pSwap, &pDevice, NULL, &pContext) );
+
+	Microsoft::WRL::ComPtr<IDXGIDevice> pDeviceDXGI;
+
+	ThrowIfFailed( pDevice.As(&pDeviceDXGI) );
+	ThrowIfFailed( pFactory2D->CreateDevice( pDeviceDXGI.Get(), &pDevice2D ) );
+	ThrowIfFailed( pDevice2D->CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &pContext2D ) );
+
 	blendState.Init( pDevice.Get() );
 	depthState.Init( pDevice.Get() );
 }
@@ -121,8 +135,12 @@ void Graphics::SizeChanged() {
 	pRTV.Reset();
 	pContext->OMSetRenderTargets(0, NULL, NULL);
 
+	// drop target bitmap
+	pBitmapTarget2D.Reset();
+	pContext2D->SetTarget( NULL );
+
 	// resize buffers
-	ThrowIfFailed(pSwap->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0));
+	ThrowIfFailed( pSwap->ResizeBuffers( 0, 0, 0, DXGI_FORMAT_UNKNOWN, 0 ) );
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> pBB;
 	ThrowIfFailed( pSwap->GetBuffer( 0u, __uuidof(ID3D11Resource), &pBB ) ); // get the swapchains first backbuffer
@@ -154,6 +172,19 @@ void Graphics::SizeChanged() {
 	vp.TopLeftY = 0.0f;
 	
 	pContext->RSSetViewports( 1u, &vp );
+
+	D2D1_BITMAP_PROPERTIES1 bmp;
+	ZeroMemory( &bmp, sizeof( bmp ) );
+	bmp.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	bmp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
+	pFactory2D->GetDesktopDpi( &bmp.dpiX, &bmp.dpiY );
+	bmp.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
+
+	Microsoft::WRL::ComPtr<IDXGISurface> pBBDXGI;
+
+	ThrowIfFailed( pSwap->GetBuffer( 0u, __uuidof(IDXGISurface), &pBBDXGI ) );
+	ThrowIfFailed( pContext2D->CreateBitmapFromDxgiSurface( pBBDXGI.Get(), &bmp, &pBitmapTarget2D ) );
+	pContext2D->SetTarget( pBitmapTarget2D.Get() );
 
 }
 
@@ -190,4 +221,12 @@ ID3D11Device* Graphics::GetDevice() const {
 
 ID3D11DeviceContext* Graphics::GetContext() const {
 	return pContext.Get();
+}
+
+ID2D1DeviceContext* Graphics::GetContext2D() const {
+	return pContext2D.Get();
+}
+
+D2D1_SIZE_U Graphics::GetTargetSize() const {
+	return pBitmapTarget2D->GetPixelSize();
 }

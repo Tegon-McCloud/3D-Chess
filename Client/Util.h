@@ -96,4 +96,3 @@ struct Box {
 };
 
 float intersection( const Ray& r, const Box& b );
-

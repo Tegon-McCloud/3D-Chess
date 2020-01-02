@@ -2,6 +2,8 @@
 #include "Piece.h"
 #include "Util.h"
 
+#include "d2d1_1.h"
+#include "d2d1effects_2.h"
 #include <algorithm>
 #include <limits>
 #include <iostream>
@@ -292,6 +294,21 @@ void Chess::Draw() {
 	Window::Get().GetGraphics().SetBlendEnabled( false );
 	Window::Get().GetGraphics().SetDepthEnabled( true );
 
+}
+
+void Chess::DrawHUD() {
+
+	D2D1_SIZE_U targetSize = Window::GFX().GetTargetSize();
+	float hcenter = targetSize.width / 2.0f;
+	float vcenter = targetSize.height / 2.0f;
+
+	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pBrush;
+	ThrowIfFailed( Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( D2D1::ColorF::Black ), &pBrush ) );
+	
+	
+	Window::GFX().GetContext2D()->FillRectangle( D2D1::RectF( hcenter - 10.0f, vcenter - 1.0f, hcenter + 10.0f, vcenter + 1.0f ), pBrush.Get() );
+	Window::GFX().GetContext2D()->FillRectangle( D2D1::RectF( hcenter - 1.0f, vcenter - 10.0f, hcenter + 1.0f, vcenter + 10.0f ), pBrush.Get() );
+	
 }
 
 void Chess::MovePiece( const PositionLFR& from, const PositionLFR& to ) {

@@ -28,6 +28,8 @@ public:
 	void Update( float dt );
 	// render the board, pieces and highlighted boxes
 	void Draw();
+	// render the HUD
+	void DrawHUD();
 	// moves the piece at 'from' to 'to'
 	void MovePiece( const PositionLFR& from, const PositionLFR& to );
 
@@ -53,17 +55,14 @@ private:
 	*/
 	std::vector<std::array<std::array<std::shared_ptr<Piece>, 5>, 5>> pieces;
 
-	// models of a black and white square.
 	Model whiteSquare, blackSquare;
 
-	// a pointer to a Position that is currently selected by the player
-	std::unique_ptr<PositionLFR> selectedPos;
-	// the positions that are currently highlighted
-	std::vector<PositionLFR> highlights;
-	
 	Light light; 
 	ConstantBuffer<Light, PS, 1u> lightBuffer;
 
+	std::unique_ptr<PositionLFR> selectedPos;
+	std::vector<PositionLFR> highlights;
+	
 	Player player;
 
 	Client client;

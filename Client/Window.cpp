@@ -100,15 +100,14 @@ HWND Window::Create() {
 LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) {
 
 	switch ( message ) {
+
 	case WM_DESTROY:
 		PostQuitMessage( 0 );
 		break;
 
-
 	case WM_CLOSE:
-		PostQuitMessage( 0 );
+		DestroyWindow( Get() );
 		break;
-		
 
 	case WM_SIZE:
 		if(wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED) GetInternal().SizeChanged( LOWORD( lParam ), HIWORD( lParam ) );
