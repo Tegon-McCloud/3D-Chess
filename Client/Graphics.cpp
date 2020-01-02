@@ -2,7 +2,8 @@
 #include "Util.h"
 
 #include "d2d1_1helper.h"
-#include "d3d11.h"
+#include "d3d11_1.h"
+#include "dxgi1_2.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -15,27 +16,20 @@ constexpr const UINT deviceFlags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVI
 constexpr const UINT deviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #endif // _DEBUG
 
-constexpr const DXGI_SWAP_CHAIN_DESC defaultSwapChainDesc = {
-	{										// BufferDesc:
-		0u,										// Width
-		0u,										// Height
-		{										// RefreshRate:
-			60u,									// Numerator
-			1u										// Denominator
-		},
-		DXGI_FORMAT_B8G8R8A8_UNORM,				// Format
-		DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED,	// ScanlineOrdering
-		DXGI_MODE_SCALING_UNSPECIFIED			// Scaling
-	},
+constexpr const DXGI_SWAP_CHAIN_DESC1 defaultSwapChainDesc = {
+	0u,										// Width
+	0u,										// Height
+	DXGI_FORMAT_B8G8R8A8_UNORM,				// Format
+	FALSE,									// Stereo
 	{										// SampleDesc:
 		1u,										// Count
 		0u										// Quality
 	},
-	DXGI_USAGE_RENDER_TARGET_OUTPUT,		// BufferUsage
+	DXGI_USAGE_RENDER_TARGET_OUTPUT,		// Usage
 	2u,										// BufferCount
-	NULL,									// OutputWindow
-	TRUE,									// Windowed
+	DXGI_SCALING_STRETCH,						// Scaling
 	DXGI_SWAP_EFFECT_DISCARD,				// SwapEffect
+	DXGI_ALPHA_MODE_UNSPECIFIED,			// AlphaMode
 	DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH	// Flags
 };
 
@@ -86,33 +80,45 @@ constexpr const D3D11_DEPTH_STENCIL_VIEW_DESC defaultDepthStencilViewDesc = {
 };
 
 // Graphics
-Graphics::Graphics(HWND hWnd ) {
-	
-	DXGI_SWAP_CHAIN_DESC sd = defaultSwapChainDesc;
-	sd.OutputWindow = hWnd;
+Graphics::Graphics( HWND hWnd ) {
 
+	// 3D setup
 	const D3D_FEATURE_LEVEL fl[] = {
 		D3D_FEATURE_LEVEL_11_1
 	};
 
+	Microsoft::WRL::ComPtr<ID3D11Device> pDeviceTemp;
+	ThrowIfFailed( D3D11CreateDevice( NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, deviceFlags, fl, 1, D3D11_SDK_VERSION, &pDeviceTemp, NULL, &pContext ) );
+	ThrowIfFailed( pDeviceTemp.As( &pDevice ) );
+
+	Microsoft::WRL::ComPtr<IDXGIDevice2> pDeviceDXGI;
+	ThrowIfFailed( pDevice.As( &pDeviceDXGI ) );
+
+	Microsoft::WRL::ComPtr<IDXGIAdapter> pAdapterDXGI;
+	ThrowIfFailed( pDeviceDXGI->GetParent( __uuidof(IDXGIAdapter), &pAdapterDXGI ) );
+
+	Microsoft::WRL::ComPtr<IDXGIFactory2> pFactoryDXGI;
+	ThrowIfFailed( pAdapterDXGI->GetParent( __uuidof(IDXGIFactory2), &pFactoryDXGI ) );
+
+	DXGI_SWAP_CHAIN_DESC1 sd = defaultSwapChainDesc;
+	sd.SampleDesc.Count = 4;
+	sd.SampleDesc.Quality = D3D11_STANDARD_MULTISAMPLE_PATTERN;
+
+	ThrowIfFailed( pFactoryDXGI->CreateSwapChainForHwnd( pDevice.Get(), hWnd, &sd, NULL, NULL, &pSwap ) );
+
+	blendState.Init( pDevice.Get() );
+	depthState.Init( pDevice.Get() );
+
+	// 2D setup
 	D2D1_FACTORY_OPTIONS options2D;
 #ifdef _DEBUG
 	options2D.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
 #endif // _DEBUG
 
 	ThrowIfFailed( D2D1CreateFactory<ID2D1Factory1>( D2D1_FACTORY_TYPE_SINGLE_THREADED, options2D, &pFactory2D ) );
-	
-	ThrowIfFailed( D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, deviceFlags, fl, 1, D3D11_SDK_VERSION, &sd, 
-												  &pSwap, &pDevice, NULL, &pContext) );
-
-	Microsoft::WRL::ComPtr<IDXGIDevice> pDeviceDXGI;
-
-	ThrowIfFailed( pDevice.As(&pDeviceDXGI) );
 	ThrowIfFailed( pFactory2D->CreateDevice( pDeviceDXGI.Get(), &pDevice2D ) );
 	ThrowIfFailed( pDevice2D->CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &pContext2D ) );
 
-	blendState.Init( pDevice.Get() );
-	depthState.Init( pDevice.Get() );
 }
 
 Graphics::~Graphics() {
@@ -163,10 +169,12 @@ void Graphics::SizeChanged() {
 	D3D11_TEXTURE2D_DESC dsbd = defaultDepthStencilBufferDesc;
 	dsbd.Width = sd.BufferDesc.Width;
 	dsbd.Height = sd.BufferDesc.Height;
+	dsbd.SampleDesc = sd.SampleDesc;
 
 	pDevice->CreateTexture2D( &dsbd, nullptr, &pDS ); // create depth stencil buffer
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd = defaultDepthStencilViewDesc;
+	dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 
 	pDevice->CreateDepthStencilView( pDS.Get(), &dsvd, &pDSV ); // create view of depth stencil buffer
 	
@@ -225,7 +233,7 @@ void Graphics::SetBlendEnabled( bool enable ) const {
 	blendState.Enabled( enable );
 }
 
-ID3D11Device* Graphics::GetDevice() const {
+ID3D11Device1* Graphics::GetDevice() const {
 	return pDevice.Get();
 }
 

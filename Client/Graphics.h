@@ -1,8 +1,8 @@
 #pragma once
 
-struct ID3D11Device; 
+struct ID3D11Device1; 
 struct ID3D11DeviceContext;
-struct IDXGISwapChain;
+struct IDXGISwapChain1;
 struct ID3D11RenderTargetView;
 struct ID3D11DepthStencilView;
 
@@ -44,7 +44,7 @@ public:
 	void SetBlendEnabled( bool enable ) const;
 
 	// getters for DX11 interfaces
-	ID3D11Device* GetDevice() const;
+	ID3D11Device1* GetDevice() const;
 	ID3D11DeviceContext* GetContext() const;
 	ID2D1DeviceContext* GetContext2D() const;
 	ID2D1Bitmap1* GetTarget2D() const;
@@ -53,8 +53,8 @@ public:
 
 private:
 	// 3D
-	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;
+	Microsoft::WRL::ComPtr<ID3D11Device1> pDevice;
+	Microsoft::WRL::ComPtr<IDXGISwapChain1> pSwap;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRTV;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
@@ -64,7 +64,6 @@ private:
 	Microsoft::WRL::ComPtr<ID2D1Device> pDevice2D;
 	Microsoft::WRL::ComPtr<ID2D1DeviceContext> pContext2D;
 	Microsoft::WRL::ComPtr<ID2D1Bitmap1> pBitmapTarget2D;
-
 
 	BlendState blendState;
 	DepthState depthState;

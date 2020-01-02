@@ -54,8 +54,6 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 			Window::GFX().Present();
 
-
-
 		}
 	} catch ( std::runtime_error e ) {
 		std::cout << "Application exited do to exception:\n" << e.what() << "\n";

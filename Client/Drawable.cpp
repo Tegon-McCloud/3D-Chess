@@ -2,7 +2,7 @@
 #include "Window.h"
 #include "IndexBuffer.h"
 
-#include "d3d11.h"
+#include "d3d11_2.h"
 
 void Drawable::Draw() {
 	

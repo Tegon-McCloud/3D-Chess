@@ -2,7 +2,7 @@
 #include "Util.h"
 #include "Window.h"
 
-#include "d3d11.h"
+#include "d3d11_2.h"
 
 void BlendState::Init( ID3D11Device* pDevice ) {
 

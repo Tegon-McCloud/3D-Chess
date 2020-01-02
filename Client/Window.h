@@ -40,7 +40,7 @@ public:
 		return Get().gfx;
 	}
 
-	inline static const ID3D11Device* GFXDevice() { 
+	inline static const ID3D11Device1* GFXDevice() { 
 		return Get().gfx.pDevice.Get();
 	}
 
