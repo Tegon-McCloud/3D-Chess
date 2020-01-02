@@ -29,47 +29,49 @@ int main() {
 	s.sendMSG(1, "s:w;");
 	s.sendMSG(0, "s:b;");
 
+	s.sendMSG( 0, g.colourToMove == 1 ? "t:w;" : "t:b;" );
+	s.sendMSG( 1, g.colourToMove == 1 ? "t:w;" : "t:b;" );
+
 	while (true) {
-		s.sendMSG(0, "t:w;");
-		s.sendMSG(1, "t:w;");
 
-		while (true) {
-			s.getMSG(g.colourToMove, msg);
-			switch (msg[0]) {
-			case 'p':
-			{
-				msg.erase(0, 2);
-				Position pos(msg);
-				if (g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '0' ||
-					g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '1' ||
-					g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '2' ||
-					g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '3' ||
-					g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '4') {
-					s.sendMSG(g.colourToMove, std::string("p:") + listToAlg(g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)));
-				}
-				else {
-					s.sendMSG(g.colourToMove, "p:;");
-				}
+		s.getMSG(g.colourToMove, msg);
+		switch (msg[0]) {
+		case 'p':
+		{
+			msg.erase(0, 2);
+			Position pos(msg);
+			if (g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '0' ||
+				g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '1' ||
+				g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '2' ||
+				g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '3' ||
+				g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '4') {
+				s.sendMSG(g.colourToMove, std::string("p:") + listToAlg(g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)));
 			}
-				break;
+			else {
+				s.sendMSG(g.colourToMove, "p:;");
+			}
+		}
+			break;
 
-			case 'm':
-			{
-				std::string msgCopy(msg);
-				msgCopy += ";";
-				msg.erase(0, 2);
-				Position from(msg);
-				msg.erase(0, 3);
-				Position to(msg);
-				//TODO error checking if hacked client
-				std::stringstream ss;
-				ss << from.xyz.x << from.xyz.y << from.xyz.z << to.xyz.x << to.xyz.y << to.xyz.z;
-				g.move(ss);
-				s.sendMSG(0, msgCopy);
-				s.sendMSG(1, msgCopy);
-			}
-				break;
-			}
+		case 'm':
+		{
+			std::string msgCopy(msg);
+			msgCopy += ";";
+			msg.erase(0, 2);
+			Position from(msg);
+			msg.erase(0, 3);
+			Position to(msg);
+			//TODO error checking if hacked client
+			std::stringstream ss;
+			ss << from.xyz.x << " " << from.xyz.y << " " << from.xyz.z << " " << to.xyz.x << " " << to.xyz.y << " " << to.xyz.z;
+			g.move(ss);
+			s.sendMSG(0, msgCopy);
+			s.sendMSG(1, msgCopy);
+
+			s.sendMSG( 0, g.colourToMove == 1 ? "t:w;" : "t:b;" );
+			s.sendMSG( 1, g.colourToMove == 1 ? "t:w;" : "t:b;" );
+		}
+			break;
 		}
 	}
 }
