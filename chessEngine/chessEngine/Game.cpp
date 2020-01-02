@@ -218,7 +218,32 @@ std::string Game::move(std::stringstream& ss) {
 		return "You can't move to the selected square";
 	}
 	movePiece(xFrom, yFrom, zFrom, xTo, yTo, zTo);
-	//TODO Checkmate checking
+	int wkx, wky, wkz, bkx, bky, bkz;	//wkx = white king x
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			for (int k = 0; k < 5; k++) {
+				if (getPieceId(i, j, k) == ids["King"] && getPieceColour(i, j, k) == 1) {
+					wkx = i;
+					wky = j;
+					wkz = k;
+				}
+				if (getPieceId(i, j, k) == ids["King"] && getPieceColour(i, j, k) == 0) {
+					bkx = i;
+					bky = j;
+					bkz = k;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			for (int k = 0; k < 5; k++) {
+
+			}
+		}
+	}
+	//TODO check is not even close to implimentet
+	//TODO Checkmate checking and stalemate checking and maybe other stuff like that
 	colourToMove = (colourToMove - 1)*-1;
 	return "You moved :)";
 };
