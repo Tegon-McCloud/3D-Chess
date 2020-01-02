@@ -107,7 +107,7 @@ Chess::Chess( const std::string& cmdLine ) :
 	whiteSquare( "Square", mtlWhiteSquare ), 
 	blackSquare( "Square", mtlBlackSquare ),
 	client( cmdLine ),
-	mySide( WHITE ),
+	mySide( Side::WHITE ),
 	myTurn( false ),
 	player( Box( -20.0f, -20.0f, -20.0f, 35.0f, 50.0f, 35.0f ) ) {
 
@@ -160,18 +160,18 @@ Chess::Chess( const std::string& cmdLine ) :
 				
 				// Pawns
 				if ( k == 1 && i < 2) {
-					pieces[i][j][k].reset(new Piece( "Pawn", WHITE ));
+					pieces[i][j][k].reset(new Piece( "Pawn", Side::WHITE ));
 				}
 
 				if ( k == 3 && i > 2 ) {
-					pieces[i][j][k].reset(new Piece( "Pawn", BLACK ));
+					pieces[i][j][k].reset(new Piece( "Pawn", Side::BLACK ));
 				}
 				
 			}
 		}
 	}
 
-#define SETW(l, f, r, piece) pieces[l][f][r].reset( new Piece( #piece, WHITE ) )
+#define SETW(l, f, r, piece) pieces[l][f][r].reset( new Piece( #piece, Side::WHITE ) )
 	
 	SETW( 0, 0, 0, Rook );
 	SETW( 0, 1, 0, Knight );
@@ -186,7 +186,7 @@ Chess::Chess( const std::string& cmdLine ) :
 	SETW( 1, 4, 0, Unicorn );
 
 #undef SETW
-#define SETB(l, f, r, piece) pieces[l][f][r].reset( new Piece( #piece, BLACK ) );
+#define SETB(l, f, r, piece) pieces[l][f][r].reset( new Piece( #piece, Side::BLACK ) );
 	
 	SETB( 4, 0, 4, Rook );
 	SETB( 4, 1, 4, Knight );
@@ -236,11 +236,11 @@ void Chess::Update( float dt ) {
 			break;
 		}
 		case 't':
-			myTurn = (msg[2] == 'b') ^ (mySide == WHITE);
+			myTurn = (msg[2] == 'b') ^ (mySide == Side::WHITE);
 			break;
 
 		case 's':
-			mySide = msg[2] == 'w' ? WHITE : BLACK;
+			mySide = msg[2] == 'w' ? Side::WHITE : Side::BLACK;
 			break;
 
 #ifdef _DEBUG

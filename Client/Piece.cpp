@@ -57,10 +57,10 @@ Piece::Piece( const std::string& piece, Side s ) {
 
 	side = s;
 	
-	auto key = piece + (side == WHITE ? "W" : "B");
+	auto key = piece + (side == Side::WHITE ? "W" : "B");
 
 	if ( models.find( key ) == models.end() ) {
-		models[key] = std::make_shared<Model>( piece, side == WHITE ? mtlWhitePiece : mtlBlackPiece );
+		models[key] = std::make_shared<Model>( piece, side == Side::WHITE ? mtlWhitePiece : mtlBlackPiece );
 	}
 	pModel = models[key];
 
@@ -70,7 +70,7 @@ Piece::Piece( const std::string& piece, Side s ) {
 void Piece::Draw( float x, float y, float z) {
 	using namespace DirectX;
 
-	if ( side == WHITE ) {
+	if ( side == Side::WHITE ) {
 		pModel->Draw( XMMatrixTranslation( x, y, z ) );
 	} else {
 		pModel->Draw( XMMatrixScaling( -1.0f, 1.0f, -1.0f ) * XMMatrixTranslation( x, y, z ) );

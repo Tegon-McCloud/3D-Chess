@@ -74,7 +74,7 @@ union Position {
 	PositionXYZ xyz;
 };
 
-enum Side {
+enum class Side {
 	WHITE, BLACK
 };
 
@@ -93,8 +93,6 @@ struct Box {
 
 	DirectX::XMFLOAT3 min;
 	DirectX::XMFLOAT3 max;
-
-
 };
 
 float intersection( const Ray& r, const Box& b );

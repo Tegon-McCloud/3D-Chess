@@ -7,8 +7,6 @@
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
 
-	printf( "2\n" );
-
 	using namespace DirectX;
 	
 	std::string cmdLine( lpCmdLine );
@@ -21,15 +19,15 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	Chess chess( cmdLine );
 
-	VertexShader vs( "VertexShader" );
+	VertexShader vs( "VS" );
 	vs.Bind();
 
-	PixelShader ps( "PixelShader" );
+	PixelShader ps( "PS" );
 	ps.Bind();
 	
-	GeometryShader gs( "GeometryShader" );
+	GeometryShader gs( "GS" );
 	gs.Bind();
-	
+
 	Window::Get().GetGraphics().SetBlendEnabled( false );
 	Window::Get().GetGraphics().SetDepthEnabled( true );
 
@@ -58,8 +56,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	return 0;
 }
 
-int main() {
-	printf( "1\n" );
-	char cmdLine[] = "127.0.0.1:8877";
+int main() { // target is console for debug so while debugging execution will start here
+	char cmdLine[] = "147.78.30.176:8877";
 	return WinMain( GetModuleHandle( NULL ), NULL, cmdLine, 0 );
 }
