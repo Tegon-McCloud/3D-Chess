@@ -95,7 +95,12 @@ Graphics::Graphics(HWND hWnd ) {
 		D3D_FEATURE_LEVEL_11_1
 	};
 
-	ThrowIfFailed( D2D1CreateFactory<ID2D1Factory1>( D2D1_FACTORY_TYPE_SINGLE_THREADED, &pFactory2D ) );
+	D2D1_FACTORY_OPTIONS options2D;
+#ifdef _DEBUG
+	options2D.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
+#endif // _DEBUG
+
+	ThrowIfFailed( D2D1CreateFactory<ID2D1Factory1>( D2D1_FACTORY_TYPE_SINGLE_THREADED, options2D, &pFactory2D ) );
 	
 	ThrowIfFailed( D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, deviceFlags, fl, 1, D3D11_SDK_VERSION, &sd, 
 												  &pSwap, &pDevice, NULL, &pContext) );
@@ -122,6 +127,11 @@ Graphics::~Graphics() {
 	pContext.Reset();
 	pRTV.Reset();
 	pDSV.Reset();
+
+	pFactory2D.Reset();
+	pDevice2D.Reset();
+	pContext2D.Reset();
+	pBitmapTarget2D.Reset();
 
 #ifdef _DEBUG
 	pDebug->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
@@ -225,6 +235,10 @@ ID3D11DeviceContext* Graphics::GetContext() const {
 
 ID2D1DeviceContext* Graphics::GetContext2D() const {
 	return pContext2D.Get();
+}
+
+ID2D1Bitmap1* Graphics::GetTarget2D() const {
+	return pBitmapTarget2D.Get();
 }
 
 D2D1_SIZE_U Graphics::GetTargetSize() const {

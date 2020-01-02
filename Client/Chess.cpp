@@ -298,16 +298,51 @@ void Chess::Draw() {
 
 void Chess::DrawHUD() {
 
-	D2D1_SIZE_U targetSize = Window::GFX().GetTargetSize();
-	float hcenter = targetSize.width / 2.0f;
-	float vcenter = targetSize.height / 2.0f;
+	D2D1_SIZE_U targetCenter = Window::GFX().GetTargetSize();
+	targetCenter.width /= 2;
+	targetCenter.height /= 2;
+	
+	//Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pBrush;
+	//ThrowIfFailed( Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( D2D1::ColorF::Black ), &pBrush ) );
+	//
+	//
+	//Window::GFX().GetContext2D()->FillRectangle( D2D1::RectF( hcenter - 10.0f, vcenter - 1.0f, hcenter + 10.0f, vcenter + 1.0f ), pBrush.Get() );
+	//Window::GFX().GetContext2D()->FillRectangle( D2D1::RectF( hcenter - 1.0f, vcenter - 10.0f, hcenter + 1.0f, vcenter + 10.0f ), pBrush.Get() );
+	
+	//Microsoft::WRL::ComPtr<ID2D1Effect> pEffect;
+	//Window::GFX().GetContext2D()->CreateEffect( CLSID_D2D1Invert, &pEffect );
+	//D2D1_RECT_U r;
 
-	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pBrush;
-	ThrowIfFailed( Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( D2D1::ColorF::Black ), &pBrush ) );
-	
-	
-	Window::GFX().GetContext2D()->FillRectangle( D2D1::RectF( hcenter - 10.0f, vcenter - 1.0f, hcenter + 10.0f, vcenter + 1.0f ), pBrush.Get() );
-	Window::GFX().GetContext2D()->FillRectangle( D2D1::RectF( hcenter - 1.0f, vcenter - 10.0f, hcenter + 1.0f, vcenter + 10.0f ), pBrush.Get() );
+	//Microsoft::WRL::ComPtr<ID2D1Bitmap1> pBM;
+
+	//D2D1_BITMAP_PROPERTIES1 bmp;
+	//ZeroMemory( &bmp, sizeof( bmp ) );
+	//bmp.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	//bmp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
+	//bmp.dpiX = 10.0f;
+	//bmp.dpiY = 10.0f;
+	//bmp.bitmapOptions = D2D1_BITMAP_OPTIONS_NONE;
+
+	//r = D2D1::RectU( targetCenter.width - 16, targetCenter.height - 1, targetCenter.width + 16, targetCenter.height + 1 );
+
+	//Window::GFX().GetContext2D()->CreateBitmap( D2D1::SizeU( 32, 2 ), NULL, 0, &bmp, &pBM );
+	//
+	//ThrowIfFailed( pBM->CopyFromBitmap( NULL, Window::GFX().GetTarget2D(), &r ) );
+
+	//pEffect->SetInput( 0, pBM.Get() );
+
+	//Window::GFX().GetContext2D()->DrawImage( pEffect.Get(), D2D1::Point2F( r.left, r.top ) );
+
+
+	//r = D2D1::RectU( targetCenter.width - 1, targetCenter.height - 16, targetCenter.width + 1, targetCenter.height + 16 );
+
+	//Window::GFX().GetContext2D()->CreateBitmap( D2D1::SizeU( 2, 32 ), NULL, 0, &bmp, &pBM );
+
+	//ThrowIfFailed( pBM->CopyFromBitmap( NULL, Window::GFX().GetTarget2D(), &r ) );
+
+	//pEffect->SetInput( 0, pBM.Get() );
+	//Window::GFX().GetContext2D()->DrawImage( pEffect.Get(), D2D1::Point2F( r.left, r.top ) );
+	player.DrawHUD();
 	
 }
 

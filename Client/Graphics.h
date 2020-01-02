@@ -47,6 +47,7 @@ public:
 	ID3D11Device* GetDevice() const;
 	ID3D11DeviceContext* GetContext() const;
 	ID2D1DeviceContext* GetContext2D() const;
+	ID2D1Bitmap1* GetTarget2D() const;
 
 	D2D1_SIZE_U GetTargetSize() const;
 

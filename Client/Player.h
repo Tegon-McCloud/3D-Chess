@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Util.h"
 
+#include "d2d1_1.h"
 #include <memory>
 
 /*
@@ -23,10 +24,15 @@ public:
 	));
 
 	void Update( float dt );
+	void DrawHUD();
 
 private:
 
 	Box bounds;
+
+	Microsoft::WRL::ComPtr<ID2D1Bitmap1> pHorzBar;
+	Microsoft::WRL::ComPtr<ID2D1Bitmap1> pVertBar;
+	Microsoft::WRL::ComPtr<ID2D1Effect> pInvert;
 
 };
 
