@@ -41,11 +41,15 @@ int main() {
 			case 'p':
 				msg.erase(0, 2);
 				Position pos(msg);
-				if (g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '0' || g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '1' || g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '2' || g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '3' || g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '4') {
-					s.sendMSG(1, listToAlg(g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)));
+				if (g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '0' ||
+					 g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '1' ||
+					 g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '2' ||
+					 g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '3' ||
+					 g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '4') {
+					s.sendMSG(1, std::string("p:") + listToAlg(g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)));
 				}
 				else {
-					s.sendMSG(1, ";");
+					s.sendMSG(1, "p:;");
 				}
 			}
 		}
