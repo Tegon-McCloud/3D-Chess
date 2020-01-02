@@ -24,10 +24,12 @@ int main() {
 			g.printEntireField();
 		}
 	}*/
+	std::cout << g.getPieceMoves(1, 0, 1);
 	Server s("8877");
 	std::string msg;
 	s.sendMSG(1, "s:w;");
 	s.sendMSG(0, "s:b;");
+	
 
 	while (true) {
 		s.sendMSG(0, "t:w;");
@@ -39,8 +41,12 @@ int main() {
 			case 'p':
 				msg.erase(0, 2);
 				Position pos(msg);
-				std::cout << "hej";
-				s.sendMSG(1, g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z));
+				if (g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '0' || g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '1' || g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '2' || g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '3' || g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '4') {
+					s.sendMSG(1, listToAlg(g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)));
+				}
+				else {
+					s.sendMSG(1, ";");
+				}
 			}
 		}
 	}

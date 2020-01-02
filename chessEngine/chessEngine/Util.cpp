@@ -2,6 +2,16 @@
 #include <vector>
 #include <unordered_map>
 
+std::string listToAlg(std::string list) {
+	std::string algList;
+	while (!list.empty()) {
+		algList += Position(PositionXYZ(list[0] - '0', list[1] - '0', list[2] - '0')).ToAlg() + ",";
+		list.erase(0, 4);
+	}
+	algList.back() = ';';
+	return algList;
+}
+
 PositionLFR::PositionLFR(const PositionLFR& p) {
 	l = p.l;
 	f = p.f;

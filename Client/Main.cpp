@@ -57,6 +57,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 }
 
 int main() { // target is console for debug so while debugging execution will start here
-	char cmdLine[] = "147.78.30.176:8877";
+	char cmdLine[] = "80.210.71.221:8877";
 	return WinMain( GetModuleHandle( NULL ), NULL, cmdLine, 0 );
 }

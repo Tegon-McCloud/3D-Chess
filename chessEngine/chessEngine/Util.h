@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+std::string listToAlg(std::string list);
+
 struct PositionLFR {
 	PositionLFR(const PositionLFR& p);
 	PositionLFR(int l, int f, int r);
