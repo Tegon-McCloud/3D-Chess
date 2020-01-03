@@ -58,7 +58,7 @@ std::string Piece::getMoves(int colours [5][5][5], int field[5][5][5], int x, in
 					ss << x << y - 1 << z << ' ';
 				}
 			}
-			if (z - 1 < 5) {
+			if (z - 1 >= 0) {
 				if (field[x][y][z - 1] == 0) {	//0 because if it's empty, and ids["Empty"] is 0
 					ss << x << y << z - 1 << ' ';
 				}

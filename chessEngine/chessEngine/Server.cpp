@@ -84,6 +84,8 @@ void Server::getMSG( int side, std::string& msg ) {
 	recvLength = recv( side == 1 ? clientWhite : clientBlack, recvBuf, bufLength, 0 );
 
 	msg = std::string( recvBuf, recvLength );
+
+	delete[] recvBuf;
 }
 
 void Server::sendMSG( int side, const std::string& msg ) {
