@@ -288,23 +288,25 @@ void Game::setChecks() {
 				std::string moves;
 				int currentColour = getPieceColour(i, j, k);
 				moves = getPieceMoves(i, j, k);
-				for (int i = 0; i < moves.length(); i += 4) {
-					std::stringstream ss;
-					ss << moves[i] << ' ' << moves[i + 1] << ' ' << moves[i + 2] << ' ';
-					int xCurr, yCurr, zCurr;
-					ss >> xCurr;
-					ss >> yCurr;
-					ss >> zCurr;
-					if (currentColour == 1) {
-						if (xCurr == bkx && yCurr == bky && zCurr == bkz) {
-							blackCheck = true;
-							bNotCheck = false;
+				if (moves[0] != 'T') {
+					for (int i = 0; i < moves.length(); i += 4) {
+						std::stringstream ss;
+						ss << moves[i] << ' ' << moves[i + 1] << ' ' << moves[i + 2] << ' ';
+						int xCurr, yCurr, zCurr;
+						ss >> xCurr;
+						ss >> yCurr;
+						ss >> zCurr;
+						if (currentColour == 1) {
+							if (xCurr == bkx && yCurr == bky && zCurr == bkz) {
+								blackCheck = true;
+								bNotCheck = false;
+							}
 						}
-					}
-					else {
-						if (xCurr == wkx && yCurr == wky && zCurr == wkz) {
-							whiteCheck = true;
-							wNotCheck = false;
+						else {
+							if (xCurr == wkx && yCurr == wky && zCurr == wkz) {
+								whiteCheck = true;
+								wNotCheck = false;
+							}
 						}
 					}
 				}
