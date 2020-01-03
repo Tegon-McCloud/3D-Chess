@@ -111,7 +111,7 @@ Chess::Chess( const std::string& cmdLine ) :
 	client( cmdLine ),
 	mySide( Side::WHITE ),
 	myTurn( false ),
-	player( Box( -20.0f, -20.0f, -20.0f, 35.0f, 50.0f, 35.0f ) ) {
+	player( Box( -20.0f, -20.0f, -20.0f, 32.0f, 50.0f, 32.0f ) ) {
 
 	player.Update( 0.0f );
 	player.Bind();
@@ -211,7 +211,10 @@ void Chess::Update( float dt ) {
 	std::string msg;
 
 	while ( client.GetMSG( msg ) ) {
+
+#ifdef _DEBUG
 		printf( "processing: %s\n", msg.c_str() );
+#endif // _DEBUG
 
 		switch ( msg[0] ) {
 		case 'p':
@@ -243,6 +246,15 @@ void Chess::Update( float dt ) {
 
 		case 's':
 			mySide = msg[2] == 'w' ? Side::WHITE : Side::BLACK;
+			
+			if ( mySide == Side::WHITE ) {
+				player.SetPosition( -12.0f, 6.0f, 6.0f );
+				player.SetDirection( pi/2.0f, 0.0f, 0.0f );
+			} else {
+				player.SetPosition( 12.0f + 12.0f, 24.0f - 6.0f, 12.0f - 6.0f );
+				player.SetDirection( -pi / 2.0f, 0.0f, 0.0f );
+			}
+
 			break;
 
 #ifdef _DEBUG

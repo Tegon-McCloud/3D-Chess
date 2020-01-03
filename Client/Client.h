@@ -31,7 +31,7 @@ private:
 	*/
 	int Connect( const std::string& ip, const std::string& port );
 	
-	SOCKET clientSocket;
+	SOCKET sock;
 
 	std::queue<std::string> inbox;
 	std::mutex mutex;

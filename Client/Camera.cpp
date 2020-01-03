@@ -31,6 +31,18 @@ void Camera::Bind() {
 	buffer.Bind();
 }
 
+void Camera::SetPosition( float x, float y, float z ) {
+	this->x = x;
+	this->y = y;
+	this->z = z;
+}
+
+void Camera::SetDirection( float yaw, float pitch, float roll ) {
+	this->yaw = yaw;
+	this->pitch = pitch;
+	this->roll = roll;
+}
+
 DirectX::XMVECTOR Camera::ToViewSpace3( const DirectX::XMVECTOR& v ) {
 	using namespace DirectX;
 	return  XMVector3Transform( v, XMLoadFloat4x4( &cameraTransforms.worldToCam ) );

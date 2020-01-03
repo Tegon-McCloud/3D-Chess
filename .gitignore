@@ -354,3 +354,5 @@ MigrationBackup/
 
 # Compiled shaders
 *.cso
+
+Engine/

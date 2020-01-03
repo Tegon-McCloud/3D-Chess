@@ -1,6 +1,9 @@
 #include "Window.h"
 
+#include "shellscalingapi.h"
 #include <stdexcept>
+
+#pragma comment(lib, "Shcore.lib")
 
 // Window
 Window::Window() : width(1080), height(720), gfx(Create()) {}
@@ -151,6 +154,10 @@ LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPAR
 WindowClass WindowClass::inst = WindowClass();
 
 WindowClass::WindowClass() {
+
+	if ( FAILED( SetProcessDpiAwareness( PROCESS_SYSTEM_DPI_AWARE ) ) ) {
+		throw std::runtime_error( "Failed to set dpi awareness" );
+	}
 
 	WNDCLASSW wndCls = { 0 };
 
