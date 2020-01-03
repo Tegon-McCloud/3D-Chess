@@ -19,6 +19,9 @@ public:
 	// sets this as the camera to use
 	void Bind();
 
+	void SetPosition( float x, float y, float z );
+	void SetDirection( float yaw, float pitch, float roll );
+
 	// converts v from worldspace to viewspace as a direction or position vector
 	DirectX::XMVECTOR ToViewSpace3( const DirectX::XMVECTOR& v ); 
 	DirectX::XMVECTOR ToViewSpace4( const DirectX::XMVECTOR& v );

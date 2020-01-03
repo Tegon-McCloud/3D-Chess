@@ -14,7 +14,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 // Client
-Client::Client( const std::string& ipAndPort ) : clientSocket( INVALID_SOCKET ) {
+Client::Client( const std::string& ipAndPort ) : sock( INVALID_SOCKET ) {
 
 	const std::regex ipRegex( "([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}|localhost):[0-9]{1,5}" );
 
@@ -28,10 +28,10 @@ Client::Client( const std::string& ipAndPort ) : clientSocket( INVALID_SOCKET ) 
 }
 
 Client::~Client() {
-	if ( clientSocket != INVALID_SOCKET ) {
-		shutdown( clientSocket, SD_BOTH );
+	if ( sock != INVALID_SOCKET ) {
+		shutdown( sock, SD_BOTH );
 		loopThread.join();
-		closesocket( clientSocket );
+		closesocket( sock );
 	}
 }
 
@@ -51,7 +51,7 @@ bool Client::GetMSG( std::string& msg ) {
 }
 
 void Client::SendMSG( const std::string& msg ) {
-	send( clientSocket, msg.c_str(), (int) msg.length(), 0 );
+	send( sock, msg.c_str(), (int) msg.length(), 0 );
 }
 
 int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
@@ -76,7 +76,7 @@ int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
 
 	while ( true ) {
 
-		recvLength = recv( clientSocket, recvBuf, bufLength, 0 );
+		recvLength = recv( sock, recvBuf, bufLength, 0 );
 		if ( recvLength <= 0 ) { // connection broken from serverside or some error occured
 			result = recvLength;
 			break;
@@ -123,13 +123,13 @@ int Client::Connect( const std::string& ip, const std::string& port ) {
 		return result;
 	}
 
-	clientSocket = socket( info->ai_family, info->ai_socktype, info->ai_protocol );
-	if ( clientSocket == INVALID_SOCKET ) {
+	sock = socket( info->ai_family, info->ai_socktype, info->ai_protocol );
+	if ( sock == INVALID_SOCKET ) {
 		freeaddrinfo( info );
 		return WSAGetLastError();
 	}
 
-	result = connect( clientSocket, info->ai_addr, (int)info->ai_addrlen );
+	result = connect( sock, info->ai_addr, (int)info->ai_addrlen );
 	if ( result != 0 ) {
 #ifdef _DEBUG
 		std::cout << "failed to connect to address: " << ip << ":" << port << "\n";

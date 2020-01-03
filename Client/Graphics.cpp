@@ -82,6 +82,7 @@ constexpr const D3D11_DEPTH_STENCIL_VIEW_DESC defaultDepthStencilViewDesc = {
 // Graphics
 Graphics::Graphics( HWND hWnd ) {
 
+	
 	// 3D setup
 	const D3D_FEATURE_LEVEL fl[] = {
 		D3D_FEATURE_LEVEL_11_1
@@ -103,7 +104,7 @@ Graphics::Graphics( HWND hWnd ) {
 	DXGI_SWAP_CHAIN_DESC1 sd = defaultSwapChainDesc;
 	sd.SampleDesc.Count = 4;
 	sd.SampleDesc.Quality = D3D11_STANDARD_MULTISAMPLE_PATTERN;
-
+	
 	ThrowIfFailed( pFactoryDXGI->CreateSwapChainForHwnd( pDevice.Get(), hWnd, &sd, NULL, NULL, &pSwap ) );
 
 	blendState.Init( pDevice.Get() );
@@ -112,13 +113,12 @@ Graphics::Graphics( HWND hWnd ) {
 	// 2D setup
 	D2D1_FACTORY_OPTIONS options2D;
 #ifdef _DEBUG
-	options2D.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
+	options2D.debugLevel = D2D1_DEBUG_LEVEL_WARNING;
 #endif // _DEBUG
 
 	ThrowIfFailed( D2D1CreateFactory<ID2D1Factory1>( D2D1_FACTORY_TYPE_SINGLE_THREADED, options2D, &pFactory2D ) );
 	ThrowIfFailed( pFactory2D->CreateDevice( pDeviceDXGI.Get(), &pDevice2D ) );
 	ThrowIfFailed( pDevice2D->CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &pContext2D ) );
-
 }
 
 Graphics::~Graphics() {
@@ -158,6 +158,7 @@ void Graphics::SizeChanged() {
 	// resize buffers
 	ThrowIfFailed( pSwap->ResizeBuffers( 0, 0, 0, DXGI_FORMAT_UNKNOWN, 0 ) );
 
+	// Restore 3D buffers
 	Microsoft::WRL::ComPtr<ID3D11Resource> pBB;
 	ThrowIfFailed( pSwap->GetBuffer( 0u, __uuidof(ID3D11Resource), &pBB ) ); // get the swapchains first backbuffer
 	ThrowIfFailed( pDevice->CreateRenderTargetView( pBB.Get(), nullptr, &pRTV ) ); // create rtv of it and store the interface in pRTV
@@ -180,7 +181,7 @@ void Graphics::SizeChanged() {
 	
 	pContext->OMSetRenderTargets( 1u, pRTV.GetAddressOf(), pDSV.Get() ); // bind render target and depth stencil buffers to output merger
 
-		// create and set viewport
+	// create and set viewport
 	D3D11_VIEWPORT vp;
 	vp.Width = static_cast<float>(sd.BufferDesc.Width);
 	vp.Height = static_cast<float>(sd.BufferDesc.Height);
@@ -191,11 +192,13 @@ void Graphics::SizeChanged() {
 	
 	pContext->RSSetViewports( 1u, &vp );
 
+	// restore 2D
 	D2D1_BITMAP_PROPERTIES1 bmp;
 	ZeroMemory( &bmp, sizeof( bmp ) );
 	bmp.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	bmp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
-	pFactory2D->GetDesktopDpi( &bmp.dpiX, &bmp.dpiY );
+	bmp.dpiX = (float)GetDpiForWindow( sd.OutputWindow );
+	bmp.dpiY = bmp.dpiX;
 	bmp.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
 
 	Microsoft::WRL::ComPtr<IDXGISurface> pBBDXGI;
@@ -212,8 +215,7 @@ void Graphics::Clear( float r, float g, float b ) const {
 		r, g, b, 1.0f
 	};
 
-	pContext->ClearRenderTargetView( pRTV.Get(), rgba );
-	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u );
+	Clear( rgba );
 }
 
 void Graphics::Clear( const float* rgba ) const {
