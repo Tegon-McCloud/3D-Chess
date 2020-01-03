@@ -1,8 +1,9 @@
 #include "Server.h"
 
 #include "ws2tcpip.h"
-#include <cassert>;
+#include <cassert>
 #include <iostream>
+#include <random>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -34,7 +35,7 @@ Server::Server( std::string port ) : serverSocket( INVALID_SOCKET ), clientWhite
 		printAndExit( "failed to create server socket.", 1 );
 	}
 
-	result = bind( serverSocket, info->ai_addr, info->ai_addrlen );
+	result = bind( serverSocket, info->ai_addr, (int) info->ai_addrlen );
 	if ( result != 0 ) {
 		freeaddrinfo( info );
 		printAndExit( "failed to bind server socket to address.", 1 );
@@ -43,21 +44,23 @@ Server::Server( std::string port ) : serverSocket( INVALID_SOCKET ), clientWhite
 	freeaddrinfo( info );
 
 	result = listen( serverSocket, 2 );
-	if ( result != 0 ) {
-		printAndExit( "failed to put server socket into listening mode.", 1 );
-	}
+	if ( result != 0 ) printAndExit( "failed to put server socket into listening mode.", 1 );
 
+	std::cout << "waiting for white...\n";
 	clientWhite = accept( serverSocket, NULL, NULL );
-	if ( clientWhite == INVALID_SOCKET ) {
-		printAndExit( "failed to accept white client connection.", 1 );
-	}
+	if ( clientWhite == INVALID_SOCKET ) printAndExit( "failed to accept white client connection.", 1 );
+	std::cout << "white connected.\n";
 
+	std::cout << "waiting for black...\n";
 	clientBlack = accept( serverSocket, NULL, NULL );
-	if ( clientBlack == INVALID_SOCKET ) {
-		printAndExit( "failed to accept black client connection.", 1 );
-	}
+	if ( clientBlack == INVALID_SOCKET ) printAndExit( "failed to accept black client connection.", 1 );
+	std::cout << "black connected.\n";
 
-	// TODO std::swap the client sockets if rand() > 0.5
+	std::default_random_engine rng;
+	std::uniform_int_distribution<int> dist( 0, 1 );
+	if ( dist( rng ) == 1 ) {
+		std::swap( clientWhite, clientBlack );
+	}
 }
 
 Server::~Server() {
@@ -83,13 +86,18 @@ void Server::getMSG( int side, std::string& msg ) {
 
 	recvLength = recv( side == 1 ? clientWhite : clientBlack, recvBuf, bufLength, 0 );
 
-	msg = std::string( recvBuf, recvLength );
+	if ( recvLength <= 0 ) {
+		shutdown( side == 1 ? clientWhite : clientBlack, SD_SEND );
+		msg = "d:";
+	} else {
+		msg = std::string( recvBuf, recvLength );
+	}
 
 	delete[] recvBuf;
 }
 
 void Server::sendMSG( int side, const std::string& msg ) {
-	send( side == 1 ? clientWhite : clientBlack, msg.c_str(), msg.length(), 0 );
+	send( side == 1 ? clientWhite : clientBlack, msg.c_str(), (int) msg.length(), 0 );
 }
 
 // WSALoader

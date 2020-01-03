@@ -29,7 +29,7 @@ Client::Client( const std::string& ipAndPort ) : sock( INVALID_SOCKET ) {
 
 Client::~Client() {
 	if ( sock != INVALID_SOCKET ) {
-		shutdown( sock, SD_BOTH );
+		shutdown( sock, SD_SEND );
 		loopThread.join();
 		closesocket( sock );
 	}
