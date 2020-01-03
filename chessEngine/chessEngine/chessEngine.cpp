@@ -65,11 +65,11 @@ int main() {
 			std::stringstream ss;
 			ss << from.xyz.x << " " << from.xyz.y << " " << from.xyz.z << " " << to.xyz.x << " " << to.xyz.y << " " << to.xyz.z;
 			std::string move = g.move(ss);
-			if (move[0] == '0' ||
-				move[0] == '1' ||
-				move[0] == '2' ||
-				move[0] == '3' ||
-				move[0] == '4') {
+			if (move[0] == 'Y' ||
+				move[0] == 'Y' ||
+				move[0] == 'Y' ||
+				move[0] == 'Y' ||
+				move[0] == 'Y') {
 
 				s.sendMSG(0, msgCopy);
 				s.sendMSG(1, msgCopy);
