@@ -24,6 +24,7 @@ int main() {
 			g.printEntireField();
 		}
 	}*/
+	std::cout << g.getPieceMoves(0, 1, 1);
 	Server s("8877");
 	std::string msg;
 	s.sendMSG(1, "s:w;");
