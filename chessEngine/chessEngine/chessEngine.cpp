@@ -64,12 +64,7 @@ int main() {
 			//TODO error checking if hacked client
 			std::stringstream ss;
 			ss << from.xyz.x << " " << from.xyz.y << " " << from.xyz.z << " " << to.xyz.x << " " << to.xyz.y << " " << to.xyz.z;
-			std::string move = g.move(ss);
-			if (move[0] == 'Y' ||
-				move[0] == 'Y' ||
-				move[0] == 'Y' ||
-				move[0] == 'Y' ||
-				move[0] == 'Y') {
+			if (g.move(ss)) {
 
 				s.sendMSG(0, msgCopy);
 				s.sendMSG(1, msgCopy);

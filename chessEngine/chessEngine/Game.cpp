@@ -165,15 +165,60 @@ void Game::setPieceColour(int x, int y, int z, int colour) {
 
 std::string Game::getPieceMoves(int x, int y, int z) {
 	if (getPieceColour(x, y, z) == -1) {
-		return "No piece on the selected square";
+		return "There is no piece on the selected square";
 	}
 	if (getPieceColour(x, y, z) != colourToMove) {
 		return "This is not your colour";
 	}
-	if (Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z)) == "") {
+	std::string pieceMoves(Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z)));
+	//Check things
+	if (whiteCheck) {
+	idk:
+		for (int i = 0; i < pieceMoves.length(); i += 4) {
+			std::stringstream ss;
+			ss << pieceMoves[i] << ' ' << pieceMoves[i + 1] << ' ' << pieceMoves[i + 2] << ' ';
+			int xCurr, yCurr, zCurr;
+			ss >> xCurr;
+			ss >> yCurr;
+			ss >> zCurr;
+			int prevId = getPieceId(xCurr, yCurr, zCurr);
+			movePiece(x, y, z, xCurr, yCurr, zCurr);
+			setChecks();
+			if (whiteCheck) {
+				pieceMoves.erase(i, 4);
+				movePiece(xCurr, yCurr, zCurr, x, y, z);
+				setPieceId(xCurr, yCurr, zCurr, prevId);
+				setChecks();
+				goto idk;
+			}
+		}
+	}
+	if (blackCheck) {
+	idk2:
+		for (int i = 0; i < pieceMoves.length(); i += 4) {
+			std::stringstream ss;
+			ss << pieceMoves[i] << ' ' << pieceMoves[i + 1] << ' ' << pieceMoves[i + 2] << ' ';
+			int xCurr, yCurr, zCurr;
+			ss >> xCurr;
+			ss >> yCurr;
+			ss >> zCurr;
+			int prevId = getPieceId(xCurr, yCurr, zCurr);
+			movePiece(x, y, z, xCurr, yCurr, zCurr);
+			setChecks();
+			if (blackCheck) {
+				pieceMoves.erase(i, 4);
+				movePiece(xCurr, yCurr, zCurr, x, y, z);
+				setPieceId(xCurr, yCurr, zCurr, prevId);
+				setChecks();
+				goto idk2;
+			}
+		}
+	}
+	//TODO Checkmate checking and stalemate checking and maybe other stuff like that
+	if (pieceMoves == "") {
 		return "This piece can't move";
 	}
-	return Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z));
+	return pieceMoves;
 };
 
 void Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo) {
@@ -183,7 +228,7 @@ void Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo)
 	setPieceColour(xFrom, yFrom, zFrom, -1);
 };
 
-std::string Game::move(std::stringstream& ss) {
+bool Game::move(std::stringstream& ss) {
 	//TODO error checking perhaps, but maybe not needed
 	int xFrom, yFrom, zFrom, xTo, yTo, zTo;
 	ss >> xFrom;
@@ -193,14 +238,8 @@ std::string Game::move(std::stringstream& ss) {
 	ss >> yTo;
 	ss >> zTo;
 	std::string movesOfPiece = getPieceMoves(xFrom, yFrom, zFrom);
-	if (movesOfPiece == "No piece on the selected square") {
-		return movesOfPiece;
-	}
-	if (movesOfPiece == "This is not your colour") {
-		return movesOfPiece;
-	}
-	if (movesOfPiece == "This piece can't move") {
-		return movesOfPiece;
+	if (movesOfPiece[0] == 'T'){
+		return false;
 	}
 	bool canMove = false;
 	for (int i = 0; i < movesOfPiece.length(); i+=4) {
@@ -215,10 +254,18 @@ std::string Game::move(std::stringstream& ss) {
 		}
 	}
 	if (!canMove) {
-		return "You can't move to the selected square";
+		return false;
 	}
+
 	movePiece(xFrom, yFrom, zFrom, xTo, yTo, zTo);
+	colourToMove = (colourToMove - 1)*-1;
+	setChecks();
+	return true;
+};
+
+void Game::setChecks() {
 	int wkx, wky, wkz, bkx, bky, bkz;	//wkx = white king x
+	bool wNotCheck = true, bNotCheck = true;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
 			for (int k = 0; k < 5; k++) {
@@ -238,12 +285,36 @@ std::string Game::move(std::stringstream& ss) {
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
 			for (int k = 0; k < 5; k++) {
-
+				std::string moves;
+				int currentColour = getPieceColour(i, j, k);
+				moves = getPieceMoves(i, j, k);
+				for (int i = 0; i < moves.length(); i += 4) {
+					std::stringstream ss;
+					ss << moves[i] << ' ' << moves[i + 1] << ' ' << moves[i + 2] << ' ';
+					int xCurr, yCurr, zCurr;
+					ss >> xCurr;
+					ss >> yCurr;
+					ss >> zCurr;
+					if (currentColour == 1) {
+						if (xCurr == bkx && yCurr == bky && zCurr == bkz) {
+							blackCheck = true;
+							bNotCheck = false;
+						}
+					}
+					else {
+						if (xCurr == wkx && yCurr == wky && zCurr == wkz) {
+							whiteCheck = true;
+							wNotCheck = false;
+						}
+					}
+				}
 			}
 		}
 	}
-	//TODO check is not even close to implimentet
-	//TODO Checkmate checking and stalemate checking and maybe other stuff like that
-	colourToMove = (colourToMove - 1)*-1;
-	return "You moved :)";
-};
+	if (wNotCheck) {
+		whiteCheck = false;
+	}
+	if (bNotCheck) {
+		blackCheck = false;
+	}
+}
