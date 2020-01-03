@@ -24,7 +24,6 @@ int main() {
 			g.printEntireField();
 		}
 	}*/
-	std::cout << g.getPieceMoves(0, 1, 1);
 	Server s("8877");
 	std::string msg;
 	s.sendMSG(1, "s:w;");
@@ -65,12 +64,20 @@ int main() {
 			//TODO error checking if hacked client
 			std::stringstream ss;
 			ss << from.xyz.x << " " << from.xyz.y << " " << from.xyz.z << " " << to.xyz.x << " " << to.xyz.y << " " << to.xyz.z;
-			g.move(ss);
-			s.sendMSG(0, msgCopy);
-			s.sendMSG(1, msgCopy);
+			std::string move(g.move(ss));
+			std::string move(g.move(ss));
+			if (move[0] == '0' ||
+				move[0] == '1' ||
+				move[0] == '2' ||
+				move[0] == '3' ||
+				move[0] == '4') {
 
-			s.sendMSG( 0, g.colourToMove == 1 ? "t:w;" : "t:b;" );
-			s.sendMSG( 1, g.colourToMove == 1 ? "t:w;" : "t:b;" );
+				s.sendMSG(0, msgCopy);
+				s.sendMSG(1, msgCopy);
+
+				s.sendMSG(0, g.colourToMove == 1 ? "t:w;" : "t:b;");
+				s.sendMSG(1, g.colourToMove == 1 ? "t:w;" : "t:b;");
+			}
 		}
 			break;
 		}

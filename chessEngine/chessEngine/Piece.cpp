@@ -791,10 +791,10 @@ std::string Piece::getBishopMoves(int colours[5][5][5], int field[5][5][5], int 
 			temp = false;
 		}
 		else {
-			if (colours[x + i][y][z - 1] == (colour - 1)*-1 && colours[x + i][y][z - i] != -1) {
+			if (colours[x + i][y][z - i] == (colour - 1)*-1 && colours[x + i][y][z - i] != -1) {
 				temp = false;
 			}
-			ss << x + i << y << z - 1 << ' ';
+			ss << x + i << y << z - i << ' ';
 		}
 	}
 	//x negative z positive dir
@@ -868,10 +868,10 @@ std::string Piece::getBishopMoves(int colours[5][5][5], int field[5][5][5], int 
 			temp = false;
 		}
 		else {
-			if (colours[x][y + i][z - 1] == (colour - 1)*-1 && colours[x][y + i][z - i] != -1) {
+			if (colours[x][y + i][z - i] == (colour - 1)*-1 && colours[x][y + i][z - i] != -1) {
 				temp = false;
 			}
-			ss << x << y + i << z - 1 << ' ';
+			ss << x << y + i << z - i << ' ';
 		}
 	}
 	//y negative z positive dir
