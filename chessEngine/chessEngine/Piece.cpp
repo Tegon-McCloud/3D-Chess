@@ -423,7 +423,7 @@ std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int
 			temp = false;
 		}
 		else {
-			if (field[x + i][y + i][z + i] == (colour - 1)*-1 && colours[x + i][y + i][z + i] != -1) {
+			if (colours[x + i][y + i][z + i] == (colour - 1)*-1 && colours[x + i][y + i][z + i] != -1) {
 				temp = false;
 			}
 			ss << x + i << y + i << z + i << ' ';
@@ -445,7 +445,7 @@ std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int
 			temp = false;
 		}
 		else {
-			if (field[x + i][y + i][z - i] == (colour - 1)*-1 && colours[x + i][y + i][z - i] != -1) {
+			if (colours[x + i][y + i][z - i] == (colour - 1)*-1 && colours[x + i][y + i][z - i] != -1) {
 				temp = false;
 			}
 			ss << x + i << y + i << z - i << ' ';
@@ -467,7 +467,7 @@ std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int
 			temp = false;
 		}
 		else {
-			if (field[x + i][y - i][z + i] == (colour - 1)*-1 && colours[x + i][y - i][z + i] != -1) {
+			if (colours[x + i][y - i][z + i] == (colour - 1)*-1 && colours[x + i][y - i][z + i] != -1) {
 				temp = false;
 			}
 			ss << x + i << y - i << z + i << ' ';
@@ -489,7 +489,7 @@ std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int
 			temp = false;
 		}
 		else {
-			if (field[x + i][y - i][z - i] == (colour - 1)*-1 && colours[x + i][y - i][z - i] != -1) {
+			if (colours[x + i][y - i][z - i] == (colour - 1)*-1 && colours[x + i][y - i][z - i] != -1) {
 				temp = false;
 			}
 			ss << x + i << y - i << z - i << ' ';
@@ -511,7 +511,7 @@ std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int
 			temp = false;
 		}
 		else {
-			if (field[x - i][y + i][z + i] == (colour - 1)*-1 && colours[x - i][y + i][z + i] != -1) {
+			if (colours[x - i][y + i][z + i] == (colour - 1)*-1 && colours[x - i][y + i][z + i] != -1) {
 				temp = false;
 			}
 			ss << x - i << y + i << z + i << ' ';
@@ -533,7 +533,7 @@ std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int
 			temp = false;
 		}
 		else {
-			if (field[x - i][y + i][z - i] == (colour - 1)*-1 && colours[x - i][y + i][z - i] != -1) {
+			if (colours[x - i][y + i][z - i] == (colour - 1)*-1 && colours[x - i][y + i][z - i] != -1) {
 				temp = false;
 			}
 			ss << x - i << y + i << z - i << ' ';
@@ -555,7 +555,7 @@ std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int
 			temp = false;
 		}
 		else {
-			if (field[x - i][y - i][z + i] == (colour - 1)*-1 && colours[x - i][y - i][z + i] != -1) {
+			if (colours[x - i][y - i][z + i] == (colour - 1)*-1 && colours[x - i][y - i][z + i] != -1) {
 				temp = false;
 			}
 			ss << x - i << y - i << z + i << ' ';
@@ -577,7 +577,7 @@ std::string Piece::getUnicornMoves(int colours[5][5][5], int field[5][5][5], int
 			temp = false;
 		}
 		else {
-			if (field[x - i][y - i][z - i] == (colour - 1)*-1 && colours[x - i][y - i][z - i] != -1) {
+			if (colours[x - i][y - i][z - i] == (colour - 1)*-1 && colours[x - i][y - i][z - i] != -1) {
 				temp = false;
 			}
 			ss << x - i << y - i << z - i << ' ';
@@ -598,7 +598,7 @@ std::string Piece::getRookMoves(int colours[5][5][5], int field[5][5][5], int x,
 			temp = false;
 		}
 		else {
-			if (field[x + i][y][z] == (colour - 1)*-1 && colours[x + i][y][z] != -1) {
+			if (colours[x + i][y][z] == (colour - 1)*-1 && colours[x + i][y][z] != -1) {
 				temp = false;
 			}
 			ss << x + i << y << z << ' ';
@@ -612,7 +612,7 @@ std::string Piece::getRookMoves(int colours[5][5][5], int field[5][5][5], int x,
 			temp = false;
 		}
 		else {
-			if (field[x - i][y][z] == (colour - 1)*-1 && colours[x - i][y][z] != -1) {
+			if (colours[x - i][y][z] == (colour - 1)*-1 && colours[x - i][y][z] != -1) {
 				temp = false;
 			}
 			ss << x - i << y << z << ' ';
@@ -626,7 +626,7 @@ std::string Piece::getRookMoves(int colours[5][5][5], int field[5][5][5], int x,
 			temp = false;
 		}
 		else {
-			if (field[x][y + i][z] == (colour - 1)*-1 && colours[x][y + i][z] != -1) {
+			if (colours[x][y + i][z] == (colour - 1)*-1 && colours[x][y + i][z] != -1) {
 				temp = false;
 			}
 			ss << x << y + i << z << ' ';
@@ -640,7 +640,7 @@ std::string Piece::getRookMoves(int colours[5][5][5], int field[5][5][5], int x,
 			temp = false;
 		}
 		else {
-			if (field[x][y - i][z] == (colour - 1)*-1 && colours[x][y - i][z] != -1) {
+			if (colours[x][y - i][z] == (colour - 1)*-1 && colours[x][y - i][z] != -1) {
 				temp = false;
 			}
 			ss << x << y - i << z << ' ';
@@ -654,7 +654,7 @@ std::string Piece::getRookMoves(int colours[5][5][5], int field[5][5][5], int x,
 			temp = false;
 		}
 		else {
-			if (field[x][y][z + i] == (colour - 1)*-1 && colours[x][y][z + i] != -1) {
+			if (colours[x][y][z + i] == (colour - 1)*-1 && colours[x][y][z + i] != -1) {
 				temp = false;
 			}
 			ss << x << y << z + i << ' ';
@@ -668,7 +668,7 @@ std::string Piece::getRookMoves(int colours[5][5][5], int field[5][5][5], int x,
 			temp = false;
 		}
 		else {
-			if (field[x][y][z - i] == (colour - 1)*-1 && colours[x][y][z - i] != -1) {
+			if (colours[x][y][z - i] == (colour - 1)*-1 && colours[x][y][z - i] != -1) {
 				temp = false;
 			}
 			ss << x << y << z - i << ' ';
