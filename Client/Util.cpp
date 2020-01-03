@@ -113,7 +113,7 @@ std::string Position::ToAlg() {
 
 	const std::vector<char> levelMap = { 'A', 'B', 'C', 'D', 'E' };
 	const std::vector<char> fileMap = { 'a', 'b', 'c', 'd', 'e' };
-	const std::vector<char> rankMap = { '1', '3', '3', '4', '5' };
+	const std::vector<char> rankMap = { '1', '2', '3', '4', '5' };
 
 	std::string s;
 	s.push_back( levelMap[lfr.l] );
