@@ -287,7 +287,7 @@ void Game::setChecks() {
 			for (int k = 0; k < 5; k++) {
 				std::string moves;
 				int currentColour = getPieceColour(i, j, k);
-				moves = getPieceMoves(i, j, k);
+				moves = Piece::getMoves(colour, field, i, j, k, getPieceColour(i, j, k), getPieceId(i, j, k));
 				if (moves[0] != 'T') {
 					for (int i = 0; i < moves.length(); i += 4) {
 						std::stringstream ss;
