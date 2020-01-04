@@ -184,7 +184,7 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 			int prevId = getPieceId(xCurr, yCurr, zCurr);
 			movePiece(x, y, z, xCurr, yCurr, zCurr);
 			setChecks();
-			if (whiteCheck) {
+			if (!whiteCheck) {
 				pieceMoves.erase(i, 4);
 				movePiece(xCurr, yCurr, zCurr, x, y, z);
 				setPieceId(xCurr, yCurr, zCurr, prevId);
@@ -205,7 +205,7 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 			int prevId = getPieceId(xCurr, yCurr, zCurr);
 			movePiece(x, y, z, xCurr, yCurr, zCurr);
 			setChecks();
-			if (blackCheck) {
+			if (!blackCheck) {
 				pieceMoves.erase(i, 4);
 				movePiece(xCurr, yCurr, zCurr, x, y, z);
 				setPieceId(xCurr, yCurr, zCurr, prevId);
@@ -296,13 +296,13 @@ void Game::setChecks() {
 						ss >> xCurr;
 						ss >> yCurr;
 						ss >> zCurr;
-						if (currentColour == 0) {
+						if (currentColour == 1) {
 							if (xCurr == bkx && yCurr == bky && zCurr == bkz) {
 								blackCheck = true;
 								bNotCheck = false;
 							}
 						}
-						if(currentColour == 1) {
+						if(currentColour == 0) {
 							if (xCurr == wkx && yCurr == wky && zCurr == wkz) {
 								whiteCheck = true;
 								wNotCheck = false;
