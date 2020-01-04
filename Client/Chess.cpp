@@ -141,7 +141,7 @@ Chess::Chess( const std::string& cmdLine ) :
 			if ( hitpos ) {
 
 				selectedPos.reset( new PositionLFR( hitpos.value() ) );
-				client.SendMSG( std::string( "p:" ) 
+				client.SendMSG( std::string( "l:" ) 
 								+ Position( *selectedPos ).ToAlg()
 				);
 			}
@@ -217,7 +217,7 @@ void Chess::Update( float dt ) {
 #endif // _DEBUG
 
 		switch ( msg[0] ) {
-		case 'p':
+		case 'l': // the server has provided a list of moves
 			highlights.clear();
 			msg.erase( 0, 2 );
 
@@ -227,7 +227,7 @@ void Chess::Update( float dt ) {
 			}
 			break;
 
-		case 'm': 
+		case 'm': // the server has made a move and asks this client to mirror it
 		{ // new scope to avoid errors with declaring 'from' and 'to'
 			highlights.clear();
 			selectedPos.reset();
@@ -240,11 +240,11 @@ void Chess::Update( float dt ) {
 			MovePiece( from.lfr, to.lfr );
 			break;
 		}
-		case 't':
+		case 't': // the server says that it is the specified clients turn
 			myTurn = (msg[2] == 'b') ^ (mySide == Side::WHITE);
 			break;
 
-		case 's':
+		case 's': // the server has given this client a color
 			mySide = msg[2] == 'w' ? Side::WHITE : Side::BLACK;
 			
 			if ( mySide == Side::WHITE ) {
@@ -257,7 +257,7 @@ void Chess::Update( float dt ) {
 
 			break;
 		
-		case 'd':
+		case 'd': // the game has ended, either because the server was shutdown or the other client disconnected
 			client.Disconnect();
 			break;
 

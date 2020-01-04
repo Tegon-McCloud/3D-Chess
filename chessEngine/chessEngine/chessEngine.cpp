@@ -36,7 +36,7 @@ int main() {
 
 		s.getMSG(g.colourToMove, msg);
 		switch (msg[0]) {
-		case 'p':
+		case 'l':
 		{
 			msg.erase(0, 2);
 			Position pos(msg);
@@ -45,10 +45,10 @@ int main() {
 				g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '2' ||
 				g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '3' ||
 				g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '4') {
-				s.sendMSG(g.colourToMove, std::string("p:") + listToAlg(g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)));
+				s.sendMSG(g.colourToMove, std::string("l:") + listToAlg(g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)));
 			}
 			else {
-				s.sendMSG(g.colourToMove, "p:;");
+				s.sendMSG(g.colourToMove, "l:;");
 			}
 		}
 			break;
