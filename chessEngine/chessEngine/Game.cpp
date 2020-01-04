@@ -296,13 +296,13 @@ void Game::setChecks() {
 						ss >> xCurr;
 						ss >> yCurr;
 						ss >> zCurr;
-						if (currentColour == 1) {
+						if (currentColour == 0) {
 							if (xCurr == bkx && yCurr == bky && zCurr == bkz) {
 								blackCheck = true;
 								bNotCheck = false;
 							}
 						}
-						if(currentColour == 0) {
+						if(currentColour == 1) {
 							if (xCurr == wkx && yCurr == wky && zCurr == wkz) {
 								whiteCheck = true;
 								wNotCheck = false;
