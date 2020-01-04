@@ -74,6 +74,14 @@ int main() {
 			}
 		}
 			break;
+			
+		case 'd':
+			goto end;
+			break;
 		}
 	}
+
+	end:
+
+	return 0;
 }
