@@ -66,16 +66,16 @@ Server::Server( std::string port ) : serverSocket( INVALID_SOCKET ), clientWhite
 Server::~Server() {
 
 	if ( clientWhite != INVALID_SOCKET && shutdown( clientWhite, SD_SEND ) != 0 )
-		printf( "Error occured during shutdown of connection to whites client." );
+		printf( "error occured during shutdown of connection to whites client." );
 	if ( clientBlack != INVALID_SOCKET && shutdown( clientBlack, SD_SEND ) != 0 )
-		printf( "Error occured during shutdown of connection to blacks client." );
+		printf( "error occured during shutdown of connection to blacks client." );
 
 	if ( clientWhite != INVALID_SOCKET && closesocket( clientWhite ) != 0 )
-		printf( "Error occured while closing white clients socket." );
+		printf( "error occured while closing white clients socket." );
 	if ( clientBlack != INVALID_SOCKET && closesocket( clientBlack ) != 0 )
-		printf( "Error occured while closing black clients socket." );
+		printf( "error occured while closing black clients socket." );
 	if ( serverSocket != INVALID_SOCKET && closesocket( serverSocket ) != 0 )
-		printf( "Error occured while closing the servers socket." );
+		printf( "error occured while closing the servers socket." );
 
 }
 
@@ -87,6 +87,7 @@ void Server::getMSG( int side, std::string& msg ) {
 	recvLength = recv( side == 1 ? clientWhite : clientBlack, recvBuf, bufLength, 0 );
 
 	if ( recvLength <= 0 ) {
+		std::cout << (side == 1 ? "white" : "black") << " has disconnected.\n";
 		shutdown( side == 1 ? clientWhite : clientBlack, SD_SEND );
 		msg = "d:";
 	} else {
