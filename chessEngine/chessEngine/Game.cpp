@@ -191,6 +191,11 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 				setChecks();
 				goto idk;
 			}
+			else {
+				movePiece(xCurr, yCurr, zCurr, x, y, z);
+				setPieceId(xCurr, yCurr, zCurr, prevId);
+				setChecks();
+			}
 		}
 	}
 	if (blackCheck) {
@@ -211,6 +216,11 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 				setPieceId(xCurr, yCurr, zCurr, prevId);
 				setChecks();
 				goto idk2;
+			}
+			else {
+				movePiece(xCurr, yCurr, zCurr, x, y, z);
+				setPieceId(xCurr, yCurr, zCurr, prevId);
+				setChecks();
 			}
 		}
 	}
