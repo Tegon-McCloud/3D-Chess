@@ -172,7 +172,6 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 	}
 	std::string pieceMoves(Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z)));
 	//Check things
-	std::stringstream pieceMoves2;
 	if (whiteCheck) {
 	idk:
 		for (int i = 0; i < pieceMoves.length(); i += 4) {
@@ -186,13 +185,13 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 			movePiece(x, y, z, xCurr, yCurr, zCurr);
 			setChecks();
 			if (whiteCheck) {
-				pieceMoves2 << xCurr << yCurr << zCurr << ' ';
+				pieceMoves.erase(i, 4);
 				movePiece(xCurr, yCurr, zCurr, x, y, z);
 				setPieceId(xCurr, yCurr, zCurr, prevId);
 				setChecks();
+				goto idk;
 			}
 		}
-		pieceMoves = pieceMoves2.str();
 	}
 	if (blackCheck) {
 	idk2:
