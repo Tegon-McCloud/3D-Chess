@@ -164,6 +164,7 @@ void Game::setPieceColour(int x, int y, int z, int colour) {
 };
 
 std::string Game::getPieceMoves(int x, int y, int z) {
+	setChecks();
 	if (getPieceColour(x, y, z) == -1) {
 		return "There is no piece on the selected square";
 	}
@@ -181,21 +182,25 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 			ss >> xCurr;
 			ss >> yCurr;
 			ss >> zCurr;
-			int prevId = getPieceId(xCurr, yCurr, zCurr);
-			movePiece(x, y, z, xCurr, yCurr, zCurr);
-			setChecks();
-			if (whiteCheck) {
-				std::cout << "hej";
-				pieceMoves.erase(i, 4);
-				movePiece(xCurr, yCurr, zCurr, x, y, z);
-				setPieceId(xCurr, yCurr, zCurr, prevId);
+			int prevId = getPieceId(xCurr, yCurr, zCurr), prevColour = getPieceColour(xCurr, yCurr, zCurr);
+			if (getPieceId(xCurr, yCurr, zCurr) != 7) {
+				movePiece(x, y, z, xCurr, yCurr, zCurr);
 				setChecks();
-				goto idk;
-			}
-			else {
-				movePiece(xCurr, yCurr, zCurr, x, y, z);
-				setPieceId(xCurr, yCurr, zCurr, prevId);
-				setChecks();
+				if (whiteCheck) {
+					std::cout << "hej";
+					pieceMoves.erase(i, 4);
+					movePiece(xCurr, yCurr, zCurr, x, y, z);
+					setPieceId(xCurr, yCurr, zCurr, prevId);
+					setPieceColour(xCurr, yCurr, zCurr, prevColour);
+					setChecks();
+					goto idk;
+				}
+				else {
+					movePiece(xCurr, yCurr, zCurr, x, y, z);
+					setPieceId(xCurr, yCurr, zCurr, prevId);
+					setPieceColour(xCurr, yCurr, zCurr, prevColour);
+					setChecks();
+				}
 			}
 		}
 	}
@@ -208,24 +213,29 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 			ss >> xCurr;
 			ss >> yCurr;
 			ss >> zCurr;
-			int prevId = getPieceId(xCurr, yCurr, zCurr);
-			movePiece(x, y, z, xCurr, yCurr, zCurr);
-			setChecks();
-			if (blackCheck) {
-				pieceMoves.erase(i, 4);
-				movePiece(xCurr, yCurr, zCurr, x, y, z);
-				setPieceId(xCurr, yCurr, zCurr, prevId);
+			int prevId = getPieceId(xCurr, yCurr, zCurr), prevColour = getPieceColour(xCurr, yCurr, zCurr);
+			if (getPieceId(xCurr, yCurr, zCurr) != 7) {
+				movePiece(x, y, z, xCurr, yCurr, zCurr);
 				setChecks();
-				goto idk2;
-			}
-			else {
-				movePiece(xCurr, yCurr, zCurr, x, y, z);
-				setPieceId(xCurr, yCurr, zCurr, prevId);
-				setChecks();
+				if (blackCheck) {
+					pieceMoves.erase(i, 4);
+					movePiece(xCurr, yCurr, zCurr, x, y, z);
+					setPieceId(xCurr, yCurr, zCurr, prevId);
+					setPieceColour(xCurr, yCurr, zCurr, prevColour);
+					setChecks();
+					goto idk2;
+				}
+				else {
+					movePiece(xCurr, yCurr, zCurr, x, y, z);
+					setPieceId(xCurr, yCurr, zCurr, prevId);
+					setPieceColour(xCurr, yCurr, zCurr, prevColour);
+					setChecks();
+				}
 			}
 		}
 	}
 	//TODO Checkmate checking and stalemate checking and maybe other stuff like that
+	setChecks();
 	if (pieceMoves == "") {
 		return "This piece can't move";
 	}
