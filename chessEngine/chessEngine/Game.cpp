@@ -192,6 +192,7 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 				setChecks();
 			}
 		}
+		pieceMoves = pieceMoves2.str();
 	}
 	if (blackCheck) {
 	idk2:
