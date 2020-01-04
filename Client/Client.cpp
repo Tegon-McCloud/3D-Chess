@@ -28,11 +28,7 @@ Client::Client( const std::string& ipAndPort ) : sock( INVALID_SOCKET ) {
 }
 
 Client::~Client() {
-	if ( sock != INVALID_SOCKET ) {
-		shutdown( sock, SD_SEND );
-		loopThread.join();
-		closesocket( sock );
-	}
+	Disconnect();
 }
 
 bool Client::GetMSG( std::string& msg ) {
@@ -52,6 +48,15 @@ bool Client::GetMSG( std::string& msg ) {
 
 void Client::SendMSG( const std::string& msg ) {
 	send( sock, msg.c_str(), (int) msg.length(), 0 );
+}
+
+void Client::Disconnect() {
+	if ( sock != INVALID_SOCKET ) {
+		shutdown( sock, SD_BOTH );
+		loopThread.join();
+		closesocket( sock );
+		sock = INVALID_SOCKET;
+	}
 }
 
 int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
@@ -93,7 +98,8 @@ int Client::ConnectAndLoop( const std::string& ip, const std::string& port ) {
 			mutex.lock();
 			inbox.push( streamBuf.substr( 0, delimitterIndex ) ); // write everything earlier than the ; to the inbox
 			mutex.unlock();
-			stream.str( streamBuf.substr( delimitterIndex + 1 ) ); // set the streams content to be what came after the ;
+			stream.str( streamBuf.substr( delimitterIndex + 1 ) ); // set the streams content to what came after the ;
+
 		}
 
 	}

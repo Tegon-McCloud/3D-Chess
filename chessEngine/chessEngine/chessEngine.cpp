@@ -76,6 +76,7 @@ int main() {
 			break;
 			
 		case 'd':
+			s.sendMSG( g.colourToMove ^ 0x1, "d:;" );
 			goto end;
 			break;
 		}

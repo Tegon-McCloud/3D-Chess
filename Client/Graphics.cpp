@@ -223,7 +223,7 @@ void Graphics::Clear( const float* rgba ) const {
 	pContext->ClearDepthStencilView( pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u );
 }
 
-void Graphics::Present() const {
+void Graphics::Present() const { 
 	ThrowIfFailed( pSwap->Present( 1u, 0u ) );
 }
 

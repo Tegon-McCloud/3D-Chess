@@ -256,6 +256,10 @@ void Chess::Update( float dt ) {
 			}
 
 			break;
+		
+		case 'd':
+			client.Disconnect();
+			break;
 
 #ifdef _DEBUG
 		default:

@@ -20,6 +20,8 @@ public:
 	bool GetMSG( std::string& msg );
 	// send a message to the server
 	void SendMSG( const std::string& msg );
+	// disconnect from the server
+	void Disconnect();
 	
 private:
 	//call Connect and then start a message receiving loop that lasts until the connection to the server is broken
