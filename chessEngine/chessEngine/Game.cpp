@@ -185,6 +185,7 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 			movePiece(x, y, z, xCurr, yCurr, zCurr);
 			setChecks();
 			if (whiteCheck) {
+				std::cout << "hej";
 				pieceMoves.erase(i, 4);
 				movePiece(xCurr, yCurr, zCurr, x, y, z);
 				setPieceId(xCurr, yCurr, zCurr, prevId);
