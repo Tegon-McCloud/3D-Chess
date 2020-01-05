@@ -5,10 +5,12 @@
 #include "Shaders.h"
 #include "Chess.h"
 
+
+
 int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow ) {
 
 	using namespace DirectX;
-	
+
 	std::string cmdLine( lpCmdLine );
 
 	std::optional<int> rv;	// return value
@@ -46,11 +48,17 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			chess.Update( dt );
 			chess.Draw();
 
+			
+			Window::GFX().SetDepthEnabled( false );
+			Window::GFX().SetBlendEnabled( true );
+
 			Window::GFX().GetContext2D()->BeginDraw();
 
 			chess.DrawHUD();
 
 			Window::GFX().GetContext2D()->EndDraw();
+			Window::GFX().SetDepthEnabled( true );
+			Window::GFX().SetBlendEnabled( false );
 
 			Window::GFX().Present();
 

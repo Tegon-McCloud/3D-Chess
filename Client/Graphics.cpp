@@ -36,7 +36,7 @@ constexpr const DXGI_SWAP_CHAIN_DESC1 defaultSwapChainDesc = {
 constexpr const D3D11_DEPTH_STENCIL_DESC defaultDepthStencilDesc = {
 	TRUE,								// DepthEnabled
 	D3D11_DEPTH_WRITE_MASK_ALL,			// DepthWriteMask
-	D3D11_COMPARISON_LESS,				// DepthFunc
+	D3D11_COMPARISON_LESS_EQUAL,		// DepthFunc
 	FALSE,								// StencilEnable
 	D3D11_DEFAULT_STENCIL_READ_MASK,	// StencilReadMask
 	D3D11_DEFAULT_STENCIL_WRITE_MASK,	// StencilWriteMask
@@ -114,6 +114,8 @@ Graphics::Graphics( HWND hWnd ) {
 	D2D1_FACTORY_OPTIONS options2D;
 #ifdef _DEBUG
 	options2D.debugLevel = D2D1_DEBUG_LEVEL_WARNING;
+#else
+	options2D.debugLevel = D2D1_DEBUG_LEVEL_NONE;
 #endif // _DEBUG
 
 	ThrowIfFailed( D2D1CreateFactory<ID2D1Factory1>( D2D1_FACTORY_TYPE_SINGLE_THREADED, options2D, &pFactory2D ) );

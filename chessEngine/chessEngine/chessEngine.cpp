@@ -36,7 +36,7 @@ int main() {
 
 		s.getMSG(g.colourToMove, msg);
 		switch (msg[0]) {
-		case 'l':
+		case 'l': // client requests a list of possible moves from the specified cell
 		{
 			msg.erase(0, 2);
 			Position pos(msg);
@@ -53,7 +53,7 @@ int main() {
 		}
 			break;
 
-		case 'm':
+		case 'm': // client requests a move from a cell to another cell (both specified in message)
 		{
 			std::string msgCopy(msg);
 			msgCopy += ";";
@@ -75,7 +75,7 @@ int main() {
 		}
 			break;
 			
-		case 'd':
+		case 'd': // client has disconnected
 			s.sendMSG( g.colourToMove ^ 0x1, "d:;" );
 			goto end;
 			break;

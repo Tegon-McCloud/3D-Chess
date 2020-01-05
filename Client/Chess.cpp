@@ -259,6 +259,7 @@ void Chess::Update( float dt ) {
 		
 		case 'd': // the game has ended, either because the server was shutdown or the other client disconnected
 			client.Disconnect();
+			exit( 0 );
 			break;
 
 #ifdef _DEBUG
