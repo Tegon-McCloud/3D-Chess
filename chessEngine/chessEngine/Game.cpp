@@ -172,7 +172,8 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 		return "This is not your colour";
 	}
 	std::string pieceMoves(Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z)));
-	//Check things
+	//Check things for white
+	if(getPieceColour(x, y, z) == 1){
 	idk:
 		for (int i = 0; i < pieceMoves.length(); i += 4) {
 			std::stringstream ss;
@@ -199,8 +200,11 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 					setPieceColour(xCurr, yCurr, zCurr, prevColour);
 					setChecks();
 				}
+			}
 		}
 	}
+	//Check things for black
+	if (getPieceColour(x, y, z) == 0) {
 	idk2:
 		for (int i = 0; i < pieceMoves.length(); i += 4) {
 			std::stringstream ss;
@@ -227,6 +231,7 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 					setPieceColour(xCurr, yCurr, zCurr, prevColour);
 					setChecks();
 				}
+			}
 		}
 	}
 	//TODO Checkmate checking and stalemate checking and maybe other stuff like that
