@@ -49,7 +49,10 @@ public:
 	ID2D1DeviceContext* GetContext2D() const;
 	ID2D1Bitmap1* GetTarget2D() const;
 
+	// other getters
 	D2D1_SIZE_U GetTargetSize() const;
+	D2D1_SIZE_F GetTargetDipSize() const;
+	float GetDpi() const;
 
 private:
 	// 3D
@@ -67,5 +70,7 @@ private:
 
 	BlendState blendState;
 	DepthState depthState;
+
+	float dpi;
 };
 

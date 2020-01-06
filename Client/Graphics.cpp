@@ -195,12 +195,14 @@ void Graphics::SizeChanged() {
 	pContext->RSSetViewports( 1u, &vp );
 
 	// restore 2D
+	dpi = static_cast<float>(GetDpiForWindow( sd.OutputWindow ));
+
 	D2D1_BITMAP_PROPERTIES1 bmp;
 	ZeroMemory( &bmp, sizeof( bmp ) );
 	bmp.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	bmp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
-	bmp.dpiX = (float)GetDpiForWindow( sd.OutputWindow );
-	bmp.dpiY = bmp.dpiX;
+	bmp.dpiX = dpi;
+	bmp.dpiY = dpi;
 	bmp.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
 
 	Microsoft::WRL::ComPtr<IDXGISurface> pBBDXGI;
@@ -208,7 +210,6 @@ void Graphics::SizeChanged() {
 	ThrowIfFailed( pSwap->GetBuffer( 0u, __uuidof(IDXGISurface), &pBBDXGI ) );
 	ThrowIfFailed( pContext2D->CreateBitmapFromDxgiSurface( pBBDXGI.Get(), &bmp, &pBitmapTarget2D ) );
 	pContext2D->SetTarget( pBitmapTarget2D.Get() );
-
 }
 
 void Graphics::Clear( float r, float g, float b ) const {
@@ -255,4 +256,12 @@ ID2D1Bitmap1* Graphics::GetTarget2D() const {
 
 D2D1_SIZE_U Graphics::GetTargetSize() const {
 	return pBitmapTarget2D->GetPixelSize();
+}
+
+D2D1_SIZE_F Graphics::GetTargetDipSize() const {
+	return pBitmapTarget2D->GetSize();
+}
+
+float Graphics::GetDpi() const {
+	return dpi;
 }

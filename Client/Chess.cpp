@@ -113,6 +113,8 @@ Chess::Chess( const std::string& cmdLine ) :
 	myTurn( false ),
 	player( Box( -20.0f, -20.0f, -20.0f, 32.0f, 50.0f, 32.0f ) ) {
 
+	selectedPos.reset( new PositionLFR( 0, 0, 0 ) );
+
 	player.Update( 0.0f );
 	player.Bind();
 
@@ -141,9 +143,9 @@ Chess::Chess( const std::string& cmdLine ) :
 			if ( hitpos ) {
 
 				selectedPos.reset( new PositionLFR( hitpos.value() ) );
-				client.SendMSG( std::string( "l:" ) 
-								+ Position( *selectedPos ).ToAlg()
-				);
+				highlights.clear();
+				
+				client.SendMSG( std::string( "l:" ) + Position( *selectedPos ).ToAlg() );
 			}
 		}
 
@@ -240,7 +242,7 @@ void Chess::Update( float dt ) {
 			MovePiece( from.lfr, to.lfr );
 			break;
 		}
-		case 't': // the server says that it is the specified clients turn
+		case 't': // it is the specified clients turn
 			myTurn = (msg[2] == 'b') ^ (mySide == Side::WHITE);
 			break;
 
@@ -295,7 +297,6 @@ void Chess::Draw() {
 		}
 	}
 
-	Window::Get().GetGraphics().SetBlendEnabled( true );
 	Window::Get().GetGraphics().SetDepthEnabled( false );
 	
 	if ( selectedPos ) {
@@ -307,18 +308,13 @@ void Chess::Draw() {
 		}
 
 	}
-		
-	Window::Get().GetGraphics().SetBlendEnabled( false );
+
 	Window::Get().GetGraphics().SetDepthEnabled( true );
 
 }
 
 void Chess::DrawHUD() {
-
-	D2D1_SIZE_U targetCenter = Window::GFX().GetTargetSize();
-	targetCenter.width /= 2;
-	targetCenter.height /= 2;
-
+	
 	player.DrawHUD();
 	
 }

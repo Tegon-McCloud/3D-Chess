@@ -155,10 +155,6 @@ WindowClass WindowClass::inst = WindowClass();
 
 WindowClass::WindowClass() {
 
-	if ( FAILED( SetProcessDpiAwareness( PROCESS_SYSTEM_DPI_AWARE ) ) ) {
-		throw std::runtime_error( "Failed to set dpi awareness" );
-	}
-
 	WNDCLASSW wndCls = { 0 };
 
 	wndCls.style = CS_PARENTDC;

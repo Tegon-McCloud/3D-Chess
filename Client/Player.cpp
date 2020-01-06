@@ -12,8 +12,6 @@ Player::Player( const Box& movementBounds ) : Camera( 0.0f, 0.0f, 0.0f, 0.0f, 0.
 	ZeroMemory( &bmp, sizeof( bmp ) );
 	bmp.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	bmp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
-	bmp.dpiX = 10.0f;
-	bmp.dpiY = 10.0f;
 	bmp.bitmapOptions = D2D1_BITMAP_OPTIONS_NONE;
 
 	ThrowIfFailed( Window::GFX().GetContext2D()->CreateBitmap( D2D1::SizeU( 24, 2 ), NULL, 0, &bmp, &pHorzBar ) );
@@ -86,12 +84,11 @@ void Player::DrawHUD() {
 
 	r = D2D1::RectU( targetCenter.x - 12, targetCenter.y - 1, targetCenter.x + 12, targetCenter.y + 1 );
 	ThrowIfFailed( pHorzBar->CopyFromBitmap( NULL, Window::GFX().GetTarget2D(), &r ) );
-	pInvert->SetInput( 0, pHorzBar.Get(), false );
+	pInvert->SetInput( 0, pHorzBar.Get() );
 	Window::GFX().GetContext2D()->DrawImage( pInvert.Get(), D2D1::Point2F( (float)r.left, (float)r.top ) );
-
 	
 	r = D2D1::RectU( targetCenter.x - 1, targetCenter.y - 12, targetCenter.x + 1, targetCenter.y + 12 );
 	ThrowIfFailed( pVertBar->CopyFromBitmap( NULL, Window::GFX().GetTarget2D(), &r ) );
-	pInvert->SetInput( 0, pVertBar.Get(), false );
+	pInvert->SetInput( 0, pVertBar.Get() );
 	Window::GFX().GetContext2D()->DrawImage( pInvert.Get(), D2D1::Point2F( (float)r.left, (float)r.top ) );
 }

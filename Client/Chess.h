@@ -63,6 +63,8 @@ private:
 	std::unique_ptr<PositionLFR> selectedPos;
 	std::vector<PositionLFR> highlights;
 	
+	std::vector<std::string> moveHistory;
+
 	Player player;
 
 	Client client;

@@ -30,7 +30,7 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GeometryShader gs( "GS" );
 	gs.Bind();
 
-	Window::GFX().SetBlendEnabled( false );
+	Window::GFX().SetBlendEnabled( true );
 	Window::GFX().SetDepthEnabled( true );
 
 	try {
@@ -50,15 +50,12 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 			
 			Window::GFX().SetDepthEnabled( false );
-			Window::GFX().SetBlendEnabled( true );
-
 			Window::GFX().GetContext2D()->BeginDraw();
 
 			chess.DrawHUD();
 
 			Window::GFX().GetContext2D()->EndDraw();
 			Window::GFX().SetDepthEnabled( true );
-			Window::GFX().SetBlendEnabled( false );
 
 			Window::GFX().Present();
 
