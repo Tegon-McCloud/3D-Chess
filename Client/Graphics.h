@@ -8,6 +8,7 @@ struct ID3D11DepthStencilView;
 
 #include "States.h"
 
+#include "dwrite_1.h"
 #include "d2d1_1.h"
 #include "WRL.h"
 
@@ -48,6 +49,7 @@ public:
 	ID3D11DeviceContext* GetContext() const;
 	ID2D1DeviceContext* GetContext2D() const;
 	ID2D1Bitmap1* GetTarget2D() const;
+	IDWriteFactory* GetWriteFactory() const;
 
 	// other getters
 	D2D1_SIZE_U GetTargetSize() const;
@@ -63,10 +65,12 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
 
 	// 2D
-	Microsoft::WRL::ComPtr<ID2D1Factory1> pFactory2D;
 	Microsoft::WRL::ComPtr<ID2D1Device> pDevice2D;
 	Microsoft::WRL::ComPtr<ID2D1DeviceContext> pContext2D;
 	Microsoft::WRL::ComPtr<ID2D1Bitmap1> pBitmapTarget2D;
+
+	// Write
+	Microsoft::WRL::ComPtr<IDWriteFactory1> pWriteFactory;
 
 	BlendState blendState;
 	DepthState depthState;

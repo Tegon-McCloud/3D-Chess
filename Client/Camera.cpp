@@ -17,13 +17,13 @@ void Camera::UpdateBuffer() {
 		XMMATRIX m1, m2;
 	} matrices = {
 		XMMatrixTranspose( XMMatrixLookAtRH( pos, pos + forward, XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f ) ) ),
-		XMMatrixTranspose( XMMatrixPerspectiveFovRH( 1.5f, Window::Get().GetAspect(), 0.5f, 50.0f ) )
+		XMMatrixTranspose( XMMatrixPerspectiveFovRH( pi / 2.0f, Window::Get().GetAspect(), 0.5f, 50.0f ) )
 	};
 
 	buffer.Set( reinterpret_cast< CameraTransforms* >( &matrices ) );
 	
-	XMStoreFloat4x4( &cameraTransforms.worldToCam, XMMatrixTranspose( matrices.m1 )  );
-	XMStoreFloat4x4( &cameraTransforms.proj, XMMatrixTranspose( matrices.m2 ) );
+	DirectX::XMStoreFloat4x4( &cameraTransforms.worldToCam, XMMatrixTranspose( matrices.m1 )  );
+	DirectX::XMStoreFloat4x4( &cameraTransforms.proj, XMMatrixTranspose( matrices.m2 ) );
 
 }
 

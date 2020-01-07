@@ -7,6 +7,7 @@ class Piece;
 #include "Lighting.h"
 #include "Client.h"
 #include "Util.h"
+#include "HUD.h"
 
 #include <vector>
 #include <array>
@@ -63,9 +64,10 @@ private:
 	std::unique_ptr<PositionLFR> selectedPos;
 	std::vector<PositionLFR> highlights;
 	
-	std::vector<std::string> moveHistory;
+	std::vector<std::wstring> moveHistory;
 
 	Player player;
+	HUD hud;
 
 	Client client;
 

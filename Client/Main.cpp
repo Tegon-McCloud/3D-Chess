@@ -48,7 +48,6 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			chess.Update( dt );
 			chess.Draw();
 
-			
 			Window::GFX().SetDepthEnabled( false );
 			Window::GFX().GetContext2D()->BeginDraw();
 

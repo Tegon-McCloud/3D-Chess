@@ -9,6 +9,7 @@
 #pragma comment(lib, "D3DCompiler.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
 
 #ifdef _DEBUG
 constexpr const UINT deviceFlags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
@@ -118,9 +119,14 @@ Graphics::Graphics( HWND hWnd ) {
 	options2D.debugLevel = D2D1_DEBUG_LEVEL_NONE;
 #endif // _DEBUG
 
+	Microsoft::WRL::ComPtr<ID2D1Factory1> pFactory2D;
 	ThrowIfFailed( D2D1CreateFactory<ID2D1Factory1>( D2D1_FACTORY_TYPE_SINGLE_THREADED, options2D, &pFactory2D ) );
 	ThrowIfFailed( pFactory2D->CreateDevice( pDeviceDXGI.Get(), &pDevice2D ) );
 	ThrowIfFailed( pDevice2D->CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &pContext2D ) );
+
+	// Write setup
+	ThrowIfFailed( DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory1), &pWriteFactory ) );
+	
 }
 
 Graphics::~Graphics() {
@@ -136,10 +142,11 @@ Graphics::~Graphics() {
 	pRTV.Reset();
 	pDSV.Reset();
 
-	pFactory2D.Reset();
 	pDevice2D.Reset();
 	pContext2D.Reset();
 	pBitmapTarget2D.Reset();
+
+	pWriteFactory.Reset();
 
 #ifdef _DEBUG
 	pDebug->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
@@ -252,6 +259,10 @@ ID2D1DeviceContext* Graphics::GetContext2D() const {
 
 ID2D1Bitmap1* Graphics::GetTarget2D() const {
 	return pBitmapTarget2D.Get();
+}
+
+IDWriteFactory* Graphics::GetWriteFactory() const {
+	return pWriteFactory.Get();
 }
 
 D2D1_SIZE_U Graphics::GetTargetSize() const {
