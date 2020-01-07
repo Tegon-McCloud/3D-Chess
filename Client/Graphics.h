@@ -54,7 +54,9 @@ public:
 	// other getters
 	D2D1_SIZE_U GetTargetSize() const;
 	D2D1_SIZE_F GetTargetDipSize() const;
-	float GetDpi() const;
+	float GetDpiXScale() const;
+	float GetDpiYScale() const;
+
 
 private:
 	// 3D
@@ -75,6 +77,6 @@ private:
 	BlendState blendState;
 	DepthState depthState;
 
-	float dpi;
+	float dpiScaleX, dpiScaleY;
 };
 

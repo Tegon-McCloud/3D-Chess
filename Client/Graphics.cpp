@@ -82,7 +82,6 @@ constexpr const D3D11_DEPTH_STENCIL_VIEW_DESC defaultDepthStencilViewDesc = {
 
 // Graphics
 Graphics::Graphics( HWND hWnd ) {
-
 	
 	// 3D setup
 	const D3D_FEATURE_LEVEL fl[] = {
@@ -112,6 +111,11 @@ Graphics::Graphics( HWND hWnd ) {
 	depthState.Init( pDevice.Get() );
 
 	// 2D setup
+	HDC hdc = GetDC( hWnd );
+	dpiScaleX = GetDeviceCaps( hdc, LOGPIXELSX ) / 96.0f;
+	dpiScaleY = GetDeviceCaps( hdc, LOGPIXELSY ) / 96.0f;
+	ReleaseDC( hWnd, hdc );
+
 	D2D1_FACTORY_OPTIONS options2D;
 #ifdef _DEBUG
 	options2D.debugLevel = D2D1_DEBUG_LEVEL_WARNING;
@@ -202,14 +206,14 @@ void Graphics::SizeChanged() {
 	pContext->RSSetViewports( 1u, &vp );
 
 	// restore 2D
-	dpi = static_cast<float>(GetDpiForWindow( sd.OutputWindow ));
+	
 
 	D2D1_BITMAP_PROPERTIES1 bmp;
 	ZeroMemory( &bmp, sizeof( bmp ) );
 	bmp.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	bmp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
-	bmp.dpiX = dpi;
-	bmp.dpiY = dpi;
+	bmp.dpiX = dpiScaleX * 96.0f;
+	bmp.dpiY = dpiScaleY * 96.0f;
 	bmp.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
 
 	Microsoft::WRL::ComPtr<IDXGISurface> pBBDXGI;
@@ -273,6 +277,10 @@ D2D1_SIZE_F Graphics::GetTargetDipSize() const {
 	return pBitmapTarget2D->GetSize();
 }
 
-float Graphics::GetDpi() const {
-	return dpi;
+float Graphics::GetDpiXScale() const {
+	return dpiScaleX;
+}
+
+float Graphics::GetDpiYScale() const {
+	return dpiScaleY;
 }

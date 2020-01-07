@@ -315,7 +315,7 @@ void Chess::Draw() {
 
 void Chess::DrawHUD() {
 	
-	hud.DrawMoveLog( moveHistory );
+	moveLog.Draw();
 	player.DrawHUD();
 	
 }
