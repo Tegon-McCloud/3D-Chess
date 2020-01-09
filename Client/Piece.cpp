@@ -67,7 +67,8 @@ Piece::Piece( const std::string& piece, Side s ) {
 	info = pieceInfo.at( piece );
 }
 
-void Piece::Draw( float x, float y, float z) {
+
+void Piece::Draw( float x, float y, float z) const {
 	using namespace DirectX;
 
 	if ( side == Side::WHITE ) {
@@ -77,7 +78,7 @@ void Piece::Draw( float x, float y, float z) {
 	}
 }
 
-const PieceInfo& Piece::GetInfo() {
+const PieceInfo& Piece::GetInfo() const {
 	return info;
 }
 

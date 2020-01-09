@@ -76,7 +76,7 @@ void Player::Update( float dt ) {
 	UpdateBuffer();
 }
 
-void Player::DrawHUD() {
+void Player::DrawHUD() const {
 
 	D2D1_POINT_2U targetCenter = *reinterpret_cast<D2D1_POINT_2U*>(&Window::GFX().GetTargetSize());
 	targetCenter.x /= 2;
@@ -87,10 +87,10 @@ void Player::DrawHUD() {
 	r = D2D1::RectU( targetCenter.x - 12, targetCenter.y - 1, targetCenter.x + 12, targetCenter.y + 1 );
 	ThrowIfFailed( pHorzBar->CopyFromBitmap( NULL, Window::GFX().GetTarget2D(), &r ) );
 	pInvert->SetInput( 0, pHorzBar.Get() );
-	Window::GFX().GetContext2D()->DrawImage( pInvert.Get(), D2D1::Point2F( r.left, r.top ) );
+	Window::GFX().GetContext2D()->DrawImage( pInvert.Get(), D2D1::Point2F( r.left * Window::GFX().GetDpiXScale(), r.top * Window::GFX().GetDpiYScale() ) );
 	
 	r = D2D1::RectU( targetCenter.x - 1, targetCenter.y - 12, targetCenter.x + 1, targetCenter.y + 12 );
 	ThrowIfFailed( pVertBar->CopyFromBitmap( NULL, Window::GFX().GetTarget2D(), &r ) );
 	pInvert->SetInput( 0, pVertBar.Get() );
-	Window::GFX().GetContext2D()->DrawImage( pInvert.Get(), D2D1::Point2F( r.left, r.top ) );
+	Window::GFX().GetContext2D()->DrawImage( pInvert.Get(), D2D1::Point2F( r.left * Window::GFX().GetDpiXScale(), r.top * Window::GFX().GetDpiYScale() ) );
 }

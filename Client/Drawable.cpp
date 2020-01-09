@@ -4,9 +4,9 @@
 
 #include "d3d11_2.h"
 
-void Drawable::Draw() {
+void Drawable::Draw() const {
 	
-	for ( std::shared_ptr<Bindable>& b : bindables ) {
+	for ( const std::shared_ptr<Bindable>& b : bindables ) {
 		b->Bind();
 	}
 

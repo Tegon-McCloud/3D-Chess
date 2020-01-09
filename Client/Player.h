@@ -24,7 +24,7 @@ public:
 	));
 
 	void Update( float dt );
-	void DrawHUD();
+	void DrawHUD() const;
 
 private:
 

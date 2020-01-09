@@ -56,7 +56,7 @@ Model::Model( const std::string& name, const Material& m ) {
 	AddBindable( pMaterialBuffer );
 }
 
-void Model::Draw( const DirectX::XMMATRIX& transform ) {
+void Model::Draw( const DirectX::XMMATRIX& transform ) const {
 	pTransformBuffer->Set( &DirectX::XMMatrixTranspose( transform ) );
 	Drawable::Draw();
 }

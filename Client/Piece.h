@@ -15,9 +15,9 @@ class Piece {
 public:
 	Piece( const std::string& piece, Side s );
 
-	void Draw( float x, float y, float z );
+	void Draw( float x, float y, float z ) const;
 
-	const PieceInfo& GetInfo();
+	const PieceInfo& GetInfo() const;
 
 private:
 	std::shared_ptr<Model> pModel;

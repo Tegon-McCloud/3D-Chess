@@ -43,16 +43,16 @@ void Camera::SetDirection( float yaw, float pitch, float roll ) {
 	this->roll = roll;
 }
 
-DirectX::XMVECTOR Camera::ToViewSpace3( const DirectX::XMVECTOR& v ) {
+DirectX::XMVECTOR Camera::ToViewSpace3( const DirectX::XMVECTOR& v ) const {
 	using namespace DirectX;
 	return  XMVector3Transform( v, XMLoadFloat4x4( &cameraTransforms.worldToCam ) );
 }
 
-DirectX::XMVECTOR Camera::ToViewSpace4( const DirectX::XMVECTOR& v ) {
+DirectX::XMVECTOR Camera::ToViewSpace4( const DirectX::XMVECTOR& v ) const {
 	using namespace DirectX;
 	return  XMVector4Transform( v, XMLoadFloat4x4( &cameraTransforms.worldToCam ) );
 }
 
-const Ray& Camera::LookRay() {
+const Ray& Camera::LookRay() const {
 	return lookRay;
 }

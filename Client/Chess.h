@@ -28,16 +28,20 @@ public:
 	// call Update on the player and process messages from the server
 	void Update( float dt );
 	// render the board, pieces and highlighted boxes
-	void Draw();
+	void Draw() const;
 	// render the HUD
-	void DrawHUD();
+	void DrawHUD() const;
 	// moves the piece at 'from' to 'to'
 	void MovePiece( const PositionLFR& from, const PositionLFR& to );
+	
+	const Piece& PieceAt( const PositionLFR& p ) const;
 
 private:
 	// retrieve a reference to the shared_ptr that holds the piece at the specified position
-	std::shared_ptr<Piece>& CellAt( PositionLFR p );
+	std::shared_ptr<Piece>& CellAt( const PositionLFR& pos );
 	std::shared_ptr<Piece>& CellAt( int l, int f, int r );
+	const std::shared_ptr<Piece>& CellAt( const PositionLFR& pos ) const;
+	const std::shared_ptr<Piece>& CellAt( int l, int f, int r ) const;
 
 	// trace a ray and determine with piece was hit first by it
 	std::optional<PositionLFR> PieceHit( const Ray& r );
@@ -45,8 +49,8 @@ private:
 	std::optional<PositionLFR> HighlightHit( const Ray& r );
 
 	// calculate a box with an appropriate size and positioning for the specified cell
-	Box BoxAt( PositionLFR p );
-	Box BoxAt( int l, int f, int r );
+	Box BoxAt( PositionLFR p ) const;
+	Box BoxAt( int l, int f, int r ) const;
 
 	/*
 	nx5x5 array of shared pointers to pieces. The first index represents its level, second its file and third its rank.

@@ -16,7 +16,7 @@ class Drawable {
 
 public:
 
-	void Draw();
+	void Draw() const;
 	void AddBindable( const std::shared_ptr<Bindable>& b );
 
 private:

@@ -33,7 +33,7 @@ class Model : public Drawable {
 public:
 	Model( const std::string& name, const Material& m );
 
-	void Draw( const DirectX::XMMATRIX& transform );
+	void Draw( const DirectX::XMMATRIX& transform ) const;
 	void SetMaterial( const Material& mtl );
 
 private:

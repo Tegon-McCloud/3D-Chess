@@ -208,8 +208,20 @@ Chess::Chess( const std::string& cmdLine ) :
 }
 
 void Chess::Update( float dt ) {
+	using namespace DirectX;
+
+	// player
 	player.Update( dt );
 
+	// lighting
+	const XMVECTOR lightDirWorld = XMVector3Normalize( { 1.0f, -1.0f, 1.0f, 0.0f } );
+	XMVECTOR lightDirView = player.ToViewSpace4( lightDirWorld );
+
+	XMStoreFloat3( &light.dir, lightDirView );
+
+	lightBuffer.Set( &light );
+
+	// message handling
 	std::string msg;
 
 	while ( client.GetMSG( msg ) ) {
@@ -261,7 +273,6 @@ void Chess::Update( float dt ) {
 		
 		case 'd': // the game has ended, either because the server was shutdown or the other client disconnected
 			client.Disconnect();
-			exit( 0 );
 			break;
 
 #ifdef _DEBUG
@@ -274,15 +285,8 @@ void Chess::Update( float dt ) {
 
 }
 
-void Chess::Draw() {
+void Chess::Draw() const {
 	using namespace DirectX;
-
-	const XMVECTOR lightDirWorld = XMVector3Normalize( { 1.0f, -1.0f, 1.0f, 0.0f } );
-	XMVECTOR lightDirView = player.ToViewSpace4( lightDirWorld );
-
-	XMStoreFloat3( &light.dir, lightDirView );
-
-	lightBuffer.Set( &light );
 
 	for ( int i = 0; i < 5; i++ ) {
 		for ( int j = 0; j < 5; j++ ) {
@@ -313,22 +317,33 @@ void Chess::Draw() {
 
 }
 
-void Chess::DrawHUD() {
-	
+void Chess::DrawHUD() const {
 	moveLog.Draw();
 	player.DrawHUD();
-	
 }
 
 void Chess::MovePiece( const PositionLFR& from, const PositionLFR& to ) {
+	moveLog.AddMove( *this, from, to );
 	CellAt( to ) = std::move( CellAt( from ) );
 }
 
-std::shared_ptr<Piece>& Chess::CellAt( PositionLFR pos ) {
+const Piece& Chess::PieceAt( const PositionLFR& p ) const {
+	return *CellAt( p );
+}
+
+std::shared_ptr<Piece>& Chess::CellAt( const PositionLFR& pos ) {
 	return pieces[pos.l][pos.f][pos.r];
 }
 
 std::shared_ptr<Piece>& Chess::CellAt( int l, int f, int r ) {
+	return pieces[l][f][r];
+}
+
+const std::shared_ptr<Piece>& Chess::CellAt( const PositionLFR& pos ) const {
+	return pieces[pos.l][pos.f][pos.r];
+}
+
+const std::shared_ptr<Piece>& Chess::CellAt( int l, int f, int r ) const {
 	return pieces[l][f][r];
 }
 
@@ -384,7 +399,7 @@ std::optional<PositionLFR> Chess::HighlightHit( const Ray& r ) {
 	}
 }
 
-Box Chess::BoxAt( PositionLFR p ) {
+Box Chess::BoxAt( PositionLFR p ) const {
 	
 	PieceInfo info;
 	std::shared_ptr<Piece> cell = CellAt( p );
@@ -412,6 +427,6 @@ Box Chess::BoxAt( PositionLFR p ) {
 	return b;
 }
 
-Box Chess::BoxAt( int l, int f, int r ) {
+Box Chess::BoxAt( int l, int f, int r ) const {
 	return BoxAt( PositionLFR( l, f, r ) );
 }

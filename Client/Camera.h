@@ -23,11 +23,11 @@ public:
 	void SetDirection( float yaw, float pitch, float roll );
 
 	// converts v from worldspace to viewspace as a direction or position vector
-	DirectX::XMVECTOR ToViewSpace3( const DirectX::XMVECTOR& v ); 
-	DirectX::XMVECTOR ToViewSpace4( const DirectX::XMVECTOR& v );
+	DirectX::XMVECTOR ToViewSpace3( const DirectX::XMVECTOR& v ) const; 
+	DirectX::XMVECTOR ToViewSpace4( const DirectX::XMVECTOR& v ) const;
 
 	// gets a reference to a Ray that is pointing directly foward from the camera
-	const Ray& LookRay(); 
+	const Ray& LookRay() const; 
 
 protected:
 	float x, y, z, pitch, yaw, roll;

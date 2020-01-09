@@ -257,6 +257,10 @@ ID3D11DeviceContext* Graphics::GetContext() const {
 	return pContext.Get();
 }
 
+ID2D1Device* Graphics::GetDevice2D() const {
+	return pDevice2D.Get();
+}
+
 ID2D1DeviceContext* Graphics::GetContext2D() const {
 	return pContext2D.Get();
 }

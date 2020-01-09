@@ -47,6 +47,7 @@ public:
 	// getters for DX11 interfaces
 	ID3D11Device1* GetDevice() const;
 	ID3D11DeviceContext* GetContext() const;
+	ID2D1Device* GetDevice2D() const;
 	ID2D1DeviceContext* GetContext2D() const;
 	ID2D1Bitmap1* GetTarget2D() const;
 	IDWriteFactory* GetWriteFactory() const;
