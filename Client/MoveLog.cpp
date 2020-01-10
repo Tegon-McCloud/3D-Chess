@@ -28,7 +28,7 @@ constexpr int lineHeight = 18;
 
 void MoveLog::Draw() const {
 
-	D2D1_SIZE_F targetSize = Window::GFX().GetTargetDipSize();
+	D2D1_SIZE_U targetSize = Window::GFX().GetTargetSize();
 
 	float bottom = 264.0f;
 
@@ -75,13 +75,13 @@ void MoveLog::Draw() const {
 			whiteRect.bottom += lineHeight;
 			if ( whiteRect.bottom > bottom ) break;
 
-			Window::GFX().GetContext2D()->DrawTextW( str.c_str(), str.size(), pTextFormat.Get(), whiteRect, pBTextBrush.Get() );
+			Window::GFX().GetContext2D()->DrawTextW( str.c_str(), (UINT32)str.size(), pTextFormat.Get(), whiteRect, pBTextBrush.Get() );
 
 		} else {
 			blackRect.top += lineHeight;
 			blackRect.bottom += lineHeight;
 
-			Window::GFX().GetContext2D()->DrawTextW( str.c_str(), str.size(), pTextFormat.Get(), blackRect, pWTextBrush.Get() );
+			Window::GFX().GetContext2D()->DrawTextW( str.c_str(), (UINT32)str.size(), pTextFormat.Get(), blackRect, pWTextBrush.Get() );
 		}
 	}
 
@@ -94,7 +94,11 @@ void MoveLog::AddMove( const Chess& game, const PositionLFR& p1, const PositionL
 	move.push_back( game.PieceAt( p1 ).GetInfo().symbol );
 	move.push_back( ' ' );
 
-	move += std::wstring(  );
+	std::string alg = Position( p1 ).ToAlg();
+	move += std::wstring( alg.cbegin(), alg.cend() );
+	move += L" -> ";
+	alg = Position( p2 ).ToAlg();
+	move += std::wstring( alg.cbegin(), alg.cend() );
 
 	moves.push_back( move );
 }
