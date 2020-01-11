@@ -4,13 +4,23 @@
 #include "Piece.h"
 
 #include <cstdlib>
+#include <stdint.h>
+#include <iostream>
 
 MoveLog::MoveLog() {
 
-	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 1.0f, 1.0f, 1.0f, 1.0f ), &pWTextBrush );
-	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 0.0f, 0.0f, 0.0f, 1.0f ), &pBTextBrush );
-	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 1.0f, 1.0f, 1.0f, 0.5f ), &pWBackgroundBrush );
-	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 0.0f, 0.0f, 0.0f, 0.5f ), &pBBackgroundBrush );
+	Window::Get().GetInput().RegisterMouseWheelListener(
+		[this]( int delta ) -> void {
+			if ( (int64_t)scroll - delta >= 0 && ((int64_t)scroll - delta) * 2 < moves.size() ) {
+				scroll -= delta;
+			}
+		}
+	);
+
+	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 1.0f, 1.0f, 1.0f, 1.0f ), &pBTextBrush );
+	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 0.0f, 0.0f, 0.0f, 1.0f ), &pWTextBrush );
+	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 1.0f, 1.0f, 1.0f, 0.2f ), &pBBackgroundBrush );
+	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 0.0f, 0.0f, 0.0f, 0.2f ), &pWBackgroundBrush );
 	
 	Window::GFX().GetWriteFactory()->CreateTextFormat(
 		L"Courier New",
@@ -22,6 +32,7 @@ MoveLog::MoveLog() {
 		L"en-us",
 		&pTextFormat
 	);
+	
 }
 
 constexpr int lineHeight = 18;
@@ -33,16 +44,16 @@ void MoveLog::Draw() const {
 	float bottom = 264.0f;
 
 	D2D1_RECT_F whiteRect = D2D1::RectF(
-		targetSize.width - 176.0f,
+		targetSize.width - 220.0f,
 		8.0f,
-		targetSize.width - 96.0f,
+		targetSize.width - 120.0f,
 		bottom
 	);
 
 	D2D1_RECT_F blackRect = D2D1::RectF(
-		targetSize.width - 88.0f,
+		targetSize.width - 110.0f,
 		8.0f,
-		targetSize.width - 8.0f,
+		targetSize.width - 10.0f,
 		bottom
 	);
 
@@ -90,13 +101,13 @@ void MoveLog::Draw() const {
 void MoveLog::AddMove( const Chess& game, const PositionLFR& p1, const PositionLFR& p2 ) {
 	
 	std::wstring move;
-
+	
 	move.push_back( game.PieceAt( p1 ).GetInfo().symbol );
 	move.push_back( ' ' );
 
 	std::string alg = Position( p1 ).ToAlg();
 	move += std::wstring( alg.cbegin(), alg.cend() );
-	move += L" -> ";
+	move += L"\U00008594";
 	alg = Position( p2 ).ToAlg();
 	move += std::wstring( alg.cbegin(), alg.cend() );
 

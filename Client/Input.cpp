@@ -13,6 +13,10 @@ void Input::RegisterClickListener( const std::function<void( int x, int y )>& on
 	onMouseClick.push_back( onClick );
 }
 
+void Input::RegisterMouseWheelListener( const std::function<void( int delta )>& onScroll ) const {
+	onMouseWheel.push_back( onScroll );
+}
+
 bool Input::IsKeyDown( unsigned char key ) const {
 	return keyStates[key];
 }
@@ -40,6 +44,13 @@ void Input::SetCursorVisible( bool visibility ) {
 void Input::MouseClick( POINTS p ) {
 	for ( auto f : onMouseClick ) {
 		f( p.x, p.y );
+	}
+}
+
+void Input::WheelScroll( int rawDelta ) {
+	rawDelta /= WHEEL_DELTA;
+	for ( auto f : onMouseWheel ) {
+		f( rawDelta );
 	}
 }
 

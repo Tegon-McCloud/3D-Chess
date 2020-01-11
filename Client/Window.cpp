@@ -122,6 +122,9 @@ LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPAR
 		GetInternal().input.MouseClick( MAKEPOINTS(lParam) );
 		break;
 		
+	case WM_MOUSEWHEEL:
+		GetInternal().input.WheelScroll( GET_WHEEL_DELTA_WPARAM( wParam ) );
+		break;
 
 	case WM_KEYDOWN:
 		GetInternal().input.KeyPressed( static_cast<unsigned char>(wParam) );
