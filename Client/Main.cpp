@@ -11,6 +11,7 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	using namespace DirectX;
 
+
 	std::string cmdLine( lpCmdLine );
 
 	std::optional<int> rv;	// return value
@@ -18,7 +19,16 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	Timer timer; // for keeping track of how long has passed between frames
 
 	Window::Get().SetVisible( true, true );
-
+	
+	bool paused = false;
+	Window::Get().GetInput().RegisterKeyListener(
+		VK_ESCAPE,
+		[&paused]( bool isDown )->void {
+			if ( isDown ) paused = !paused;
+			std::cout << paused << std::endl;
+		}
+	);
+	
 	Chess chess( cmdLine );
 
 	VertexShader vs( "VS" );
@@ -59,7 +69,7 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			Window::GFX().Present();
 
 		}
-	} catch ( std::runtime_error e ) {
+	} catch ( std::exception e ) {
 		std::cout << "Application exited do to exception:\n" << e.what() << "\n";
 	}
 

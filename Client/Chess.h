@@ -69,7 +69,7 @@ private:
 	std::vector<PositionLFR> highlights;
 	
 	Player player;
-	MoveLog moveLog;
+	//MoveLog moveLog;
 
 	Client client;
 

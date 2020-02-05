@@ -16,6 +16,7 @@ public:
 	
 	void RegisterClickListener( const std::function< void( int x, int y ) >& onClick ) const;
 	void RegisterMouseWheelListener( const std::function< void( int delta ) >& onScroll ) const;
+	void RegisterKeyListener( unsigned char key, const std::function<void( bool )>& onKey ) const;
 	bool IsKeyDown( unsigned char key ) const;
 	POINT GetMousePos() const;
 	void CenterMouse() const;
@@ -32,6 +33,7 @@ private:
 	std::bitset< 256u > keyStates;
 	mutable std::vector<std::function<void( int x, int y )>> onMouseClick;
 	mutable std::vector<std::function<void( int delta )>> onMouseWheel;
+	mutable std::unordered_map<unsigned char, std::vector<std::function<void( bool )>>> onKey;
 	bool cursorVisible;
 
 };

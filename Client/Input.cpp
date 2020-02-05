@@ -17,6 +17,10 @@ void Input::RegisterMouseWheelListener( const std::function<void( int delta )>& 
 	onMouseWheel.push_back( onScroll );
 }
 
+void Input::RegisterKeyListener( unsigned char key, const std::function<void( bool )>& onKey ) const {
+	this->onKey[key].push_back( onKey );
+}
+
 bool Input::IsKeyDown( unsigned char key ) const {
 	return keyStates[key];
 }
@@ -56,10 +60,19 @@ void Input::WheelScroll( int rawDelta ) {
 
 void Input::KeyPressed( unsigned char key ) {
 	keyStates[key] = true;
+
+	for ( auto& f : onKey[key] ) {
+		f( true );
+	}
+
 }
 
 void Input::KeyReleased( unsigned char key ) {
 	keyStates[key] = false;
+
+	for ( auto& f : onKey[key] ) {
+		f( false );
+	}
 }
 
 void Input::WindowFocused() {

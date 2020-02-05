@@ -115,40 +115,38 @@ Chess::Chess( const std::string& cmdLine ) :
 
 	selectedPos.reset( new PositionLFR( 0, 0, 0 ) );
 
-	player.Update( 0.0f );
-	player.Bind();
+	player.Update( 0.0f ); // update player with delta time = 0 to ensure it is fully initialized
+	player.Bind(); // bind player as the camera
 
-	Window::Get().GetInput().RegisterClickListener( [ this ]( int x, int y ) -> void {
+	Window::Get().GetInput().RegisterClickListener( [ this ]( int x, int y ) -> void { // register a listener for when the player clicks
 
 		using namespace DirectX;
 		
 		if ( !myTurn ) return;
 
-		if ( selectedPos ) {
+		if ( selectedPos ) { // if the player has currently selected a position
 			
-			std::optional<PositionLFR> hitpos = HighlightHit( player.LookRay() );
+			std::optional<PositionLFR> hitpos = HighlightHit( player.LookRay() ); // find which highlight box the player clicked (or none)
 
-			if ( hitpos ) {
-				client.SendMSG( std::string( "m:" ) +
-								Position( *selectedPos ).ToAlg() +
+			if ( hitpos ) { // if the player clicked a box
+				client.SendMSG( std::string( "m:" ) +	// tell the server to move the selected pice to the clicked position
+								Position( *selectedPos ).ToAlg() +	
 								Position( hitpos.value() ).ToAlg()
 				);
 			} else {
 				selectedPos.reset();
 			}
 
-		} else {
-			std::optional<PositionLFR> hitpos = PieceHit( player.LookRay() );
+		} else { // if no position is selected
+			std::optional<PositionLFR> hitpos = PieceHit( player.LookRay() ); // find out what piece the player clicked (if any) 
 			
 			if ( hitpos ) {
-
-				selectedPos.reset( new PositionLFR( hitpos.value() ) );
+				selectedPos.reset( new PositionLFR( hitpos.value() ) ); // select that piece
 				highlights.clear();
 				
-				client.SendMSG( std::string( "l:" ) + Position( *selectedPos ).ToAlg() );
+				client.SendMSG( std::string( "l:" ) + Position( *selectedPos ).ToAlg() ); // request list of moves from selected position 
 			}
 		}
-
 
 	} );
 
@@ -318,12 +316,12 @@ void Chess::Draw() const {
 }
 
 void Chess::DrawHUD() const {
-	moveLog.Draw();
+	//moveLog.Draw();
 	player.DrawHUD();
 }
 
 void Chess::MovePiece( const PositionLFR& from, const PositionLFR& to ) {
-	moveLog.AddMove( *this, from, to );
+	//moveLog.AddMove( *this, from, to );
 	CellAt( to ) = std::move( CellAt( from ) );
 }
 

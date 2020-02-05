@@ -58,7 +58,6 @@ public:
 	float GetDpiXScale() const;
 	float GetDpiYScale() const;
 
-
 private:
 	// 3D
 	Microsoft::WRL::ComPtr<ID3D11Device1> pDevice;
