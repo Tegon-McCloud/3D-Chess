@@ -20,15 +20,6 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	Window::Get().SetVisible( true, true );
 	
-	bool paused = false;
-	Window::Get().GetInput().RegisterKeyListener(
-		VK_ESCAPE,
-		[&paused]( bool isDown )->void {
-			if ( isDown ) paused = !paused;
-			std::cout << paused << std::endl;
-		}
-	);
-	
 	Chess chess( cmdLine );
 
 	VertexShader vs( "VS" );
@@ -76,7 +67,7 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	return 0;
 }
 
-int main() { // target is console for debug so while debugging execution will start here
+int main() { // vs project buildtarget is console for debug so while debugging execution will start here
 	char cmdLine[] = "80.210.71.221:8877";
 	return WinMain( GetModuleHandle( NULL ), NULL, cmdLine, 0 );
 }

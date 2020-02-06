@@ -316,12 +316,12 @@ void Chess::Draw() const {
 }
 
 void Chess::DrawHUD() const {
-	//moveLog.Draw();
+	moveLog.Draw();
 	player.DrawHUD();
 }
 
 void Chess::MovePiece( const PositionLFR& from, const PositionLFR& to ) {
-	//moveLog.AddMove( *this, from, to );
+	moveLog.AddMove( *this, from, to );
 	CellAt( to ) = std::move( CellAt( from ) );
 }
 
