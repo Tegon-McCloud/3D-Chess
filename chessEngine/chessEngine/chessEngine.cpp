@@ -65,6 +65,14 @@ int main() {
 			std::stringstream ss;
 			ss << from.xyz.x << " " << from.xyz.y << " " << from.xyz.z << " " << to.xyz.x << " " << to.xyz.y << " " << to.xyz.z;
 			std::string move = g.move(ss);
+			if (move[0] == 'D') {
+				s.sendMSG(0, msgCopy);
+				s.sendMSG(1, msgCopy);
+				s.sendMSG(0, g.colourToMove == 1 ? "t:w;" : "t:b;");
+				s.sendMSG(1, g.colourToMove == 1 ? "t:w;" : "t:b;");
+				s.sendMSG(0, "v:d;");
+				s.sendMSG(1, "v:d;");
+			}
 			if (move[0] == 'V') {
 				s.sendMSG(0, msgCopy);
 				s.sendMSG(1, msgCopy);

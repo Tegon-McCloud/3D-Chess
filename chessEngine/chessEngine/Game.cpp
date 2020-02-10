@@ -193,10 +193,18 @@ int Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo) 
 			return 1;
 		}
 	}
+	if (getPieceId(xTo, yTo, zTo) == ids["Empty"] && getPieceId(xFrom, yFrom, zFrom) != ids["Pawn"]) {
+		movesSincePieceTaken += 1;
+	} else {
+		movesSincePieceTaken = 0;
+	}
 	setPieceId(xTo, yTo, zTo, getPieceId(xFrom, yFrom, zFrom));
 	setPieceColour(xTo, yTo, zTo, getPieceColour(xFrom, yFrom, zFrom));
 	setPieceId(xFrom, yFrom, zFrom, ids["Empty"]);
 	setPieceColour(xFrom, yFrom, zFrom, -1);
+	if (movesSincePieceTaken >= 100) {
+		return 2;
+	}
 	return -1;
 };
 
@@ -235,6 +243,9 @@ std::string Game::move(std::stringstream& ss) {
 		return "You can't move to the selected square";
 	}
 	int moveTemp = movePiece(xFrom, yFrom, zFrom, xTo, yTo, zTo);
+	if (moveTemp == 2) {
+		return "Draw";
+	}
 	if (moveTemp != -1) {
 		if (moveTemp == 1) {
 			return "VW";	//Victory White

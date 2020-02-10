@@ -11,6 +11,7 @@ public:
 	int colourToMove = 1;
 
 private:
+	int movesSincePieceTaken;
 	int field[5][5][5];
 	int colour[5][5][5];	//0 is black, 1 is white and -1 is none
 	std::unordered_map<std::string, int> ids = {
