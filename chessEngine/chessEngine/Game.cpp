@@ -179,10 +179,18 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 int Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo) {
 	if (getPieceId(xTo, yTo, zTo) == ids["King"]) {
 		if (getPieceColour(xTo, yTo, zTo) == 1) {
-			return 1;
+			setPieceId(xTo, yTo, zTo, getPieceId(xFrom, yFrom, zFrom));
+			setPieceColour(xTo, yTo, zTo, getPieceColour(xFrom, yFrom, zFrom));
+			setPieceId(xFrom, yFrom, zFrom, ids["Empty"]);
+			setPieceColour(xFrom, yFrom, zFrom, -1);
+			return 0;
 		}
 		if (getPieceColour(xTo, yTo, zTo) == 0) {
-			return 0;
+			setPieceId(xTo, yTo, zTo, getPieceId(xFrom, yFrom, zFrom));
+			setPieceColour(xTo, yTo, zTo, getPieceColour(xFrom, yFrom, zFrom));
+			setPieceId(xFrom, yFrom, zFrom, ids["Empty"]);
+			setPieceColour(xFrom, yFrom, zFrom, -1);
+			return 1;
 		}
 	}
 	setPieceId(xTo, yTo, zTo, getPieceId(xFrom, yFrom, zFrom));

@@ -36,7 +36,7 @@ int main() {
 
 		s.getMSG(g.colourToMove, msg);
 		switch (msg[0]) {
-		case 'p':
+		case 'l':
 		{
 			msg.erase(0, 2);
 			Position pos(msg);
@@ -48,7 +48,7 @@ int main() {
 				s.sendMSG(g.colourToMove, std::string("p:") + listToAlg(g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)));
 			}
 			else {
-				s.sendMSG(g.colourToMove, "p:;");
+				s.sendMSG(g.colourToMove, "l:;");
 			}
 		}
 			break;
@@ -66,6 +66,10 @@ int main() {
 			ss << from.xyz.x << " " << from.xyz.y << " " << from.xyz.z << " " << to.xyz.x << " " << to.xyz.y << " " << to.xyz.z;
 			std::string move = g.move(ss);
 			if (move[0] == 'V') {
+				s.sendMSG(0, msgCopy);
+				s.sendMSG(1, msgCopy);
+				s.sendMSG(0, g.colourToMove == 1 ? "t:w;" : "t:b;");
+				s.sendMSG(1, g.colourToMove == 1 ? "t:w;" : "t:b;");
 				if (move[1] == 'W') {
 					s.sendMSG(0, "v:w;");
 					s.sendMSG(1, "v:w;");
@@ -73,6 +77,7 @@ int main() {
 					s.sendMSG(0, "v:b;");
 					s.sendMSG(1, "v:b;");
 				}
+				break;
 			}
 			if (move[0] == 'Y' && move[4] == 'm') {
 
