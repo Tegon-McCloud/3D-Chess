@@ -176,11 +176,20 @@ std::string Game::getPieceMoves(int x, int y, int z) {
 	return Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z));
 };
 
-void Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo) {
+int Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo) {
+	if (getPieceId(xTo, yTo, zTo) == ids["King"]) {
+		if (getPieceColour(xTo, yTo, zTo) == 1) {
+			return 1;
+		}
+		if (getPieceColour(xTo, yTo, zTo) == 0) {
+			return 0;
+		}
+	}
 	setPieceId(xTo, yTo, zTo, getPieceId(xFrom, yFrom, zFrom));
 	setPieceColour(xTo, yTo, zTo, getPieceColour(xFrom, yFrom, zFrom));
 	setPieceId(xFrom, yFrom, zFrom, ids["Empty"]);
 	setPieceColour(xFrom, yFrom, zFrom, -1);
+	return -1;
 };
 
 std::string Game::move(std::stringstream& ss) {
@@ -217,33 +226,15 @@ std::string Game::move(std::stringstream& ss) {
 	if (!canMove) {
 		return "You can't move to the selected square";
 	}
-	movePiece(xFrom, yFrom, zFrom, xTo, yTo, zTo);
-	int wkx, wky, wkz, bkx, bky, bkz;	//wkx = white king x
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			for (int k = 0; k < 5; k++) {
-				if (getPieceId(i, j, k) == ids["King"] && getPieceColour(i, j, k) == 1) {
-					wkx = i;
-					wky = j;
-					wkz = k;
-				}
-				if (getPieceId(i, j, k) == ids["King"] && getPieceColour(i, j, k) == 0) {
-					bkx = i;
-					bky = j;
-					bkz = k;
-				}
-			}
+	int moveTemp = movePiece(xFrom, yFrom, zFrom, xTo, yTo, zTo);
+	if (moveTemp != -1) {
+		if (moveTemp == 1) {
+			return "VW";	//Victory White
+		}
+		if (moveTemp == 0) {
+			return "VB";	//Victory Black
 		}
 	}
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			for (int k = 0; k < 5; k++) {
-
-			}
-		}
-	}
-	//TODO check is not even close to implimentet
-	//TODO Checkmate checking and stalemate checking and maybe other stuff like that
 	colourToMove = (colourToMove - 1)*-1;
 	return "You moved :)";
 };
