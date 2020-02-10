@@ -36,7 +36,7 @@ int main() {
 
 		s.getMSG(g.colourToMove, msg);
 		switch (msg[0]) {
-		case 'l': // client requests a list of possible moves from the specified cell
+		case 'p':
 		{
 			msg.erase(0, 2);
 			Position pos(msg);
@@ -45,15 +45,15 @@ int main() {
 				g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '2' ||
 				g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '3' ||
 				g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)[0] == '4') {
-				s.sendMSG(g.colourToMove, std::string("l:") + listToAlg(g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)));
+				s.sendMSG(g.colourToMove, std::string("p:") + listToAlg(g.getPieceMoves(pos.xyz.x, pos.xyz.y, pos.xyz.z)));
 			}
 			else {
-				s.sendMSG(g.colourToMove, "l:;");
+				s.sendMSG(g.colourToMove, "p:;");
 			}
 		}
 			break;
 
-		case 'm': // client requests a move from a cell to another cell (both specified in message)
+		case 'm':
 		{
 			std::string msgCopy(msg);
 			msgCopy += ";";
@@ -64,7 +64,12 @@ int main() {
 			//TODO error checking if hacked client
 			std::stringstream ss;
 			ss << from.xyz.x << " " << from.xyz.y << " " << from.xyz.z << " " << to.xyz.x << " " << to.xyz.y << " " << to.xyz.z;
-			if (g.move(ss)) {
+			std::string move = g.move(ss);
+			if (move[0] == 'Y' ||
+				move[0] == 'Y' ||
+				move[0] == 'Y' ||
+				move[0] == 'Y' ||
+				move[0] == 'Y') {
 
 				s.sendMSG(0, msgCopy);
 				s.sendMSG(1, msgCopy);
@@ -74,15 +79,6 @@ int main() {
 			}
 		}
 			break;
-			
-		case 'd': // client has disconnected
-			s.sendMSG( g.colourToMove ^ 0x1, "d:;" );
-			goto end;
-			break;
 		}
 	}
-
-	end:
-
-	return 0;
 }

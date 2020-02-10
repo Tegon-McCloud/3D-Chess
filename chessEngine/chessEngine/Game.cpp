@@ -164,82 +164,16 @@ void Game::setPieceColour(int x, int y, int z, int colour) {
 };
 
 std::string Game::getPieceMoves(int x, int y, int z) {
-	setChecks();
 	if (getPieceColour(x, y, z) == -1) {
-		return "There is no piece on the selected square";
+		return "No piece on the selected square";
 	}
 	if (getPieceColour(x, y, z) != colourToMove) {
 		return "This is not your colour";
 	}
-	std::string pieceMoves(Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z)));
-	//Check things for white
-	if(getPieceColour(x, y, z) == 1){
-	idk:
-		for (int i = 0; i < pieceMoves.length(); i += 4) {
-			std::stringstream ss;
-			ss << pieceMoves[i] << ' ' << pieceMoves[i + 1] << ' ' << pieceMoves[i + 2] << ' ';
-			int xCurr, yCurr, zCurr;
-			ss >> xCurr;
-			ss >> yCurr;
-			ss >> zCurr;
-			int prevId = getPieceId(xCurr, yCurr, zCurr), prevColour = getPieceColour(xCurr, yCurr, zCurr);
-			if (getPieceId(xCurr, yCurr, zCurr) != 7) {
-				movePiece(x, y, z, xCurr, yCurr, zCurr);
-				setChecks();
-				if (whiteCheck) {
-					pieceMoves.erase(i, 4);
-					movePiece(xCurr, yCurr, zCurr, x, y, z);
-					setPieceId(xCurr, yCurr, zCurr, prevId);
-					setPieceColour(xCurr, yCurr, zCurr, prevColour);
-					setChecks();
-					goto idk;
-				}
-				else {
-					movePiece(xCurr, yCurr, zCurr, x, y, z);
-					setPieceId(xCurr, yCurr, zCurr, prevId);
-					setPieceColour(xCurr, yCurr, zCurr, prevColour);
-					setChecks();
-				}
-			}
-		}
-	}
-	//Check things for black
-	if (getPieceColour(x, y, z) == 0) {
-	idk2:
-		for (int i = 0; i < pieceMoves.length(); i += 4) {
-			std::stringstream ss;
-			ss << pieceMoves[i] << ' ' << pieceMoves[i + 1] << ' ' << pieceMoves[i + 2] << ' ';
-			int xCurr, yCurr, zCurr;
-			ss >> xCurr;
-			ss >> yCurr;
-			ss >> zCurr;
-			int prevId = getPieceId(xCurr, yCurr, zCurr), prevColour = getPieceColour(xCurr, yCurr, zCurr);
-			if (getPieceId(xCurr, yCurr, zCurr) != 7) {
-				movePiece(x, y, z, xCurr, yCurr, zCurr);
-				setChecks();
-				if (blackCheck) {
-					pieceMoves.erase(i, 4);
-					movePiece(xCurr, yCurr, zCurr, x, y, z);
-					setPieceId(xCurr, yCurr, zCurr, prevId);
-					setPieceColour(xCurr, yCurr, zCurr, prevColour);
-					setChecks();
-					goto idk2;
-				}
-				else {
-					movePiece(xCurr, yCurr, zCurr, x, y, z);
-					setPieceId(xCurr, yCurr, zCurr, prevId);
-					setPieceColour(xCurr, yCurr, zCurr, prevColour);
-					setChecks();
-				}
-			}
-		}
-	}
-	//TODO Checkmate checking and stalemate checking and maybe other stuff like that
-	setChecks();
-	if (pieceMoves == "") {
+	if (Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z)) == "") {
 		return "This piece can't move";
 	}
-	return pieceMoves;
+	return Piece::getMoves(colour, field, x, y, z, getPieceColour(x, y, z), getPieceId(x, y, z));
 };
 
 void Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo) {
@@ -249,7 +183,7 @@ void Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo)
 	setPieceColour(xFrom, yFrom, zFrom, -1);
 };
 
-bool Game::move(std::stringstream& ss) {
+std::string Game::move(std::stringstream& ss) {
 	//TODO error checking perhaps, but maybe not needed
 	int xFrom, yFrom, zFrom, xTo, yTo, zTo;
 	ss >> xFrom;
@@ -259,8 +193,14 @@ bool Game::move(std::stringstream& ss) {
 	ss >> yTo;
 	ss >> zTo;
 	std::string movesOfPiece = getPieceMoves(xFrom, yFrom, zFrom);
-	if (movesOfPiece[0] == 'T'){
-		return false;
+	if (movesOfPiece == "No piece on the selected square") {
+		return movesOfPiece;
+	}
+	if (movesOfPiece == "This is not your colour") {
+		return movesOfPiece;
+	}
+	if (movesOfPiece == "This piece can't move") {
+		return movesOfPiece;
 	}
 	bool canMove = false;
 	for (int i = 0; i < movesOfPiece.length(); i+=4) {
@@ -275,18 +215,10 @@ bool Game::move(std::stringstream& ss) {
 		}
 	}
 	if (!canMove) {
-		return false;
+		return "You can't move to the selected square";
 	}
-
 	movePiece(xFrom, yFrom, zFrom, xTo, yTo, zTo);
-	colourToMove = (colourToMove - 1)*-1;
-	setChecks();
-	return true;
-};
-
-void Game::setChecks() {
 	int wkx, wky, wkz, bkx, bky, bkz;	//wkx = white king x
-	bool wNotCheck = true, bNotCheck = true;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
 			for (int k = 0; k < 5; k++) {
@@ -306,38 +238,12 @@ void Game::setChecks() {
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
 			for (int k = 0; k < 5; k++) {
-				std::string moves;
-				int currentColour = getPieceColour(i, j, k);
-				moves = Piece::getMoves(colour, field, i, j, k, currentColour, getPieceId(i, j, k));
-				if (moves[0] != 'T') {
-					for (int i = 0; i < moves.length(); i += 4) {
-						std::stringstream ss;
-						ss << moves[i] << ' ' << moves[i + 1] << ' ' << moves[i + 2] << ' ';
-						int xCurr, yCurr, zCurr;
-						ss >> xCurr;
-						ss >> yCurr;
-						ss >> zCurr;
-						if (currentColour == 1) {
-							if (xCurr == bkx && yCurr == bky && zCurr == bkz) {
-								blackCheck = true;
-								bNotCheck = false;
-							}
-						}
-						if(currentColour == 0) {
-							if (xCurr == wkx && yCurr == wky && zCurr == wkz) {
-								whiteCheck = true;
-								wNotCheck = false;
-							}
-						}
-					}
-				}
+
 			}
 		}
 	}
-	if (wNotCheck) {
-		whiteCheck = false;
-	}
-	if (bNotCheck) {
-		blackCheck = false;
-	}
-}
+	//TODO check is not even close to implimentet
+	//TODO Checkmate checking and stalemate checking and maybe other stuff like that
+	colourToMove = (colourToMove - 1)*-1;
+	return "You moved :)";
+};
