@@ -42,10 +42,12 @@ private:
 	const std::shared_ptr<Piece>& CellAt( const PositionLFR& pos ) const;
 	const std::shared_ptr<Piece>& CellAt( int l, int f, int r ) const;
 
-	// trace a ray and determine with piece was hit first by it
-	std::optional<PositionLFR> PieceHit( const Ray& r );
-	// trace a ray and determine which highlighted field was hit first by it
-	std::optional<PositionLFR> HighlightHit( const Ray& r );
+	// cast a ray and determine with piece was hit first by it
+	std::optional<PositionLFR> PieceHit( const Ray& r ) const;
+	// cast a ray and determine which highlighted field was hit first by it
+	std::optional<PositionLFR> HighlightHit( const Ray& r ) const;
+	// cast a ray and determine which promotion piecemodel was hit by it
+	char PromotionHit( const Ray& r ) const;
 
 	// calculate a box with an appropriate size and positioning for the specified cell
 	Box BoxAt( PositionLFR p ) const;
