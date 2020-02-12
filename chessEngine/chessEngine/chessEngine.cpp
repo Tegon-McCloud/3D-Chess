@@ -73,6 +73,9 @@ int main() {
 				temps += ';';
 				//s.sendMSG(0, msgCopy);
 				//s.sendMSG(1, msgCopy);
+				std::cout << temps << "\n";
+				std::cout << msgCopy << "\n";
+				std::cout << (g.colourToMove - 1)*-1 << "\n";
 				s.sendMSG((g.colourToMove-1)*-1, temps);
 				break;
 			}
