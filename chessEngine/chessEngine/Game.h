@@ -1,6 +1,7 @@
 #pragma once
 #include "Piece.h"
 #include <unordered_map>
+#include "Util.h"
 
 class Game {
 public:
@@ -9,6 +10,8 @@ public:
 	std::string getPieceMoves(int x, int y, int z);
 	std::string move(std::stringstream& s);
 	int colourToMove = 1;
+	bool promotionStage = 0;
+	void setPieceId(int x, int y, int z, int id);
 
 private:
 	int movesSincePieceTaken;
@@ -27,8 +30,7 @@ private:
 	// måske endnu et map som er fra int til bogstaver, kinda, altså position 1,4,1 er jo B5b eller sådan noget, og det her skal måske ind i bishop eller piece eller noget
 
 	int movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo);
-	void setPieceId(int x, int y, int z, int id);
-	void setPieceColour(int x, int y, int z, int colour);
 	int getPieceId(int x, int y, int z);
+	void setPieceColour(int x, int y, int z, int colour);
 	int getPieceColour(int x, int y, int z);
 };

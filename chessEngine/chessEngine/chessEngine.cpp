@@ -65,6 +65,16 @@ int main() {
 			std::stringstream ss;
 			ss << from.xyz.x << " " << from.xyz.y << " " << from.xyz.z << " " << to.xyz.x << " " << to.xyz.y << " " << to.xyz.z;
 			std::string move = g.move(ss);
+			if (move[0] == 'P') {
+				std::string temps = "";
+				for (int i = 1; i < 3; i++) {
+					temps += move[i];
+				}
+				s.sendMSG(0, msgCopy);
+				s.sendMSG(1, msgCopy);
+				s.sendMSG((g.colourToMove-1)*-1, temps);
+				break;
+			}
 			if (move[0] == 'D') {
 				s.sendMSG(0, msgCopy);
 				s.sendMSG(1, msgCopy);
@@ -88,7 +98,6 @@ int main() {
 				break;
 			}
 			if (move[0] == 'Y' && move[4] == 'm') {
-
 				s.sendMSG(0, msgCopy);
 				s.sendMSG(1, msgCopy);
 
@@ -96,6 +105,39 @@ int main() {
 				s.sendMSG(1, g.colourToMove == 1 ? "t:w;" : "t:b;");
 			}
 		}
+			break;
+
+		case 'p':
+			if(g.promotionStage) {
+				std::string tempp = "";
+				for (int i = 3; i < 5; i++) {
+					tempp += msg[i];
+				}
+				Position p(tempp);
+				switch (msg[2]) {
+				case 'n':
+					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 2);
+					break;
+				case 'b':
+					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 3);
+					break;
+				case 'r':
+					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 4);
+					break;
+				case 'u':
+					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 5);
+					break;
+				case 'q':
+					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 6);
+					break;
+				}
+				s.sendMSG(0, msg);
+				s.sendMSG(1, msg);
+
+				s.sendMSG(0, g.colourToMove == 1 ? "t:w;" : "t:b;");
+				s.sendMSG(1, g.colourToMove == 1 ? "t:w;" : "t:b;");
+				g.promotionStage = false;
+			}
 			break;
 		}
 	}
