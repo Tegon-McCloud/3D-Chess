@@ -126,7 +126,8 @@ Chess::Chess( const std::string& cmdLine ) :
 
 		if ( promotionPos ) {
 			
-
+			char c = PromotionHit( player.LookRay() );
+			client.SendMSG( std::string( "p:" ) + c + Position( promotionPos.value() ).ToAlg() );
 
 			return;
 		}
@@ -445,8 +446,39 @@ std::optional<PositionLFR> Chess::HighlightHit( const Ray& r ) const {
 	}
 }
 
-char Chess::PromotionHit( const Ray& r ) const {
-	return '0';
+char Chess::PromotionHit( const Ray& ray ) const {
+	
+	if ( !promotionPos ) return '0';
+
+	char c = '0';
+	float dist = std::numeric_limits<float>::infinity();
+
+	Box b;
+
+	for ( int i = 0; i < promotionPieces.size(); i++ ) {
+		int r = mySide == Side::WHITE ? (promotionPos->r + i + 1) : (promotionPos->r - i - 1);
+		int l = promotionPos->l;
+		int f = promotionPos->f;
+
+		const PieceInfo& info = promotionPieces[i].GetInfo();
+		
+		b.min.x = r * 3.0f - 0.5f * info.diameter;
+		b.min.y = l * 6.0f - 0.0f * info.height;
+		b.min.z = f * 3.0f - 0.5f * info.diameter;
+
+		b.max.x = r * 3.0f + 0.5f * info.diameter;
+		b.max.y = l * 6.0f + 1.0f * info.height;
+		b.max.z = f * 3.0f + 0.5f * info.diameter;
+		
+		float t = intersection( ray, b );
+		if ( t < dist ) {
+			c = info.symbol;
+			dist = t;
+		}
+
+	}
+
+	return c;
 }
 
 Box Chess::BoxAt( PositionLFR p ) const {
