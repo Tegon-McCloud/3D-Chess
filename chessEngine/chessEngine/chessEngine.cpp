@@ -66,12 +66,13 @@ int main() {
 			ss << from.xyz.x << " " << from.xyz.y << " " << from.xyz.z << " " << to.xyz.x << " " << to.xyz.y << " " << to.xyz.z;
 			std::string move = g.move(ss);
 			if (move[0] == 'P') {
-				std::string temps = "";
-				for (int i = 1; i < 3; i++) {
+				std::string temps = "p:";
+				for (int i = 2; i < 4; i++) {
 					temps += move[i];
 				}
-				s.sendMSG(0, msgCopy);
-				s.sendMSG(1, msgCopy);
+				temps += ';';
+				//s.sendMSG(0, msgCopy);
+				//s.sendMSG(1, msgCopy);
 				s.sendMSG((g.colourToMove-1)*-1, temps);
 				break;
 			}
