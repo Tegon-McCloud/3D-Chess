@@ -112,8 +112,7 @@ Chess::Chess( const std::string& cmdLine ) :
 	mySide( Side::WHITE ),
 	winner( 'n' ), // n for none
 	myTurn( false ),
-	player( Box( -20.0f, -20.0f, -20.0f, 32.0f, 50.0f, 32.0f ) ),
-	promotionPos( Position( "Ea5").lfr )
+	player( Box( -20.0f, -20.0f, -20.0f, 32.0f, 50.0f, 32.0f ) )
 	{
 
 	player.Update( 0.0f ); // update player with delta time = 0 to ensure it is fully initialized
@@ -124,6 +123,14 @@ Chess::Chess( const std::string& cmdLine ) :
 		using namespace DirectX;
 		
 		if ( !myTurn ) return;
+
+		if ( promotionPos ) {
+			
+
+
+			return;
+		}
+
 
 		if ( selectedPos ) { // if the player has currently selected a position
 			
@@ -148,6 +155,8 @@ Chess::Chess( const std::string& cmdLine ) :
 				client.SendMSG( std::string( "l:" ) + Position( *selectedPos ).ToAlg() ); // request list of moves from selected position 
 			}
 		}
+
+
 
 	} );
 
@@ -205,14 +214,6 @@ Chess::Chess( const std::string& cmdLine ) :
 	SETB( 3, 4, 4, Bishop );
 
 #undef SETB
-
-
-	promotionPieces.clear();
-	promotionPieces.push_back( Piece( "Queen", mySide ) );
-	promotionPieces.push_back( Piece( "Knight", mySide ) );
-	promotionPieces.push_back( Piece( "Unicorn", mySide ) );
-	promotionPieces.push_back( Piece( "Bishop", mySide ) );
-	promotionPieces.push_back( Piece( "Rook", mySide ) );
 
 }
 
@@ -392,7 +393,7 @@ const std::shared_ptr<Piece>& Chess::CellAt( int l, int f, int r ) const {
 	return pieces[l][f][r];
 }
 
-std::optional<PositionLFR> Chess::PieceHit( const Ray& r ) {
+std::optional<PositionLFR> Chess::PieceHit( const Ray& r ) const {
 
 	PositionLFR hitpos( -1, -1, -1 );
 	float dist = std::numeric_limits<float>::infinity();
@@ -420,7 +421,7 @@ std::optional<PositionLFR> Chess::PieceHit( const Ray& r ) {
 	}
 }
 
-std::optional<PositionLFR> Chess::HighlightHit( const Ray& r ) {
+std::optional<PositionLFR> Chess::HighlightHit( const Ray& r ) const {
 
 	if ( !selectedPos || !CellAt( *selectedPos ) || highlights.empty() ) return std::optional<PositionLFR>();
 	
@@ -442,6 +443,10 @@ std::optional<PositionLFR> Chess::HighlightHit( const Ray& r ) {
 	} else {
 		return std::optional<PositionLFR>();
 	}
+}
+
+char Chess::PromotionHit( const Ray& r ) const {
+	return '0';
 }
 
 Box Chess::BoxAt( PositionLFR p ) const {
