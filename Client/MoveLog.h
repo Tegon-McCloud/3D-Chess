@@ -18,9 +18,15 @@ public:
 	void Draw() const;
 	void AddMove( const Chess& game, const PositionLFR& p1, const PositionLFR& p2 );
 
+	void DrawVictory() const; // draws a victory screen overlay
+	void DrawDefeat() const; // draws a defeat screen overlay
+	void DrawDraw() const; // draws a draw screen overlay
+
+
 private:
 
 	Microsoft::WRL::ComPtr<IDWriteTextFormat> pTextFormat;
+	Microsoft::WRL::ComPtr<IDWriteTextFormat> pBigTextFormat;
 	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pWTextBrush;
 	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pWBackgroundBrush;
 	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pBTextBrush;

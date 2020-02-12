@@ -56,7 +56,6 @@ private:
 	nx5x5 array of shared pointers to pieces. The first index represents its level, second its file and third its rank.
 	This means that in the first index will not be x, as that is its level and should be displayed on the y-axis.
 	The outermost dimension is a vector so it is all dynamically allocated.
-	sizeof( std::shared_ptr ) is 16 and 16 * 5 * 5 * 5 = 2000, too much for the stack.
 	*/
 	std::vector<std::array<std::array<std::shared_ptr<Piece>, 5>, 5>> pieces;
 
@@ -74,5 +73,6 @@ private:
 	Client client;
 
 	Side mySide;
+	char winner;
 	bool myTurn;
 };

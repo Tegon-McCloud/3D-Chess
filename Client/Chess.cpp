@@ -110,10 +110,10 @@ Chess::Chess( const std::string& cmdLine ) :
 	blackSquare( "Square", mtlBlackSquare ),
 	client( cmdLine ),
 	mySide( Side::WHITE ),
+	winner( 'n' ), // n for none
 	myTurn( false ),
-	player( Box( -20.0f, -20.0f, -20.0f, 32.0f, 50.0f, 32.0f ) ) {
-
-	selectedPos.reset( new PositionLFR( 0, 0, 0 ) );
+	player( Box( -20.0f, -20.0f, -20.0f, 32.0f, 50.0f, 32.0f ) )
+	{
 
 	player.Update( 0.0f ); // update player with delta time = 0 to ensure it is fully initialized
 	player.Bind(); // bind player as the camera
@@ -129,7 +129,7 @@ Chess::Chess( const std::string& cmdLine ) :
 			std::optional<PositionLFR> hitpos = HighlightHit( player.LookRay() ); // find which highlight box the player clicked (or none)
 
 			if ( hitpos ) { // if the player clicked a box
-				client.SendMSG( std::string( "m:" ) +	// tell the server to move the selected pice to the clicked position
+				client.SendMSG( std::string( "m:" ) +	// tell the server to move the selected piece to the clicked position
 								Position( *selectedPos ).ToAlg() +	
 								Position( hitpos.value() ).ToAlg()
 				);
@@ -150,6 +150,7 @@ Chess::Chess( const std::string& cmdLine ) :
 
 	} );
 
+	// setup scene lighting
 	light.rgb = { 1.0f, 1.0f, 1.0f };
 	light.dir = { 0.0f, -1.0f, 0.0f };
 	lightBuffer.Set( &light );
@@ -260,9 +261,11 @@ void Chess::Update( float dt ) {
 			mySide = msg[2] == 'w' ? Side::WHITE : Side::BLACK;
 			
 			if ( mySide == Side::WHITE ) {
+				// set position and direction for white side
 				player.SetPosition( -12.0f, 6.0f, 6.0f );
 				player.SetDirection( pi/2.0f, 0.0f, 0.0f );
 			} else {
+				// set position and direction for black side
 				player.SetPosition( 12.0f + 12.0f, 24.0f - 6.0f, 12.0f - 6.0f );
 				player.SetDirection( -pi / 2.0f, 0.0f, 0.0f );
 			}
@@ -273,6 +276,9 @@ void Chess::Update( float dt ) {
 			client.Disconnect();
 			break;
 
+		case 'v':
+			winner = msg[2];
+			break;
 #ifdef _DEBUG
 		default:
 			std::cout << "Unknown command received from server:\n" << msg << "\n";
@@ -292,7 +298,7 @@ void Chess::Draw() const {
 
 				((i + j + k) % 2 == 0 ? whiteSquare : blackSquare).Draw( XMMatrixTranslation( k * 3.0f, i * 6.0f, j * 3.0f ) );
 
-				if ( pieces[i][j][k] )
+				if ( pieces[i][j][k] ) // if square has a piece
 					pieces[i][j][k]->Draw( k * 3.0f, i * 6.0f, j * 3.0f );
 
 			}
@@ -308,7 +314,6 @@ void Chess::Draw() const {
 		for ( auto it = highlights.cbegin(); it != highlights.cend(); it++ ) {
 			BoxAt( *it ).Draw( CellAt( *it ) ? mtlCapture : mtlMove );
 		}
-
 	}
 
 	Window::Get().GetGraphics().SetDepthEnabled( true );
@@ -318,6 +323,16 @@ void Chess::Draw() const {
 void Chess::DrawHUD() const {
 	moveLog.Draw();
 	player.DrawHUD();
+	
+	switch ( winner ) {
+	case 'w':
+	case 'b':
+		mySide == (winner == 'w' ? Side::WHITE : Side::BLACK) ? moveLog.DrawVictory() : moveLog.DrawDefeat();
+		break;
+	case 'd':
+		moveLog.DrawDraw();
+		break;
+	}
 }
 
 void Chess::MovePiece( const PositionLFR& from, const PositionLFR& to ) {

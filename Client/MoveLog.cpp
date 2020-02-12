@@ -7,22 +7,30 @@
 #include <stdint.h>
 #include <iostream>
 
-MoveLog::MoveLog() {
+MoveLog::MoveLog() :
+	scroll( 0 ) {
 
 	Window::Get().GetInput().RegisterMouseWheelListener(
 		[this]( int delta ) -> void {
-			if ( (int64_t)scroll - delta >= 0 && ((int64_t)scroll - delta) * 2 < moves.size() ) {
+			if ( scroll >= delta && (scroll - delta) * 2 < moves.size() ) {
+				scroll -= delta;
+			}
+
+			if ( (int64_t)scroll <= delta ) {
+				scroll = 0;
+			} else if ( (scroll - delta) * 2 >= moves.size() ) {
+				scroll = (moves.size() + 1) / 2;
+			} else {
 				scroll -= delta;
 			}
 		}
 	);
-
-	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 1.0f, 1.0f, 1.0f, 1.0f ), &pBTextBrush );
-	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 0.0f, 0.0f, 0.0f, 1.0f ), &pWTextBrush );
-	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 1.0f, 1.0f, 1.0f, 0.2f ), &pBBackgroundBrush );
-	Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 0.0f, 0.0f, 0.0f, 0.2f ), &pWBackgroundBrush );
+	ThrowIfFailed( Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 1.0f, 1.0f, 1.0f, 1.0f ), &pBTextBrush ) );
+	ThrowIfFailed( Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 0.0f, 0.0f, 0.0f, 1.0f ), &pWTextBrush ) );
+	ThrowIfFailed( Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 1.0f, 1.0f, 1.0f, 0.2f ), &pBBackgroundBrush ) );
+	ThrowIfFailed( Window::GFX().GetContext2D()->CreateSolidColorBrush( D2D1::ColorF( 0.0f, 0.0f, 0.0f, 0.2f ), &pWBackgroundBrush ) );
 	
-	Window::GFX().GetWriteFactory()->CreateTextFormat(
+	ThrowIfFailed( Window::GFX().GetWriteFactory()->CreateTextFormat(
 		L"Courier New",
 		NULL,
 		DWRITE_FONT_WEIGHT_MEDIUM,
@@ -31,8 +39,21 @@ MoveLog::MoveLog() {
 		12.0f,
 		L"en-us",
 		&pTextFormat
-	);
-	
+	) );
+
+	ThrowIfFailed( Window::GFX().GetWriteFactory()->CreateTextFormat(
+		L"Courier New",
+		NULL,
+		DWRITE_FONT_WEIGHT_MEDIUM,
+		DWRITE_FONT_STYLE_NORMAL,
+		DWRITE_FONT_STRETCH_NORMAL,
+		96.0f,
+		L"en-us",
+		&pBigTextFormat
+	) );
+
+	ThrowIfFailed( pBigTextFormat->SetTextAlignment( DWRITE_TEXT_ALIGNMENT_CENTER ) );
+	ThrowIfFailed( pBigTextFormat->SetParagraphAlignment( DWRITE_PARAGRAPH_ALIGNMENT_CENTER ) );
 }
 
 constexpr int lineHeight = 18;
@@ -113,3 +134,59 @@ void MoveLog::AddMove( const Chess& game, const PositionLFR& p1, const PositionL
 
 	moves.push_back( move );
 }
+
+void MoveLog::DrawVictory() const {
+
+	D2D1_SIZE_U targetSize = Window::GFX().GetTargetSize();
+	
+	const D2D1_RECT_F rect = D2D1::RectF( // the rect to draw in
+		(float)targetSize.width / 2.0f - 600.0f,
+		(float)targetSize.height / 2.0f - 300.0f,
+		(float)targetSize.width / 2.0f + 600.0f,
+		(float)targetSize.height / 2.0f + 000.0f
+	);
+
+	Window::GFX().GetContext2D()->FillRectangle( &rect, pWBackgroundBrush.Get() );
+	Window::GFX().GetContext2D()->DrawTextW(
+		L"Victory", 7ui32,
+		pBigTextFormat.Get(),
+		&rect, pBTextBrush.Get() );
+}
+
+void MoveLog::DrawDefeat() const {
+	D2D1_SIZE_U targetSize = Window::GFX().GetTargetSize();
+
+	const D2D1_RECT_F rect = D2D1::RectF( // the rect to draw in
+		(float)targetSize.width / 2.0f - 600.0f,
+										  (float)targetSize.height / 2.0f - 300.0f,
+										  (float)targetSize.width / 2.0f + 600.0f,
+										  (float)targetSize.height / 2.0f + 000.0f
+	);
+
+	Window::GFX().GetContext2D()->FillRectangle( &rect, pBBackgroundBrush.Get() );
+	Window::GFX().GetContext2D()->DrawTextW(
+		L"Defeat", 6ui32,
+		pBigTextFormat.Get(),
+		&rect, pWTextBrush.Get() );
+}
+
+void MoveLog::DrawDraw() const {
+
+	D2D1_SIZE_U targetSize = Window::GFX().GetTargetSize();
+
+	const D2D1_RECT_F rect = D2D1::RectF( // the rect to draw in
+		(float)targetSize.width / 2.0f - 600.0f,
+										  (float)targetSize.height / 2.0f - 300.0f,
+										  (float)targetSize.width / 2.0f + 600.0f,
+										  (float)targetSize.height / 2.0f + 000.0f
+	);
+
+	Window::GFX().GetContext2D()->FillRectangle( &rect, pWBackgroundBrush.Get() );
+	Window::GFX().GetContext2D()->DrawTextW(
+		L"Draw", 4ui32,
+		pBigTextFormat.Get(),
+		&rect, pBTextBrush.Get() );
+
+}
+
+
