@@ -104,15 +104,16 @@ constexpr const Material mtlCapture = {
 };
 
 // Chess
-Chess::Chess( const std::string& cmdLine ) : 
-	pieces(5, std::array<std::array<std::shared_ptr<Piece>, 5>, 5>()), 
-	whiteSquare( "Square", mtlWhiteSquare ), 
+Chess::Chess( const std::string& cmdLine ) :
+	pieces( 5, std::array<std::array<std::shared_ptr<Piece>, 5>, 5>() ),
+	whiteSquare( "Square", mtlWhiteSquare ),
 	blackSquare( "Square", mtlBlackSquare ),
 	client( cmdLine ),
 	mySide( Side::WHITE ),
 	winner( 'n' ), // n for none
 	myTurn( false ),
-	player( Box( -20.0f, -20.0f, -20.0f, 32.0f, 50.0f, 32.0f ) )
+	player( Box( -20.0f, -20.0f, -20.0f, 32.0f, 50.0f, 32.0f ) ),
+	promotionPos( Position( "Ea5").lfr )
 	{
 
 	player.Update( 0.0f ); // update player with delta time = 0 to ensure it is fully initialized
@@ -204,6 +205,15 @@ Chess::Chess( const std::string& cmdLine ) :
 	SETB( 3, 4, 4, Bishop );
 
 #undef SETB
+
+
+	promotionPieces.clear();
+	promotionPieces.push_back( Piece( "Queen", mySide ) );
+	promotionPieces.push_back( Piece( "Knight", mySide ) );
+	promotionPieces.push_back( Piece( "Unicorn", mySide ) );
+	promotionPieces.push_back( Piece( "Bishop", mySide ) );
+	promotionPieces.push_back( Piece( "Rook", mySide ) );
+
 }
 
 void Chess::Update( float dt ) {
@@ -270,6 +280,13 @@ void Chess::Update( float dt ) {
 				player.SetDirection( -pi / 2.0f, 0.0f, 0.0f );
 			}
 
+			promotionPieces.clear();
+			promotionPieces.push_back( Piece( "Queen", mySide ) );
+			promotionPieces.push_back( Piece( "Knight", mySide ) );
+			promotionPieces.push_back( Piece( "Unicorn", mySide ) );
+			promotionPieces.push_back( Piece( "Bishop", mySide ) );
+			promotionPieces.push_back( Piece( "Rook", mySide ) );
+
 			break;
 		
 		case 'd': // the game has ended, either because the server was shutdown or the other client disconnected
@@ -279,6 +296,10 @@ void Chess::Update( float dt ) {
 		case 'v':
 			winner = msg[2];
 			break;
+		case 'p':
+			msg.erase( 0, 2 );
+			promotionPos = Position( msg ).lfr;
+			break;
 #ifdef _DEBUG
 		default:
 			std::cout << "Unknown command received from server:\n" << msg << "\n";
@@ -286,7 +307,6 @@ void Chess::Update( float dt ) {
 		}
 
 	}
-
 }
 
 void Chess::Draw() const {
@@ -317,6 +337,18 @@ void Chess::Draw() const {
 	}
 
 	Window::Get().GetGraphics().SetDepthEnabled( true );
+
+	if ( promotionPos.has_value() ) {
+		const Model& square = (promotionPos->l + promotionPos->f + promotionPos->r) % 2 == 0 ? whiteSquare : blackSquare;
+		
+ 		for ( int i = 0; i < promotionPieces.size(); i++ ) {
+			int r = mySide == Side::WHITE ? (promotionPos->r + i + 1) : (promotionPos->r - i - 1);
+			int l = promotionPos->l;
+			int f = promotionPos->f;
+			square.Draw( XMMatrixTranslation( r * 3.0f, l * 6.0f, f * 3.0f ) );
+			promotionPieces[i].Draw( r * 3.0f, l * 6.0f, f * 3.0f );
+		}
+	}
 
 }
 

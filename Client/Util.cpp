@@ -51,7 +51,7 @@ Timer::Timer() {
 	lastReset = std::chrono::steady_clock::now();
 }
 
-float Timer::Time() {
+float Timer::Time() const {
 	return std::chrono::duration<float>( std::chrono::steady_clock::now() - lastReset ).count();
 }
 

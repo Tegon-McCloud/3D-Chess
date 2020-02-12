@@ -9,14 +9,12 @@
 
 int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow ) {
 
-	using namespace DirectX;
-
-
 	std::string cmdLine( lpCmdLine );
 
 	std::optional<int> rv;	// return value
 	
 	Timer timer; // for keeping track of how long has passed between frames
+	const Timer constTimer;
 
 	Window::Get().SetVisible( true, true );
 	
@@ -43,8 +41,17 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			if ( rv ) {
 				return rv.value();
 			}
+			
+			Window::GFX().Clear( 0.2f, 0.4f, 0.8f );
 
-			Window::GFX().Clear( 0.0f, 0.5f, 1.0f );
+			//constexpr float  hertz = 50.0f;
+			//float rgba[] = { 
+			//	sinf(constTimer.Time() * hertz),
+			//	sinf(constTimer.Time() * hertz + 2 * pi / 3 ),
+			//	sinf( constTimer.Time() * hertz + 4 * pi / 3 ),
+			//	1.0f };
+			//
+			//Window::GFX().Clear( rgba );
 			
 			chess.Update( dt );
 			chess.Draw();

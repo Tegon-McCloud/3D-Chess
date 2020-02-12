@@ -39,7 +39,7 @@ class Timer {
 
 public:
 	Timer();
-	float Time();
+	float Time() const;
 	void Reset();
 private:
 	std::chrono::steady_clock::time_point lastReset;

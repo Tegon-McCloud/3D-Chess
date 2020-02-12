@@ -1,7 +1,6 @@
-#pragma once
+ #pragma once
 
-class Piece;
-
+#include "Piece.h"
 #include "Model.h"
 #include "Player.h"
 #include "Lighting.h"
@@ -66,7 +65,10 @@ private:
 
 	std::unique_ptr<PositionLFR> selectedPos;
 	std::vector<PositionLFR> highlights;
-	
+
+	std::vector<Piece> promotionPieces;
+	std::optional<PositionLFR> promotionPos;
+
 	Player player;
 	MoveLog moveLog;
 

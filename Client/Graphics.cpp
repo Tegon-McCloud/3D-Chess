@@ -206,8 +206,6 @@ void Graphics::SizeChanged() {
 	pContext->RSSetViewports( 1u, &vp );
 
 	// restore 2D
-	
-
 	D2D1_BITMAP_PROPERTIES1 bmp;
 	ZeroMemory( &bmp, sizeof( bmp ) );
 	bmp.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
