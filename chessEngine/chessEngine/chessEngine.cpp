@@ -67,7 +67,7 @@ int main() {
 			std::string move = g.move(ss);
 			if (move[0] == 'P') {
 				std::string temps = "p:";
-				for (int i = 2; i < 4; i++) {
+				for (int i = 1; i < 3; i++) {
 					temps += move[i];
 				}
 				temps += ';';

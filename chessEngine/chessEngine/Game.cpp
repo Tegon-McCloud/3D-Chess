@@ -275,7 +275,7 @@ std::string Game::move(std::stringstream& ss) {
 	}
 	if (moveTemp == 3) {
 		std::stringstream ss;
-		std::string alg = Position(PositionXYZ(xFrom, yFrom, zFrom)).ToAlg();
+		std::string alg = Position(PositionXYZ(xTo, yTo, zTo)).ToAlg();
 		ss << "P" << alg;
 		colourToMove = (colourToMove - 1)*-1;
 		promotionStage = true;
