@@ -195,7 +195,7 @@ int Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo) 
 	}
 	if (getPieceId(xFrom, yFrom, zFrom) == ids["Pawn"]) {
 		if (getPieceColour(xFrom, yFrom, zFrom) == 1) {
-			if (zFrom == 4 && yFrom == 4) {
+			if (zTo == 4 && yTo == 4) {
 				setPieceId(xTo, yTo, zTo, getPieceId(xFrom, yFrom, zFrom));
 				setPieceColour(xTo, yTo, zTo, getPieceColour(xFrom, yFrom, zFrom));
 				setPieceId(xFrom, yFrom, zFrom, ids["Empty"]);
@@ -203,7 +203,7 @@ int Game::movePiece(int xFrom, int yFrom, int zFrom, int xTo, int yTo, int zTo) 
 				return 3;
 			}
 		} else {
-			if (zFrom == 0 && yFrom == 0) {
+			if (zTo == 0 && yTo == 0) {
 				setPieceId(xTo, yTo, zTo, getPieceId(xFrom, yFrom, zFrom));
 				setPieceColour(xTo, yTo, zTo, getPieceColour(xFrom, yFrom, zFrom));
 				setPieceId(xFrom, yFrom, zFrom, ids["Empty"]);
