@@ -277,7 +277,6 @@ std::string Game::move(std::stringstream& ss) {
 		std::stringstream ss;
 		std::string alg = Position(PositionXYZ(xTo, yTo, zTo)).ToAlg();
 		ss << "P" << alg;
-		colourToMove = (colourToMove - 1)*-1;
 		promotionStage = true;
 		return ss.str();
 	}

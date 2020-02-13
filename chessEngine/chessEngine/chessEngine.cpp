@@ -73,7 +73,7 @@ int main() {
 				temps += ';';
 				s.sendMSG(0, msgCopy);
 				s.sendMSG(1, msgCopy);
-				s.sendMSG((g.colourToMove-1)*-1, temps);
+				s.sendMSG(g.colourToMove, temps);
 				break;
 			}
 			if (move[0] == 'D') {
@@ -83,6 +83,7 @@ int main() {
 				s.sendMSG(1, g.colourToMove == 1 ? "t:w;" : "t:b;");
 				s.sendMSG(0, "v:d;");
 				s.sendMSG(1, "v:d;");
+				break;
 			}
 			if (move[0] == 'V') {
 				s.sendMSG(0, msgCopy);
@@ -134,6 +135,8 @@ int main() {
 					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 6);
 					break;
 				}
+				g.colourToMove - 1;
+				g.colourToMove *= -1;
 				s.sendMSG(0, msg);
 				s.sendMSG(1, msg);
 
@@ -144,4 +147,5 @@ int main() {
 			break;
 		}
 	}
+	return 0;
 }
