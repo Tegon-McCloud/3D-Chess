@@ -304,7 +304,7 @@ void Chess::Update( float dt ) {
 			if ( msg.length() == 3 ) {
 				promotionPos = Position( msg ).lfr;
 			} else {
-				char c;
+				char c = msg[0];
 				msg.erase( 0, 1 );
 				
 				Side side = PieceAt( Position( msg ).lfr ).GetSide();
