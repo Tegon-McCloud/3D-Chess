@@ -128,7 +128,6 @@ Chess::Chess( const std::string& cmdLine ) :
 			
 			char c = PromotionHit( player.LookRay() );
 			client.SendMSG( std::string( "p:" ) + c + Position( promotionPos.value() ).ToAlg() );
-
 			return;
 		}
 
@@ -300,7 +299,34 @@ void Chess::Update( float dt ) {
 			break;
 		case 'p':
 			msg.erase( 0, 2 );
-			promotionPos = Position( msg ).lfr;
+			if ( msg.length() == 3 ) {
+				promotionPos = Position( msg ).lfr;
+			} else {
+				Piece* piece = nullptr;
+
+				switch ( msg[0] ) {
+				case 'Q':
+					piece = new Piece( "Queen", mySide );
+					break;
+				case 'N':
+					piece = new Piece( "Knight", mySide );
+					break;
+				case 'U':
+					piece = new Piece( "Unicorn", mySide );
+					break;
+				case 'B':
+					piece = new Piece( "Bishop", mySide );
+					break;
+				case 'R':
+					piece = new Piece( "Rook", mySide );
+					break;
+				}
+
+
+				CellAt( promotionPos.value() ).reset( piece ) ;
+				promotionPos.reset();
+			}
+
 			break;
 #ifdef _DEBUG
 		default:
