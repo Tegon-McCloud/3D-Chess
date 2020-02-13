@@ -117,19 +117,19 @@ int main() {
 				}
 				Position p(tempp);
 				switch (msg[2]) {
-				case 'n':
+				case 'N':
 					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 2);
 					break;
-				case 'b':
+				case 'B':
 					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 3);
 					break;
-				case 'r':
+				case 'R':
 					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 4);
 					break;
-				case 'u':
+				case 'U':
 					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 5);
 					break;
-				case 'q':
+				case 'Q':
 					g.setPieceId(p.xyz.x, p.xyz.y, p.xyz.z, 6);
 					break;
 				}
