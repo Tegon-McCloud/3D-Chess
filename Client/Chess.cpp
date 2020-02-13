@@ -127,6 +127,7 @@ Chess::Chess( const std::string& cmdLine ) :
 		if ( promotionPos ) {
 			
 			char c = PromotionHit( player.LookRay() );
+			if ( c == '0' ) return;
 			client.SendMSG( std::string( "p:" ) + c + Position( promotionPos.value() ).ToAlg() );
 			return;
 		}
@@ -321,7 +322,6 @@ void Chess::Update( float dt ) {
 					piece = new Piece( "Rook", mySide );
 					break;
 				}
-
 
 				CellAt( promotionPos.value() ).reset( piece ) ;
 				promotionPos.reset();
