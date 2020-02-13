@@ -135,8 +135,8 @@ int main() {
 				}
 				g.colourToMove - 1;
 				g.colourToMove *= -1;
-				s.sendMSG(0, msg);
-				s.sendMSG(1, msg);
+				s.sendMSG(0, msg + ';');
+				s.sendMSG(1, msg + ';');
 
 				s.sendMSG(0, g.colourToMove == 1 ? "t:w;" : "t:b;");
 				s.sendMSG(1, g.colourToMove == 1 ? "t:w;" : "t:b;");
