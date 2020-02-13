@@ -82,3 +82,7 @@ const PieceInfo& Piece::GetInfo() const {
 	return info;
 }
 
+Side Piece::GetSide() const {
+	return side;
+}
+

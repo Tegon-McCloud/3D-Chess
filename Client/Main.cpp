@@ -32,7 +32,7 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	Window::GFX().SetBlendEnabled( true );
 	Window::GFX().SetDepthEnabled( true );
 
-	try {
+	//try {
 		while ( true ) {
 			float dt = timer.Time();
 			timer.Reset();
@@ -67,9 +67,9 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			Window::GFX().Present();
 
 		}
-	} catch ( std::exception e ) {
-		std::cout << "Application exited do to exception:\n" << e.what() << "\n";
-	}
+	//} catch ( std::exception e ) {
+	//	std::cout << "Application exited do to exception:\n" << e.what() << "\n";
+	//}
 
 	return 0;
 }

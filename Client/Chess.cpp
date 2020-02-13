@@ -298,36 +298,42 @@ void Chess::Update( float dt ) {
 		case 'v':
 			winner = msg[2];
 			break;
+
 		case 'p':
 			msg.erase( 0, 2 );
 			if ( msg.length() == 3 ) {
 				promotionPos = Position( msg ).lfr;
 			} else {
+				char c;
+				msg.erase( 0, 1 );
+				
+				Side side = PieceAt( Position( msg ).lfr ).GetSide();
+
 				Piece* piece = nullptr;
 
-				switch ( msg[0] ) {
+				switch ( c ) {
 				case 'Q':
-					piece = new Piece( "Queen", mySide );
+					piece = new Piece( "Queen", side );
 					break;
 				case 'N':
-					piece = new Piece( "Knight", mySide );
+					piece = new Piece( "Knight", side );
 					break;
 				case 'U':
-					piece = new Piece( "Unicorn", mySide );
+					piece = new Piece( "Unicorn", side );
 					break;
 				case 'B':
-					piece = new Piece( "Bishop", mySide );
+					piece = new Piece( "Bishop", side );
 					break;
 				case 'R':
-					piece = new Piece( "Rook", mySide );
+					piece = new Piece( "Rook", side );
 					break;
 				}
 
-				CellAt( promotionPos.value() ).reset( piece ) ;
+				CellAt( Position( msg ).lfr ).reset( piece );
 				promotionPos.reset();
 			}
-
 			break;
+
 #ifdef _DEBUG
 		default:
 			std::cout << "Unknown command received from server:\n" << msg << "\n";

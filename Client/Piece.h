@@ -18,6 +18,8 @@ public:
 	void Draw( float x, float y, float z ) const;
 
 	const PieceInfo& GetInfo() const;
+	
+	Side GetSide() const;
 
 private:
 	std::shared_ptr<Model> pModel;
