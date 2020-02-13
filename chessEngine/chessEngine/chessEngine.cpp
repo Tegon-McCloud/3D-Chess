@@ -110,11 +110,9 @@ int main() {
 			break;
 
 		case 'p':
-			std::cout << "hej";
 			if(g.promotionStage) {
-				std::cout << "hej";
 				std::string tempp = "";
-				for (int i = 3; i < 5; i++) {
+				for (int i = 3; i < 6; i++) {
 					tempp += msg[i];
 				}
 				Position p(tempp);
