@@ -290,12 +290,8 @@ void Chess::Update( float dt ) {
 			promotionPieces.push_back( Piece( "Rook", mySide ) );
 
 			break;
-		
-		case 'd': // the game has ended, either because the server was shutdown or the other client disconnected
-			client.Disconnect();
-			break;
 
-		case 'v':
+		case 'v': // one of the sides won the game
 			winner = msg[2];
 			break;
 

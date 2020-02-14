@@ -3,6 +3,7 @@
 #include "ws2tcpip.h"
 #include <cassert>;
 #include <iostream>
+#include <ctime>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -57,23 +58,13 @@ Server::Server( std::string port ) : serverSocket( INVALID_SOCKET ), clientWhite
 		printAndExit( "failed to accept black client connection.", 1 );
 	}
 
-	// TODO std::swap the client sockets if rand() > 0.5
+	std::srand( std::time( nullptr ) );
+	if ( std::rand() < RAND_MAX / 2 )
+		std::swap( clientWhite, clientBlack );
 }
 
 Server::~Server() {
-
-	if ( clientWhite != INVALID_SOCKET && shutdown( clientWhite, SD_SEND ) != 0 )
-		printf( "Error occured during shutdown of connection to whites client." );
-	if ( clientBlack != INVALID_SOCKET && shutdown( clientBlack, SD_SEND ) != 0 )
-		printf( "Error occured during shutdown of connection to blacks client." );
-
-	if ( clientWhite != INVALID_SOCKET && closesocket( clientWhite ) != 0 )
-		printf( "Error occured while closing white clients socket." );
-	if ( clientBlack != INVALID_SOCKET && closesocket( clientBlack ) != 0 )
-		printf( "Error occured while closing black clients socket." );
-	if ( serverSocket != INVALID_SOCKET && closesocket( serverSocket ) != 0 )
-		printf( "Error occured while closing the servers socket." );
-
+	disconnect();
 }
 
 void Server::getMSG( int side, std::string& msg ) {
@@ -90,6 +81,23 @@ void Server::getMSG( int side, std::string& msg ) {
 
 void Server::sendMSG( int side, const std::string& msg ) {
 	send( side == 1 ? clientWhite : clientBlack, msg.c_str(), msg.length(), 0 );
+}
+
+void Server::disconnect() {
+
+	if ( clientWhite != INVALID_SOCKET && shutdown( clientWhite, SD_SEND ) != 0 )
+		printf( "Error occured during shutdown of connection to whites client." );
+	else if ( clientWhite != INVALID_SOCKET && closesocket( clientWhite ) != 0 )
+		printf( "Error occured while closing white clients socket." );
+
+	if ( clientBlack != INVALID_SOCKET && shutdown( clientBlack, SD_SEND ) != 0 )
+		printf( "Error occured during shutdown of connection to blacks client." );
+	else if ( clientBlack != INVALID_SOCKET && closesocket( clientBlack ) != 0 )
+		printf( "Error occured while closing black clients socket." );
+	
+	if ( serverSocket != INVALID_SOCKET && closesocket( serverSocket ) != 0 )
+		printf( "Error occured while closing the server socket." );
+
 }
 
 // WSALoader

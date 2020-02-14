@@ -32,44 +32,40 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	Window::GFX().SetBlendEnabled( true );
 	Window::GFX().SetDepthEnabled( true );
 
-	//try {
-		while ( true ) {
-			float dt = timer.Time();
-			timer.Reset();
+	while ( true ) {
+		float dt = timer.Time();
+		timer.Reset();
 			
-			rv = Window::Get().ProcessMessages();
-			if ( rv ) {
-				return rv.value();
-			}
-			
-			Window::GFX().Clear( 0.2f, 0.4f, 0.8f );
-
-			//constexpr float  hertz = 50.0f;
-			//float rgba[] = { 
-			//	sinf(constTimer.Time() * hertz),
-			//	sinf(constTimer.Time() * hertz + 2 * pi / 3 ),
-			//	sinf( constTimer.Time() * hertz + 4 * pi / 3 ),
-			//	1.0f };
-			//
-			//Window::GFX().Clear( rgba );
-			
-			chess.Update( dt );
-			chess.Draw();
-
-			Window::GFX().SetDepthEnabled( false );
-			Window::GFX().GetContext2D()->BeginDraw();
-
-			chess.DrawHUD();
-
-			Window::GFX().GetContext2D()->EndDraw();
-			Window::GFX().SetDepthEnabled( true );
-
-			Window::GFX().Present();
-
+		rv = Window::Get().ProcessMessages();
+		if ( rv ) {
+			return rv.value();
 		}
-	//} catch ( std::exception e ) {
-	//	std::cout << "Application exited do to exception:\n" << e.what() << "\n";
-	//}
+			
+		Window::GFX().Clear( 0.2f, 0.4f, 0.8f );
+
+		constexpr float  hertz = 2.0f;
+		float rgba[] = { 
+			sinf(constTimer.Time() * hertz),
+			sinf(constTimer.Time() * hertz + 2 * pi / 3 ),
+			sinf( constTimer.Time() * hertz + 4 * pi / 3 ),
+			1.0f };
+		
+		Window::GFX().Clear( rgba );
+			
+		chess.Update( dt );
+		chess.Draw();
+
+		Window::GFX().SetDepthEnabled( false );
+		Window::GFX().GetContext2D()->BeginDraw();
+
+		chess.DrawHUD();
+
+		Window::GFX().GetContext2D()->EndDraw();
+		Window::GFX().SetDepthEnabled( true );
+
+		Window::GFX().Present();
+
+	}
 
 	return 0;
 }
