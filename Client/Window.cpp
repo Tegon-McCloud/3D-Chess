@@ -1,9 +1,9 @@
 #include "Window.h"
 
-#include <iostream>
+#include "shellscalingapi.h"
+#include <stdexcept>
 
-#include <dxgi.h>
-#include "Util.h"
+#pragma comment(lib, "Shcore.lib")
 
 // Window
 Window::Window() : width(1080), height(720), gfx(Create()) {}
@@ -12,15 +12,15 @@ HWND Window::GetHandle() const {
 	return hWnd;
 }
 
-const Graphics& Window::GetGraphics() {
+const Graphics& Window::GetGraphics() const {
 	return gfx;
 }
 
-Input& Window::GetInput() {
+const Input& Window::GetInput() const {
 	return input;
 }
 
-void Window::SetVisible( bool visible, bool maximized ) {
+void Window::SetVisible( bool visible, bool maximized ) const {
 	ShowWindow( hWnd, visible ? maximized ? SW_MAXIMIZE : SW_SHOW : SW_HIDE );
 }
 
@@ -35,8 +35,7 @@ std::optional<int> Window::ProcessMessages() const {
 		}
 
 		DispatchMessageW( &msg );
-		TranslateMessage( &msg );
-
+		//TranslateMessage( &msg );
 	}
 
 	return std::optional<int>();
@@ -104,45 +103,46 @@ HWND Window::Create() {
 LRESULT CALLBACK Window::Procedure( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) {
 
 	switch ( message ) {
+
 	case WM_DESTROY:
 		PostQuitMessage( 0 );
 		break;
 
-
 	case WM_CLOSE:
-		printf( "close message" );
-		PostQuitMessage( 0 );
+		DestroyWindow( Get() );
 		break;
-		
 
 	case WM_SIZE:
-		if(wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED) Get().SizeChanged( LOWORD( lParam ), HIWORD( lParam ) );
+		if(wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED) GetInternal().SizeChanged( LOWORD( lParam ), HIWORD( lParam ) );
 		break;
 
 
 	case WM_RBUTTONDOWN:
 	case WM_LBUTTONDOWN:
-		Get().input.MouseClick( LOWORD( lParam ), HIWORD( lParam ) );
+		GetInternal().input.MouseClick( MAKEPOINTS(lParam) );
 		break;
 		
+	case WM_MOUSEWHEEL:
+		GetInternal().input.WheelScroll( GET_WHEEL_DELTA_WPARAM( wParam ) );
+		break;
 
 	case WM_KEYDOWN:
-		Get().input.KeyPressed( static_cast<unsigned char>(wParam) );
+		GetInternal().input.KeyPressed( static_cast<unsigned char>(wParam) );
 		break;
 	case WM_KEYUP:
-		Get().input.KeyReleased( static_cast<unsigned char>(wParam) );
+		GetInternal().input.KeyReleased( static_cast<unsigned char>(wParam) );
 		break;
 
 
 	case WM_SETFOCUS:
-		Get().input.WindowFocused();
-		Get().focus = true;
+		GetInternal().input.WindowFocused();
+		GetInternal().focus = true;
 		break;
 	
 	
 	case WM_KILLFOCUS:
-		Get().input.WindowUnfocused();
-		Get().focus = false;
+		GetInternal().input.WindowUnfocused();
+		GetInternal().focus = false;
 		break;
 
 
@@ -160,13 +160,13 @@ WindowClass::WindowClass() {
 
 	WNDCLASSW wndCls = { 0 };
 
-	wndCls.style = CS_DBLCLKS | CS_PARENTDC;
+	wndCls.style = CS_PARENTDC;
 	wndCls.lpfnWndProc = (WNDPROC)(Window::Procedure);
 	wndCls.cbClsExtra = 0;
 	wndCls.cbWndExtra = 0;
 	wndCls.hInstance = GetModuleHandle( NULL );
 	wndCls.hIcon = NULL;
-	wndCls.hCursor = LoadCursor( NULL, (LPTSTR)IDC_IBEAM );
+	wndCls.hCursor = LoadCursor( NULL, (LPTSTR)IDC_ARROW );
 	wndCls.hbrBackground = NULL;
 	wndCls.lpszMenuName = NULL;
 	wndCls.lpszClassName = wndClsName;

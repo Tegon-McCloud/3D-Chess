@@ -16,11 +16,11 @@ private:
 public:
 
 	HWND GetHandle() const;
-	const Graphics& GetGraphics();
+	const Graphics& GetGraphics() const;
 
-	Input& GetInput();
+	const Input& GetInput() const;
 
-	void SetVisible( bool visible, bool maximized = false );
+	void SetVisible( bool visible, bool maximized = false ) const;
 
 	std::optional<int> ProcessMessages() const;
 
@@ -31,9 +31,8 @@ public:
 
 	operator HWND() const;
 
-	static Window& Get() { // Singleton getter
-		static Window inst;
-		return inst;
+	static const Window& Get() { // singleton getter
+		return GetInternal();
 	}
 
 	// quick accessors
@@ -41,7 +40,7 @@ public:
 		return Get().gfx;
 	}
 
-	inline static const ID3D11Device* GFXDevice() { 
+	inline static const ID3D11Device1* GFXDevice() { 
 		return Get().gfx.pDevice.Get();
 	}
 
@@ -49,8 +48,17 @@ public:
 		return Get().gfx.pContext.Get();
 	}
 
+	inline static const ID2D1DeviceContext* GFXContext2D() {
+		return Get().gfx.pContext2D.Get();
+	}
+
 private:
 	
+	static Window& GetInternal() {
+		static Window inst;
+		return inst;
+	}
+
 	// delete these so no one can copy the window instance
 	Window(const Window& ) = delete;
 	Window& operator=( const Window& ) = delete;

@@ -3,8 +3,8 @@
 #include "WindowsStrict.h"
 
 #include <bitset>
-#include <functional>
 #include <vector>
+#include <functional>
 
 class Input {
 
@@ -14,21 +14,26 @@ public:
 	Input();
 	~Input();
 	
-	void RegisterRightClickListener( const std::function< void( int x, int y ) >& onClick );
+	void RegisterClickListener( const std::function< void( int x, int y ) >& onClick ) const;
+	void RegisterMouseWheelListener( const std::function< void( int delta ) >& onScroll ) const;
+	void RegisterKeyListener( unsigned char key, const std::function<void( bool )>& onKey ) const;
 	bool IsKeyDown( unsigned char key ) const;
-	POINT GetMousePos();
-	void CenterMouse();
+	POINT GetMousePos() const;
+	void CenterMouse() const;
 	void SetCursorVisible( bool visibility );
 
 private:
-	void MouseClick( int x, int y );
+	void MouseClick( POINTS p );
+	void WheelScroll( int rawDelta );
 	void KeyPressed( unsigned char key );
 	void KeyReleased( unsigned char key );
 	void WindowFocused();
 	void WindowUnfocused();
 
 	std::bitset< 256u > keyStates;
-	std::vector< std::function< void( int x, int y ) > > onMouseClick;
+	mutable std::vector<std::function<void( int x, int y )>> onMouseClick;
+	mutable std::vector<std::function<void( int delta )>> onMouseWheel;
+	mutable std::unordered_map<unsigned char, std::vector<std::function<void( bool )>>> onKey;
 	bool cursorVisible;
 
 };

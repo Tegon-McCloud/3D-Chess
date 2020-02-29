@@ -1,17 +1,16 @@
 #pragma once
+#include <stdint.h>
+
+struct ID3D11Buffer;
 
 #include "Bindable.h"
 
 #include "WRL.h"
-#include "d3d11.h"
-#include <unordered_map>
-#include <string>
 
 class IndexBuffer : public Bindable {
 	
-
 public:
-	IndexBuffer( const unsigned short* indices, size_t size);
+	IndexBuffer( const uint16_t * indices, size_t size);
 	IndexBuffer() = delete;
 
 	void Bind() override;

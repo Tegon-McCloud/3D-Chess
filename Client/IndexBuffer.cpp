@@ -2,19 +2,21 @@
 #include "Util.h"
 #include "Window.h"
 
+#include "d3d11_2.h"
+
 constexpr const D3D11_BUFFER_DESC defaultIndexBufferDesc = {
 	0u,							// ByteWidth
 	D3D11_USAGE_DEFAULT,		// Usage
 	D3D11_BIND_INDEX_BUFFER,	// BindFlags
 	0u,							// CPUAccessFlags
 	0u,							// MiscFlags
-	sizeof( unsigned short )	// StructureByteStride
+	sizeof( uint16_t )	// StructureByteStride
 };
 
-IndexBuffer::IndexBuffer( const unsigned short* indices, size_t size ) : size(size) {
+IndexBuffer::IndexBuffer( const uint16_t* indices, size_t size ) : size(size) {
 
 	D3D11_BUFFER_DESC bd = defaultIndexBufferDesc;
-	bd.ByteWidth = (UINT) (sizeof( unsigned short ) * size);
+	bd.ByteWidth = (UINT) (sizeof( uint16_t ) * size);
 
 	D3D11_SUBRESOURCE_DATA sd = { };
 	sd.pSysMem = indices;

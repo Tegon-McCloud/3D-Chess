@@ -350,13 +350,9 @@ MigrationBackup/
 .ionide/
 
 # Obj exceptions for model files
-!Pawn.obj
-!Rook.obj
-!Knight.obj
-!Unicorn.obj
-!Bishop.obj
-!Queen.obj
-!King.obj
+!Client/Resources/*.obj
 
 # Compiled shaders
 *.cso
+
+Engine/

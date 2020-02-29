@@ -5,7 +5,7 @@
 #include "Util.h"
 
 #include "WRL.h"
-#include "d3d11.h"
+#include "d3d11_2.h"
 
 constexpr const D3D11_BUFFER_DESC defaultConstantBufferDesc = {
 	0u,							// ByteWidth
@@ -22,7 +22,8 @@ enum Stage {
 
 template<typename T, Stage S, unsigned char slot>
 class ConstantBuffer : public Bindable { 
-	
+	static_assert(alignof(T) == 16, "T must be 16 byte aligned.");
+
 public:
 	ConstantBuffer();
 	ConstantBuffer( const T* init );
